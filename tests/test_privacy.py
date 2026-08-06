@@ -112,3 +112,11 @@ def test_this_repository_ships_the_hook_and_the_example(tmp_path: Path):
     tracked = subprocess.run(["git", "-C", str(root), "ls-files"],
                              capture_output=True, text=True).stdout
     assert ".private-sources.yaml" not in tracked.split("\n")
+
+
+def test_the_hook_refuses_rather_than_skips_when_it_cannot_run():
+    """A guard that gives up quietly is not a guard."""
+    hook = (Path(__file__).resolve().parents[1] / ".githooks" / "pre-push").read_text(encoding="utf-8")
+    assert "exit 1" in hook, "the hook must fail closed when no interpreter works"
+    assert "import yaml" in hook, "it must verify the interpreter can actually run the guard"
+    assert ".venv/bin/python" in hook, "it should prefer the project venv, which has PyYAML"

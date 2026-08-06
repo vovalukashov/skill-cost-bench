@@ -96,11 +96,17 @@ def scan(events: list[Event], patterns: Sequence[str], strip: str | None = None)
                 evidence.append(f"{kind}: …{text[start:match.end() + 40]}…".replace("\n", " "))
 
     total = sum(hits.values())
+    # Talking about the skill is not using it. Once the index sits in the working
+    # copy, its path turns up in any directory listing the model echoes back, and
+    # a run that only ever ran `ls` was scoring as a run that queried the graph.
+    # Use is a tool call: the name of a tool, or the arguments it was called with.
+    by_call = sum(count for kind, count in kinds.items() if kind != "text")
     return {
-        "activated": total > 0,
+        "activated": by_call > 0,
         "total_hits": total,
         "hits": hits,
         "hit_kinds": kinds,
+        "mentioned_only": total > 0 and by_call == 0,
         "evidence": evidence,
     }
 
@@ -130,7 +136,11 @@ def check_arm(
     if forbidden_patterns:
         res = scan(events, forbidden_patterns, strip)
         out["contamination"] = res
-        if res["activated"] and out["valid"]:
+        # Asymmetric on purpose. Activation asks whether the model *used* the
+        # skill, so only a tool call counts. Contamination asks whether the
+        # control arm was exposed to it at all, and a mention in prose already
+        # answers that: it cannot write about a graph it was never shown.
+        if res["total_hits"] > 0 and out["valid"]:
             out["valid"] = False
             out["invalid_reason"] = "control arm contaminated by the skill"
 

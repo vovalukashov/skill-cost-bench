@@ -114,3 +114,23 @@ def test_reading_the_index_still_counts_as_using_the_skill():
         {"type": "tool_use", "name": "Read", "input": {"file_path": "graphify-out/graph.json"}},
     ])]
     assert check_arm(events, activation_patterns=PATTERNS)["activation_status"] == "used"
+
+
+def test_mentioning_the_index_in_prose_is_not_using_it():
+    """Once the index sits in the tree, its path shows up in any `ls` the model echoes."""
+    events = [_assistant([
+        {"type": "text",
+         "text": "Files here: superset/config.py graphify-out/graph.json superset/api.py"},
+        {"type": "tool_use", "name": "Bash", "input": {"command": "ls"}},
+    ])]
+    res = check_arm(events, activation_patterns=PATTERNS)
+
+    assert res["activation_status"] == "available_unused"
+    assert res["activation"]["mentioned_only"] is True
+    assert res["activation"]["total_hits"] >= 1, "the mention is still on the record"
+
+
+def test_the_control_guard_still_fires_on_a_mere_mention():
+    """Contamination is about exposure, so prose counts there."""
+    events = [_assistant([{"type": "text", "text": "the graphify index would help here"}])]
+    assert check_arm(events, forbidden_patterns=["graphify"])["valid"] is False

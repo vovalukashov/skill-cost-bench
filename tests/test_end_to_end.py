@@ -326,3 +326,25 @@ def test_a_reachable_skill_lets_the_sweep_run(demo_repo: Path, tmp_path: Path,
     probe = json.loads((out / "probe.json").read_text(encoding="utf-8"))
     assert probe["ok"] is True
     assert probe["arms"]["graphify"]["reachable"] is True
+
+
+def test_the_used_only_scope_drops_repeats_that_ignored_the_skill(
+    demo_repo: Path, tmp_path: Path, approved_manifest: Path
+):
+    """Descriptive, not randomised: the model picks when to reach for the tool."""
+    cfg = _config(demo_repo, tmp_path, approved_manifest, activate="alternate", repeats=2)
+    tasks = [dict(t, review="ok", verified="ok") for t in _mined(demo_repo)]
+    out = Path(cfg.run.out_dir) / "used_only"
+
+    execute(cfg, tasks, out)
+    summary = analyze(cfg, out)
+
+    rows = list(read_jsonl(out / "runs.jsonl"))
+    unused = [r for r in rows if r.get("activation_status") == "available_unused"]
+    assert unused, "the fixture must produce some runs that ignore the skill"
+
+    scopes = summary["metrics"]["cost_usd"]
+    assert "used_only" in scopes
+    if not scopes["used_only"].get("insufficient"):
+        assert scopes["used_only"]["n"] <= scopes["all_valid"]["n"]
+    assert "read that row as description" in (out / "report.md").read_text(encoding="utf-8")

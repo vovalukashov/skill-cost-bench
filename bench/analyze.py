@@ -17,6 +17,14 @@ from .config import Config
 from .stats import VERDICTS, estimate, noise_floor, sign_test, verdict
 from .util import read_jsonl, utc_iso, write_json
 
+# (name, solved-by-both-arms only, experimental repeats that used the skill only)
+# The primary scope is the first one; the third is descriptive, not randomised.
+SCOPES = [
+    ("both_solved", True, False),
+    ("all_valid", False, False),
+    ("used_only", True, True),
+]
+
 METRICS = [
     ("cost_usd", "cost, USD"),
     ("total_tokens", "tokens, all kinds"),
@@ -85,9 +93,22 @@ def pair_ratios(
     control: str,
     experiment: str,
     solved_only: bool,
+    used_only: bool = False,
 ) -> tuple[list[float], list[str]]:
-    """One ratio per task: median over repeats, control divided by experiment."""
+    """One ratio per task: median over repeats, control divided by experiment.
+
+    ``used_only`` keeps the experimental repeats in which the skill was actually
+    touched. It answers the question a reader will ask anyway — when the model
+    does reach for the tool, does it pay? — and it is not a randomised
+    comparison: the model chooses when to reach, and it may reach precisely on
+    the tasks that were confusing it. Read as description, never as effect.
+    """
     usable = [r for r in rows if r.get("valid") and (r.get("solved") or not solved_only)]
+    if used_only:
+        usable = [
+            r for r in usable
+            if r.get("arm") != experiment or r.get("activation_status") != "available_unused"
+        ]
     by_cell = cells(usable, metric)
     tasks = sorted({task for task, _ in by_cell})
     ratios: list[float] = []
@@ -167,8 +188,9 @@ def analyze(cfg: Config, out_dir: str | Path) -> dict[str, Any]:
 
     for metric, _label in METRICS:
         entry: dict[str, Any] = {}
-        for scope, solved_only in (("both_solved", True), ("all_valid", False)):
-            ratios, tasks = pair_ratios(rows, metric, control, experiment, solved_only)
+        for scope, solved_only, used_only in SCOPES:
+            ratios, tasks = pair_ratios(rows, metric, control, experiment, solved_only,
+                                        used_only)
             if len(ratios) < 2:
                 entry[scope] = {"n": len(ratios), "insufficient": True}
                 continue
@@ -303,10 +325,15 @@ def render(summary: dict[str, Any]) -> str:
     add("Ratios are control / experiment, so a number above 1.0 means the "
         "experimental arm is cheaper.")
     add("")
+    add("`both_solved` is the primary scope. `used_only` drops the experimental "
+        "repeats that never touched the skill; the model chose those itself, and "
+        "may have reached for the tool precisely where it was stuck, so read that "
+        "row as description and not as an effect.")
+    add("")
     add("| metric | scope | n | geo mean | 95% CI | median | p (sign) | p (Wilcoxon) | verdict |")
     add("|---|---|---|---|---|---|---|---|---|")
     for metric, label in METRICS:
-        for scope in ("both_solved", "all_valid"):
+        for scope, _, _ in SCOPES:
             entry = summary["metrics"].get(metric, {}).get(scope, {})
             if entry.get("insufficient"):
                 add(f"| {label} | {scope} | {entry.get('n', 0)} | — | — | — | — | — | not enough pairs |")

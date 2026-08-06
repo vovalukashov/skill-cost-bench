@@ -132,13 +132,18 @@ experimental arm never activated, that is the headline, not the percentages.
 **computed from the run's token counts** against a dated price table in the
 config — not read from the session's own `total_cost_usd`.
 
-That field is convenient and wrong to depend on: on a subscription it can be
-zero or absent, because nothing was billed per token, while the work still
-happened and still had a price. A benchmark that reads it measures the billing
-arrangement of whoever ran it. Input, output, the two cache-write TTLs and cache
-reads are priced separately, the reported figure is kept alongside as a
-cross-check, and because the raw token counts are published a reader can
-re-price the entire run at different rates without re-running it.
+The reported field is populated and accurate on a subscription — verified, not
+assumed: at preflight the computed figure matched it exactly on both arms
+($0.169068 and $0.171858). Cost is nonetheless computed rather than read, for
+three reasons the match does not weaken. A published run can be re-priced at
+different rates without being re-run, which matters while Sonnet 5 sits on
+introductory rates that expire mid-experiment. The number does not depend on how
+a particular CLI version reports cost. And the reported figure then works as a
+genuine cross-check: a divergence between the two is itself a finding.
+
+Input, output, cache reads and the two cache-write TTLs are priced separately —
+not a formality, since Claude Code writes its session cache at the one-hour TTL,
+which costs twice the input rate rather than 1.25 times it.
 
 **Sensitivity.** The same computation over all valid pairs regardless of
 outcome, reported next to it. Total tokens, output tokens, turns and wall clock

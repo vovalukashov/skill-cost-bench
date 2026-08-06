@@ -78,7 +78,7 @@ arms:
     args:
       - --disable-slash-commands
       - --mcp-config
-      - .arms/graphify-mcp.json
+      - /Users/luka/Projects/skill-cost-bench/.arms/graphify-mcp.json
     append_system_prompt_file: .arms/graphify-SKILL.md
     activation_patterns:
       - "mcp__graphify__"

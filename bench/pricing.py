@@ -1,15 +1,16 @@
-"""Cost computed from token counts, not taken from the agent's own report.
+"""Cost computed from token counts, and cross-checked against the agent's report.
 
-`total_cost_usd` in a session result is convenient and wrong to depend on. On a
-subscription it can be zero or absent, because nothing was billed per token; the
-work still happened and still had a price. A benchmark that reads that field
-measures the billing arrangement of whoever ran it.
+A session result carries `total_cost_usd`, and on a subscription it is populated
+and correct — measured, not assumed: on both preflight arms the figure computed
+here matched the reported one exactly ($0.169068 and $0.171858). An earlier
+reading that the field was zero came from an unauthenticated run that spent no
+tokens at all, which is a different thing entirely.
 
-So the price is computed here, from the token counts the session does report,
-against a dated table in the config. Two consequences worth the trouble: the
-same run can be re-priced at different rates without re-running it, and a reader
-who disagrees with the prices can recompute the whole report from the published
-JSONL.
+The price is still computed here rather than read, for reasons the match does
+not weaken: a published run can be re-priced at different rates without being
+re-run, the number does not depend on how a particular CLI version reports cost,
+and the reported field then serves as a real cross-check rather than the sole
+source. Where the two disagree, that disagreement is itself worth seeing.
 """
 
 from __future__ import annotations

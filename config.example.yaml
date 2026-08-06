@@ -95,7 +95,8 @@ arms:
     args:
       - --disable-slash-commands
       - --mcp-config
-      - .arms/graphify-mcp.json
+      # Absolute: the agent's working directory is the worktree, not this one.
+      - /absolute/path/to/skill-cost-bench/.arms/graphify-mcp.json
     append_system_prompt_file: .arms/graphify-SKILL.md
     # Traces that prove the skill actually ran. Without a hit the run is invalid,
     # not zero.

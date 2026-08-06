@@ -106,8 +106,10 @@ def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
             row["agent"] = agent_run.to_dict()
 
             summary = agent_run.summary
-            # Reported by the CLI; zero or absent on a subscription, so it is
-            # recorded as a cross-check and never used as the primary metric.
+            # Reported by the CLI. Populated and accurate on a subscription, but
+            # kept as a cross-check rather than the primary metric: a computed
+            # figure can be re-priced later and does not depend on how a given
+            # CLI version reports.
             row["cost_reported_usd"] = summary.get("cost_usd")
             row["cost_usd"] = pricing_mod.price_run(
                 summary.get("usage"), summary.get("model"), price_table or {}

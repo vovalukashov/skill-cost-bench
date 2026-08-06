@@ -77,10 +77,12 @@ tool that does not are two different tools.
 
 ## How the numbers are made
 
-Cost is computed from the run's token counts against a dated price table, not
-taken from the session's own `total_cost_usd` — that field is zero or absent on a
-subscription, so reading it would measure the billing arrangement rather than the
-work. The token counts ship with the results, so anyone can re-price the run.
+Cost is computed from the run's token counts against a dated price table rather
+than read from the session's own `total_cost_usd`. The reported field is accurate
+— at preflight the computed figure matched it to the cent on both arms — but a
+computed number can be re-priced after the fact, does not depend on how a given
+CLI version reports, and turns the reported field into a real cross-check. The
+token counts ship with the results, so anyone can re-price the run.
 
 The advertised claim is a ratio, so the statistics are multiplicative. Per task,
 the ratio of control cost to experimental cost (above 1.0 means the skill is

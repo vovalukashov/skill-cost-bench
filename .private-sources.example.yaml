@@ -1,0 +1,20 @@
+# Copy to .private-sources.yaml and fill in. The real file is git-ignored on
+# purpose: a committed list of private sources is itself a disclosure.
+#
+# scripts/check_publish.py fails when this file is absent, so an unconfigured
+# clone cannot publish by accident.
+
+# Exact strings that must never appear in a tracked file: repository names,
+# organisation names, internal domains, service names.
+literals:
+  - acme-internal
+  - acme-corp/monorepo
+
+# Regular expressions, for anything a literal cannot express.
+patterns:
+  - "git@github\\.com:acme-corp/"
+
+# Absolute paths to local checkouts of private repositories. A tracked file
+# containing one of these is a leaked path.
+paths:
+  - /Users/you/work/acme-monorepo

@@ -15,6 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from bench import config as config_mod  # noqa: E402
+from bench import privacy  # noqa: E402
 from bench import tasks as tasks_mod  # noqa: E402
 from bench.runner import execute  # noqa: E402
 from bench.util import utc_stamp, write_json  # noqa: E402
@@ -58,6 +59,14 @@ def main(argv: list[str] | None = None) -> int:
     out.mkdir(parents=True, exist_ok=True)
     write_json(out / "config_resolved.json", cfg.to_dict())
     write_json(out / "tasks_used.json", [t["id"] for t in approved])
+
+    marker = meta.get("private_marker") or privacy.is_private(
+        cfg.target.repo, cfg_path.parent
+    )
+    if marker:
+        privacy.write_marker(out, str(marker))
+        print(f"PRIVATE SOURCE ({marker}): this run directory carries transcripts "
+              f"and commit messages from a repository that may not be published.")
 
     planned = len(approved) * len(cfg.arms) * cfg.run.repeats
     print(f"tasks: {len(approved)}  arms: {len(cfg.arms)}  repeats: {cfg.run.repeats}")

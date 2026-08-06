@@ -1,0 +1,4 @@
+#!/bin/sh
+# Refuse to push anything derived from a private repository.
+# Enable with: git config core.hooksPath .githooks
+exec python3 "$(git rev-parse --show-toplevel)/scripts/check_publish.py" --quiet

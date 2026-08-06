@@ -20,7 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from bench import tasks as tasks_mod  # noqa: E402
+from bench import privacy, tasks as tasks_mod  # noqa: E402
 from bench.mine import MineConfig, mine  # noqa: E402
 from bench.util import run, utc_iso  # noqa: E402
 
@@ -63,10 +63,13 @@ def main(argv: list[str] | None = None) -> int:
     found, rejected = mine(cfg)
 
     head = run(["git", "-C", repo, "rev-parse", "HEAD"], timeout=60).stdout.strip()
+    private_marker = privacy.is_private(repo, Path(__file__).resolve().parents[1])
     meta = {
         "repo": repo,
         "repo_head": head,
         "generated_at": utc_iso(),
+        "private": bool(private_marker),
+        "private_marker": private_marker,
         "test_cmd": args.test_cmd,
         "filters": {
             "test_globs": list(args.test_glob),

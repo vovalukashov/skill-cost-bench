@@ -1,0 +1,94 @@
+# Example: measuring Graphify against a bare Claude Code on one repository.
+#
+# Nothing in the harness knows what Graphify is. An arm is a name, an
+# environment, a few flags, and the patterns that prove the skill ran. Swap the
+# arm block and the same code measures a different skill.
+
+run:
+  name: graphify-pilot
+  seed: 20260806
+  repeats: 3               # repeats exist to measure noise, not to add sample size
+  budget_usd: 40.0         # hard stop; the sweep records what it did not run
+  out_dir: out
+  tasks_file: tasks/tasks.yaml
+  bootstrap_resamples: 10000
+
+target:
+  repo: /path/to/the/repository/under/test
+  # {tests} is replaced by the restored test paths, shell-quoted.
+  test_cmd: "python -m pytest -q {tests}"
+  test_timeout_s: 900
+  # Run once per worktree before the agent starts (deps, build, venv).
+  setup_cmd: null
+  setup_timeout_s: 1800
+  worktree_root: /tmp/skill-cost-bench-worktrees
+  # Removed from every worktree in BOTH arms, so neither inherits repository
+  # instructions or a stray skill directory that only one arm would see.
+  strip_paths:
+    - .claude
+    - CLAUDE.md
+    - AGENTS.md
+
+agent:
+  bin: claude
+  model: claude-sonnet-5
+  effort: low
+  permission_mode: acceptEdits
+  max_budget_usd: 3.0      # per-session guard rail on top of the sweep budget
+  timeout_s: 1800
+  extra_args:
+    - --no-session-persistence
+    - --setting-sources
+    - ""
+    - --strict-mcp-config
+    - --dangerously-skip-permissions
+
+# The skill's index: built once in a reference checkout, priced on its own line,
+# then copied into each experimental worktree. Leave build_cmd empty for skills
+# that have no index.
+index:
+  build_cmd: "graphify . --out graphify-out"
+  build_timeout_s: 7200
+  paths:
+    - graphify-out
+  refresh_cmd: null
+
+arms:
+  - name: control
+    label: A
+    # A config directory of its own, so the machine's ~/.claude skills, plugins
+    # and hooks cannot walk into the measurement.
+    env:
+      CLAUDE_CONFIG_DIR: .arms/control
+    args:
+      - --disable-slash-commands
+    forbidden_patterns:
+      - graphify
+    expect_absent:
+      - graphify
+
+  - name: graphify
+    label: B
+    use_index: true
+    env:
+      CLAUDE_CONFIG_DIR: .arms/graphify     # contains only skills/graphify
+    args:
+      - --mcp-config
+      - .arms/graphify-mcp.json
+    # Traces that prove the skill actually ran. Without a hit the run is invalid,
+    # not zero.
+    activation_patterns:
+      - "mcp__graphify__"
+      - "graphify-out/graph\\.json"
+      - "(?m)^/graphify\\b"
+    expect_present:
+      - graphify
+
+claim:
+  factor: 70.0
+  source: "https://github.com/Graphify-Labs/graphify"
+  note: >
+    71.5x fewer tokens per query than reading the raw files, measured by the
+    authors on a 52-file corpus of Karpathy repositories, five papers and four
+    images. That is a retrieval claim. This harness measures a different thing:
+    the cost of a task carried to green tests.

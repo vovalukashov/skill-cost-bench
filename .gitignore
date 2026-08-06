@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+
+# Run output and mined tasks may contain source code and commit messages from
+# the repository under test. Never commit them unless that repository is public
+# and you intend to publish them.
+out/
+tasks/*.yaml
+!tasks/example.tasks.yaml
+
+# Per-arm Claude Code config directories, built locally by RUNBOOK step 1.
+.arms/
+
+# Article drafts and other working notes.
+drafts/
+config.yaml

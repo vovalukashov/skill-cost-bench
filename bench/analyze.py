@@ -1,0 +1,313 @@
+"""Turning runs.jsonl into a report.
+
+Order of the report is deliberate. The share of invalid runs comes first,
+because a skill that never activated is a bigger finding than any percentage.
+The repeat-to-repeat noise comes second, because it prices everything below it.
+The effect comes third, and it carries a defensive metric — the share of solved
+tasks — so that "cheaper" cannot quietly mean "gave up sooner".
+"""
+
+from __future__ import annotations
+
+import statistics
+from pathlib import Path
+from typing import Any, Iterable
+
+from .config import Config
+from .stats import VERDICTS, estimate, noise_floor, sign_test, verdict
+from .util import read_jsonl, utc_iso, write_json
+
+METRICS = [
+    ("cost_usd", "cost, USD"),
+    ("total_tokens", "tokens, all kinds"),
+    ("output_tokens", "output tokens"),
+    ("num_turns", "turns"),
+    ("wall_s", "wall clock, s"),
+]
+
+
+def _median(values: Iterable[float]) -> float | None:
+    clean = [v for v in values if isinstance(v, (int, float)) and v is not None]
+    return statistics.median(clean) if clean else None
+
+
+def collect(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    valid = [r for r in rows if r.get("valid")]
+    invalid = [r for r in rows if not r.get("valid")]
+
+    reasons: dict[str, int] = {}
+    for r in invalid:
+        key = f"{r.get('arm')}: {r.get('invalid_reason') or 'unknown'}"
+        reasons[key] = reasons.get(key, 0) + 1
+
+    per_arm_totals: dict[str, dict[str, int]] = {}
+    for r in rows:
+        arm = str(r.get("arm"))
+        bucket = per_arm_totals.setdefault(arm, {"runs": 0, "valid": 0, "solved": 0})
+        bucket["runs"] += 1
+        if r.get("valid"):
+            bucket["valid"] += 1
+            if r.get("solved"):
+                bucket["solved"] += 1
+
+    return {
+        "n_rows": len(rows),
+        "n_valid": len(valid),
+        "n_invalid": len(invalid),
+        "invalid_share": (len(invalid) / len(rows)) if rows else 0.0,
+        "invalid_reasons": dict(sorted(reasons.items(), key=lambda kv: -kv[1])),
+        "per_arm": per_arm_totals,
+    }
+
+
+def cells(rows: list[dict[str, Any]], metric: str) -> dict[tuple[str, str], list[float]]:
+    out: dict[tuple[str, str], list[float]] = {}
+    for r in rows:
+        if not r.get("valid"):
+            continue
+        value = r.get(metric)
+        if not isinstance(value, (int, float)):
+            continue
+        out.setdefault((str(r["task"]), str(r["arm"])), []).append(float(value))
+    return out
+
+
+def pair_ratios(
+    rows: list[dict[str, Any]],
+    metric: str,
+    control: str,
+    experiment: str,
+    solved_only: bool,
+) -> tuple[list[float], list[str]]:
+    """One ratio per task: median over repeats, control divided by experiment."""
+    usable = [r for r in rows if r.get("valid") and (r.get("solved") or not solved_only)]
+    by_cell = cells(usable, metric)
+    tasks = sorted({task for task, _ in by_cell})
+    ratios: list[float] = []
+    used: list[str] = []
+    for task in tasks:
+        a = by_cell.get((task, control))
+        b = by_cell.get((task, experiment))
+        if not a or not b:
+            continue
+        ma, mb = _median(a), _median(b)
+        if not ma or not mb or ma <= 0 or mb <= 0:
+            continue
+        ratios.append(ma / mb)
+        used.append(task)
+    return ratios, used
+
+
+def solve_rates(rows: list[dict[str, Any]], control: str, experiment: str) -> dict[str, Any]:
+    by_task: dict[str, dict[str, list[bool]]] = {}
+    for r in rows:
+        if not r.get("valid"):
+            continue
+        by_task.setdefault(str(r["task"]), {}).setdefault(str(r["arm"]), []).append(
+            bool(r.get("solved"))
+        )
+    only_control = only_experiment = both = neither = 0
+    for task, arms in by_task.items():
+        a = arms.get(control)
+        b = arms.get(experiment)
+        if not a or not b:
+            continue
+        sa = sum(a) / len(a) >= 0.5
+        sb = sum(b) / len(b) >= 0.5
+        if sa and sb:
+            both += 1
+        elif sa:
+            only_control += 1
+        elif sb:
+            only_experiment += 1
+        else:
+            neither += 1
+    discordant = only_control + only_experiment
+    p = sign_test([2.0] * only_experiment + [0.5] * only_control) if discordant else 1.0
+    return {
+        "both_solved": both,
+        "only_control": only_control,
+        "only_experiment": only_experiment,
+        "neither": neither,
+        "p_discordant": p,
+    }
+
+
+def analyze(cfg: Config, out_dir: str | Path) -> dict[str, Any]:
+    out = Path(out_dir)
+    rows = list(read_jsonl(out / "runs.jsonl"))
+    if not rows:
+        raise SystemExit(f"no runs found in {out / 'runs.jsonl'}")
+
+    control = next((a.name for a in cfg.arms if not a.activation_patterns), cfg.arms[0].name)
+    experiment = next((a.name for a in cfg.arms if a.activation_patterns), cfg.arms[-1].name)
+
+    summary: dict[str, Any] = {
+        "generated_at": utc_iso(),
+        "run_name": cfg.run.name,
+        "control_arm": control,
+        "experiment_arm": experiment,
+        "claim_factor": cfg.claim_factor,
+        "claim_source": cfg.claim.get("source"),
+        "repeats": cfg.run.repeats,
+        "seed": cfg.run.seed,
+        "validity": collect(rows),
+        "noise": noise_floor(cells(rows, "cost_usd")),
+        "solve": solve_rates(rows, control, experiment),
+        "metrics": {},
+        "spent_usd": round(sum(float(r.get("cost_usd") or 0.0) for r in rows), 4),
+    }
+
+    for metric, _label in METRICS:
+        entry: dict[str, Any] = {}
+        for scope, solved_only in (("both_solved", True), ("all_valid", False)):
+            ratios, tasks = pair_ratios(rows, metric, control, experiment, solved_only)
+            if len(ratios) < 2:
+                entry[scope] = {"n": len(ratios), "insufficient": True}
+                continue
+            est = estimate(ratios, n_resamples=cfg.run.bootstrap_resamples, seed=cfg.run.seed)
+            entry[scope] = {
+                **est.to_dict(),
+                "tasks": tasks,
+                "verdict": verdict(est.ci_low, est.ci_high, cfg.claim_factor),
+            }
+        summary["metrics"][metric] = entry
+
+    index_build = out / "index_build.json"
+    if index_build.exists():
+        import json
+
+        summary["index_build"] = json.loads(index_build.read_text(encoding="utf-8"))
+
+    primary = summary["metrics"]["cost_usd"].get("both_solved", {})
+    summary["headline"] = {
+        "metric": "cost_usd",
+        "scope": "both_solved",
+        "geometric_mean": primary.get("geometric_mean"),
+        "ci": [primary.get("ci_low"), primary.get("ci_high")],
+        "verdict": primary.get("verdict"),
+        "verdict_meaning": VERDICTS.get(primary.get("verdict", ""), ""),
+        "effect_below_noise": _effect_below_noise(primary, summary["noise"]),
+    }
+
+    write_json(out / "summary.json", summary)
+    (out / "report.md").write_text(render(summary), encoding="utf-8")
+    return summary
+
+
+def _effect_below_noise(primary: dict[str, Any], noise: dict[str, Any]) -> bool | None:
+    gm = primary.get("geometric_mean")
+    gsd = noise.get("median_geometric_sd")
+    if not isinstance(gm, (int, float)) or not isinstance(gsd, (int, float)):
+        return None
+    if gsd != gsd:  # NaN
+        return None
+    return abs(gm - 1.0) < abs(gsd - 1.0)
+
+
+def _fmt(value: Any, digits: int = 3) -> str:
+    if value is None:
+        return "—"
+    if isinstance(value, float):
+        if value != value:
+            return "—"
+        return f"{value:.{digits}f}"
+    return str(value)
+
+
+def render(summary: dict[str, Any]) -> str:
+    v = summary["validity"]
+    lines: list[str] = []
+    add = lines.append
+
+    add(f"# {summary['run_name']}")
+    add("")
+    add(f"Generated {summary['generated_at']}. "
+        f"Control arm `{summary['control_arm']}`, experimental arm `{summary['experiment_arm']}`. "
+        f"Advertised factor under test: {summary['claim_factor']}x.")
+    add("")
+
+    add("## 1. Did the skill run at all")
+    add("")
+    add(f"- runs recorded: {v['n_rows']}")
+    add(f"- invalid: {v['n_invalid']} ({v['invalid_share'] * 100:.1f}%)")
+    if v["invalid_reasons"]:
+        add("")
+        add("| reason | runs |")
+        add("|---|---|")
+        for reason, count in v["invalid_reasons"].items():
+            add(f"| {reason} | {count} |")
+    add("")
+    add("A run with no trace of the skill is not a zero. It is excluded, with its "
+        "reason on the record.")
+    add("")
+
+    add("## 2. How noisy is one task")
+    add("")
+    noise = summary["noise"]
+    add(f"- repeat cells measured: {noise['n_cells']}")
+    add(f"- median geometric SD of cost within a cell: {_fmt(noise.get('median_geometric_sd'))}")
+    add(f"- median max/min spread within a cell: {_fmt(noise.get('median_spread_ratio'))}")
+    add("")
+    add("This is the price of everything below: the same task, the same arm, "
+        "nothing changed between repeats.")
+    add("")
+
+    add("## 3. Effect")
+    add("")
+    add("Ratios are control / experiment, so a number above 1.0 means the "
+        "experimental arm is cheaper.")
+    add("")
+    add("| metric | scope | n | geo mean | 95% CI | median | p (sign) | p (Wilcoxon) | verdict |")
+    add("|---|---|---|---|---|---|---|---|---|")
+    for metric, label in METRICS:
+        for scope in ("both_solved", "all_valid"):
+            entry = summary["metrics"].get(metric, {}).get(scope, {})
+            if entry.get("insufficient"):
+                add(f"| {label} | {scope} | {entry.get('n', 0)} | — | — | — | — | — | not enough pairs |")
+                continue
+            add(
+                f"| {label} | {scope} | {entry.get('n')} | {_fmt(entry.get('geometric_mean'))} "
+                f"| {_fmt(entry.get('ci_low'))}–{_fmt(entry.get('ci_high'))} "
+                f"| {_fmt(entry.get('median'))} | {_fmt(entry.get('p_sign'))} "
+                f"| {_fmt(entry.get('p_wilcoxon'))} | {entry.get('verdict')} |"
+            )
+    add("")
+
+    head = summary["headline"]
+    add(f"**Verdict on the primary metric:** `{head['verdict']}` — {head['verdict_meaning']}.")
+    if head.get("effect_below_noise"):
+        add("")
+        add("> The measured effect is smaller than the spread between repeats of a "
+            "single task. Everything above rests on averaging across tasks, not on "
+            "any individual comparison.")
+    add("")
+
+    add("## 4. Did it still work")
+    add("")
+    s = summary["solve"]
+    add(f"- solved in both arms: {s['both_solved']}")
+    add(f"- only control: {s['only_control']}")
+    add(f"- only experimental: {s['only_experiment']}")
+    add(f"- neither: {s['neither']}")
+    add(f"- sign test on discordant tasks: p = {_fmt(s['p_discordant'])}")
+    add("")
+    add("Cheaper with failing tests is not a saving.")
+    add("")
+
+    if summary.get("index_build"):
+        ib = summary["index_build"]
+        add("## 5. What the index cost")
+        add("")
+        add(f"- command: `{ib.get('command')}`")
+        add(f"- built: {ib.get('built')} in {_fmt(ib.get('wall_s'), 1)} s")
+        add(f"- artefacts: {', '.join(ib.get('paths') or []) or '—'} "
+            f"({ib.get('bytes_total', 0) / 1_000_000:.1f} MB)")
+        add("")
+        add("A tool that saves per task but wants its index rebuilt every morning "
+            "and a tool that does not are two different tools.")
+        add("")
+
+    add(f"Total spend recorded across all runs: ${summary['spent_usd']:.2f}.")
+    add("")
+    return "\n".join(lines)

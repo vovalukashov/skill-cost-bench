@@ -43,12 +43,19 @@ def collect(rows: list[dict[str, Any]]) -> dict[str, Any]:
     per_arm_totals: dict[str, dict[str, int]] = {}
     for r in rows:
         arm = str(r.get("arm"))
-        bucket = per_arm_totals.setdefault(arm, {"runs": 0, "valid": 0, "solved": 0})
+        bucket = per_arm_totals.setdefault(
+            arm, {"runs": 0, "valid": 0, "solved": 0, "used_skill": 0, "available_unused": 0}
+        )
         bucket["runs"] += 1
         if r.get("valid"):
             bucket["valid"] += 1
             if r.get("solved"):
                 bucket["solved"] += 1
+            status = r.get("activation_status")
+            if status == "used":
+                bucket["used_skill"] += 1
+            elif status == "available_unused":
+                bucket["available_unused"] += 1
 
     return {
         "n_rows": len(rows),
@@ -173,11 +180,27 @@ def analyze(cfg: Config, out_dir: str | Path) -> dict[str, Any]:
             }
         summary["metrics"][metric] = entry
 
-    index_build = out / "index_build.json"
-    if index_build.exists():
-        import json
+    import json
 
-        summary["index_build"] = json.loads(index_build.read_text(encoding="utf-8"))
+    builds = out / "indexes" / "builds.json"
+    if builds.exists():
+        per_commit = json.loads(builds.read_text(encoding="utf-8"))
+        done = [b for b in per_commit.values() if b.get("built")]
+        summary["index_build"] = {
+            "n_indexes": len(per_commit),
+            "n_built": len(done),
+            "command": next((b.get("command") for b in per_commit.values()), None),
+            "wall_s_total": round(sum(float(b.get("wall_s") or 0) for b in done), 1),
+            "wall_s_each": round(
+                sum(float(b.get("wall_s") or 0) for b in done) / len(done), 1
+            ) if done else None,
+            "bytes_total": sum(int(b.get("bytes_total") or 0) for b in done),
+            "paths": next((b.get("paths") for b in done), []),
+        }
+
+    probe_path = out / "probe.json"
+    if probe_path.exists():
+        summary["probe"] = json.loads(probe_path.read_text(encoding="utf-8"))
 
     primary = summary["metrics"]["cost_usd"].get("both_solved", {})
     summary["headline"] = {
@@ -238,8 +261,30 @@ def render(summary: dict[str, Any]) -> str:
         for reason, count in v["invalid_reasons"].items():
             add(f"| {reason} | {count} |")
     add("")
-    add("A run with no trace of the skill is not a zero. It is excluded, with its "
-        "reason on the record.")
+
+    probe = summary.get("probe")
+    if probe:
+        add("| arm | could reach the skill | evidence |")
+        add("|---|---|---|")
+        for name, res in probe.get("arms", {}).items():
+            mark = "yes" if res.get("reachable") else "NO"
+            add(f"| {name} | {mark} | {str(res.get('detail', ''))[:110]} |")
+        add("")
+
+    unused = {a: b for a, b in v["per_arm"].items() if b.get("available_unused")}
+    if unused:
+        for arm, bucket in unused.items():
+            offered = bucket["used_skill"] + bucket["available_unused"]
+            share = bucket["available_unused"] / offered * 100 if offered else 0.0
+            add(f"- `{arm}`: skill offered in {offered} valid runs, "
+                f"left untouched in {bucket['available_unused']} of them ({share:.0f}%)")
+        add("")
+
+    add("A valid run in which the model was handed the skill and did not touch it "
+        "counts, and is reported above. Excluding it would average only over the "
+        "runs where the skill happened to appeal. That reading holds because the "
+        "positive control shows the arm could reach the skill; without it, the "
+        "same transcript would mean nothing at all.")
     add("")
 
     add("## 2. How noisy is one task")
@@ -300,12 +345,20 @@ def render(summary: dict[str, Any]) -> str:
         add("## 5. What the index cost")
         add("")
         add(f"- command: `{ib.get('command')}`")
-        add(f"- built: {ib.get('built')} in {_fmt(ib.get('wall_s'), 1)} s")
+        add(f"- indexes built: {ib.get('n_built')}/{ib.get('n_indexes')}, one per task, "
+            f"each at that task's parent commit")
+        add(f"- wall clock: {_fmt(ib.get('wall_s_each'), 1)} s each, "
+            f"{_fmt(ib.get('wall_s_total'), 1)} s in total")
         add(f"- artefacts: {', '.join(ib.get('paths') or []) or '—'} "
-            f"({ib.get('bytes_total', 0) / 1_000_000:.1f} MB)")
+            f"({ib.get('bytes_total', 0) / 1_000_000:.1f} MB across all indexes)")
         add("")
         add("A tool that saves per task but wants its index rebuilt every morning "
             "and a tool that does not are two different tools.")
+        add("")
+        add("Each index is built at the commit the agent is handed, so it cannot "
+            "contain the task's own solution. The cost of that choice is that the "
+            "graph is never stale, which a real one always is — a limitation, and "
+            "one that points in the skill's favour.")
         add("")
 
     add(f"Total spend recorded across all runs: ${summary['spent_usd']:.2f}.")

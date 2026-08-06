@@ -21,7 +21,8 @@ def test_a_session_that_used_the_skill_is_detected():
     assert result["evidence"]
 
 
-def test_a_session_that_never_touched_the_skill_is_invalid_not_zero():
+def test_a_session_that_never_touched_the_skill_counts_and_is_labelled():
+    """Not a zero, and not a discard either: a result in its own right."""
     events = [
         {"type": "system", "subtype": "init", "tools": ["Read"], "mcp_servers": [], "slash_commands": []},
         _assistant([{"type": "tool_use", "name": "Read", "input": {"file_path": "a.py"}}]),
@@ -29,9 +30,26 @@ def test_a_session_that_never_touched_the_skill_is_invalid_not_zero():
     ]
     checks = check_arm(events, activation_patterns=PATTERNS)
 
-    assert checks["valid"] is False
-    assert checks["invalid_reason"] == "skill never activated"
+    assert checks["valid"] is True
+    assert checks["invalid_reason"] is None
+    assert checks["activation_status"] == "available_unused"
     assert checks["activation"]["activated"] is False
+
+
+def test_a_session_that_used_the_skill_is_labelled_used():
+    events = [_assistant([{"type": "tool_use", "name": "mcp__graphify__query_graph", "input": {}}])]
+    assert check_arm(events, activation_patterns=PATTERNS)["activation_status"] == "used"
+
+
+def test_the_harness_own_path_cannot_trip_the_control_guard():
+    """The first sweep failed here: the worktree was named after the experiment."""
+    path = "/tmp/repo-work/graphify-superset-pilot-t018-control-3/superset/utils/core.py"
+    events = [_assistant([{"type": "tool_use", "name": "Read", "input": {"file_path": path}}])]
+
+    assert check_arm(events, forbidden_patterns=["graphify"])["valid"] is False
+    stripped = check_arm(events, forbidden_patterns=["graphify"],
+                         strip="/tmp/repo-work/graphify-superset-pilot-t018-control-3")
+    assert stripped["valid"] is True
 
 
 def test_the_control_arm_is_rejected_when_the_skill_leaks_in():
@@ -66,3 +84,33 @@ def test_availability_is_separate_from_activation():
     leaked = check_availability(["Read"], ["graphify"], [], expect_absent=["graphify"])
     assert not leaked["ok"]
     assert leaked["leaked"] == ["graphify"]
+
+
+def test_searching_for_the_skill_is_not_using_it():
+    """ToolSearch takes the tool's own name as its argument.
+
+    A session that looked the skill up and then went back to grep must not score
+    as a session that used it.
+    """
+    looked_up_only = [_assistant([
+        {"type": "tool_use", "name": "ToolSearch",
+         "input": {"query": "select:mcp__graphify__graph_stats", "max_results": 5}},
+        {"type": "tool_use", "name": "Bash", "input": {"command": "grep -rn foo ."}},
+    ])]
+    assert check_arm(looked_up_only, activation_patterns=PATTERNS)["activation_status"] \
+        == "available_unused"
+
+    then_called = [_assistant([
+        {"type": "tool_use", "name": "ToolSearch",
+         "input": {"query": "select:mcp__graphify__graph_stats", "max_results": 5}},
+        {"type": "tool_use", "name": "mcp__graphify__graph_stats", "input": {}},
+    ])]
+    assert check_arm(then_called, activation_patterns=PATTERNS)["activation_status"] == "used"
+
+
+def test_reading_the_index_still_counts_as_using_the_skill():
+    """The index file appears in a Read argument, and that is a real use."""
+    events = [_assistant([
+        {"type": "tool_use", "name": "Read", "input": {"file_path": "graphify-out/graph.json"}},
+    ])]
+    assert check_arm(events, activation_patterns=PATTERNS)["activation_status"] == "used"

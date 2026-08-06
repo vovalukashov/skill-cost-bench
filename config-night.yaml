@@ -20,7 +20,7 @@ target:
   # reinstalled per worktree.
   setup_cmd: "ln -sfn /Users/luka/Projects/night/node_modules node_modules"
   setup_timeout_s: 120
-  worktree_root: /tmp/skill-cost-bench-night
+  worktree_root: /tmp/repo-work-b
   strip_paths:
     - .claude
     - CLAUDE.md

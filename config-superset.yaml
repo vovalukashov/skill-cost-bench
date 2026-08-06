@@ -19,7 +19,7 @@ target:
   # No per-worktree install: the shared virtualenv holds the dependencies, and a
   # worktree's own superset/ package shadows the editable install (verified).
   setup_cmd: null
-  worktree_root: /tmp/skill-cost-bench-superset
+  worktree_root: /tmp/repo-work
   strip_paths:
     - .claude
     - CLAUDE.md
@@ -95,9 +95,10 @@ claim:
     cost of a task carried to green tests.
 
 # USD per million tokens. Cost is computed from token counts against this table
-# rather than read from the session's own `total_cost_usd`, which is zero or
-# absent on a subscription. Publishing the token counts means a reader can
-# re-price the whole run at different rates without re-running it.
+# rather than read from the session's own `total_cost_usd` — which is populated
+# and accurate on a subscription, and kept as a cross-check. Publishing the token
+# counts means a reader can re-price the whole run at different rates without
+# re-running it.
 pricing:
   source: "https://platform.claude.com/docs/en/about-claude/models/overview"
   dated: "2026-08-06"

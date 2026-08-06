@@ -21,7 +21,7 @@ target:
   # Run once per worktree before the agent starts (deps, build, venv).
   setup_cmd: null
   setup_timeout_s: 1800
-  worktree_root: /tmp/skill-cost-bench-worktrees
+  worktree_root: /tmp/repo-work
   # Removed from every worktree in BOTH arms, so neither inherits repository
   # instructions or a stray skill directory that only one arm would see.
   strip_paths:

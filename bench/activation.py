@@ -7,8 +7,20 @@ so a benchmark that does not check activation cannot tell the two apart.
 
 Every run in an arm that declares ``activation_patterns`` is scanned for traces
 of the skill: tool calls, MCP tool names, index files it reads, markers it
-prints. A run with no traces is not a zero result. It is an invalid run, and it
-leaves the analysis with a recorded reason.
+prints. A run with no traces is recorded as ``available_unused``.
+
+It is deliberately *not* thrown away. The first sweep threw such runs out, and
+that was wrong twice over. A model that is handed a skill and declines to use it
+is the single most interesting thing this harness can observe — discarding it
+would delete the finding and leave an average computed only over the runs where
+the skill happened to appeal. And "no trace" cannot be read at all until we know
+the arm could reach the skill in the first place: an arm that was never able to
+call the tool produces an identical transcript. That question is settled once per
+sweep by a positive control (``probe``), not per run. Without a passing probe,
+``available_unused`` means nothing and the sweep must not proceed.
+
+What still invalidates a run is a harness fault: the control arm reaching the
+skill, a misconfigured arm, a crash, a timeout.
 """
 
 from __future__ import annotations
@@ -20,24 +32,46 @@ from typing import Any, Iterable, Sequence
 from .transcript import Event, iter_text, iter_tool_uses
 
 
+# Tools whose arguments are tool names. Their input names a skill without using
+# it, so it is read as a lookup rather than as evidence.
+LOOKUP_TOOLS = frozenset({"ToolSearch"})
+
+
 def _compile(patterns: Sequence[str]) -> list[re.Pattern[str]]:
     return [re.compile(p, re.IGNORECASE) for p in patterns]
 
 
-def _haystacks(events: list[Event]) -> Iterable[tuple[str, str]]:
-    """Yield (kind, text) pairs that a pattern may match against."""
+def _haystacks(events: list[Event], strip: str | None = None) -> Iterable[tuple[str, str]]:
+    """Yield (kind, text) pairs that a pattern may match against.
+
+    ``strip`` removes a string — in practice the worktree path — before matching.
+    The harness owns that path and puts it in front of the agent on every file
+    operation; letting it match would make the guard fire on the harness's own
+    noise rather than on anything the model did.
+    """
+    def clean(text: str) -> str:
+        return text.replace(strip, "") if strip and text else text
+
     for name, payload in iter_tool_uses(events):
-        yield "tool_name", name
-        if payload is not None:
-            try:
-                yield "tool_input", json.dumps(payload, ensure_ascii=False)
-            except (TypeError, ValueError):
-                yield "tool_input", str(payload)
+        yield "tool_name", clean(name)
+        if payload is None:
+            continue
+        if name in LOOKUP_TOOLS:
+            # Searching for a tool is not using it. `ToolSearch` takes the tool's
+            # own name as its argument — `select:mcp__graphify__graph_stats` —
+            # so counting its input would score a session that looked the skill
+            # up and then thought better of it as a session that used it. The
+            # call it makes afterwards, if any, is what counts.
+            continue
+        try:
+            yield "tool_input", clean(json.dumps(payload, ensure_ascii=False))
+        except (TypeError, ValueError):
+            yield "tool_input", clean(str(payload))
     for text in iter_text(events):
-        yield "text", text
+        yield "text", clean(text)
 
 
-def scan(events: list[Event], patterns: Sequence[str]) -> dict[str, Any]:
+def scan(events: list[Event], patterns: Sequence[str], strip: str | None = None) -> dict[str, Any]:
     """Look for traces of the skill in a transcript.
 
     Returns ``activated``, per-pattern hit counts and a few short evidence
@@ -48,7 +82,7 @@ def scan(events: list[Event], patterns: Sequence[str]) -> dict[str, Any]:
     evidence: list[str] = []
     kinds: dict[str, int] = {}
 
-    for kind, text in _haystacks(events):
+    for kind, text in _haystacks(events, strip):
         if not text:
             continue
         for pattern, rx in zip(patterns, compiled):
@@ -75,24 +109,26 @@ def check_arm(
     events: list[Event],
     activation_patterns: Sequence[str] = (),
     forbidden_patterns: Sequence[str] = (),
+    strip: str | None = None,
 ) -> dict[str, Any]:
     """Validate one run against its arm's contract.
 
-    ``activation_patterns`` — traces that MUST be present (experimental arm).
+    ``activation_patterns`` — traces of the skill (experimental arm). Their
+    absence is reported as ``available_unused``, not as an invalid run; see the
+    module docstring for why, and for the positive control that has to pass
+    before the label can be believed.
     ``forbidden_patterns`` — traces that must NOT be present (control arm: proof
     the skill did not leak in through a stray user- or project-level config).
     """
     out: dict[str, Any] = {"valid": True, "invalid_reason": None}
 
     if activation_patterns:
-        res = scan(events, activation_patterns)
+        res = scan(events, activation_patterns, strip)
         out["activation"] = res
-        if not res["activated"]:
-            out["valid"] = False
-            out["invalid_reason"] = "skill never activated"
+        out["activation_status"] = "used" if res["activated"] else "available_unused"
 
     if forbidden_patterns:
-        res = scan(events, forbidden_patterns)
+        res = scan(events, forbidden_patterns, strip)
         out["contamination"] = res
         if res["activated"] and out["valid"]:
             out["valid"] = False
@@ -113,6 +149,14 @@ def check_availability(
     Availability is not activation: a session can be handed the skill and never
     use it. Both are recorded, and they answer different questions — whether the
     arm was configured correctly, and whether the model took the tool.
+
+    Read this one narrowly. The init event is emitted before MCP servers finish
+    connecting, so an MCP-backed skill is listed there with status `pending` and
+    contributes no tools to the catalog — measured on a 104MB graph and on a
+    one-node graph alike, so it is a property of the headless session, not of the
+    index. Passing this check means the arm was *configured* as declared. Whether
+    the model could reach the tool is a separate question, and only the positive
+    control answers it.
     """
     catalog = [*summary_tools, *summary_mcp, *summary_commands]
     blob = "\n".join(catalog)

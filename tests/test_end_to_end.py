@@ -174,9 +174,14 @@ def test_full_sweep_measures_the_planted_saving(demo_repo: Path, tmp_path: Path,
     assert "Did the skill run at all" in (out / "report.md").read_text(encoding="utf-8")
 
 
-def test_dead_runs_are_caught_and_excluded(demo_repo: Path, tmp_path: Path,
-                                           approved_manifest: Path):
-    """The ponytail trap: every second experimental run never activates."""
+def test_unused_skill_runs_are_counted_and_reported(demo_repo: Path, tmp_path: Path,
+                                                    approved_manifest: Path):
+    """The ponytail trap: every second experimental run never touches the skill.
+
+    Those runs stay in. Dropping them would compute the arm's average over only
+    the runs where the skill appealed, which is the flattering half of the data.
+    They are labelled instead, and the label reaches the report.
+    """
     cfg = _config(demo_repo, tmp_path, approved_manifest, activate="alternate", repeats=2)
     tasks = [dict(t, review="ok", verified="ok") for t in _mined(demo_repo)]
     out = Path(cfg.run.out_dir) / "dead"
@@ -186,14 +191,19 @@ def test_dead_runs_are_caught_and_excluded(demo_repo: Path, tmp_path: Path,
     experimental = [r for r in rows if r["arm"] == "graphify"]
 
     assert len(experimental) == 6
-    dead = [r for r in experimental if not r["valid"]]
-    assert len(dead) == 3, "every second experimental run never touched the skill"
-    assert all(r["invalid_reason"] == "skill never activated" for r in dead)
-    assert all(r["valid"] for r in rows if r["arm"] == "control")
+    assert all(r["valid"] for r in rows), "an unused skill is a result, not a broken run"
+
+    unused = [r for r in experimental if r["activation_status"] == "available_unused"]
+    assert len(unused) == 3, "every second experimental run never touched the skill"
+    assert all(r["activation_status"] == "used"
+               for r in experimental if r not in unused)
 
     summary = analyze(cfg, out)
-    assert summary["validity"]["n_invalid"] == 3
-    assert "graphify: skill never activated" in summary["validity"]["invalid_reasons"]
+    assert summary["validity"]["n_invalid"] == 0
+    assert summary["validity"]["per_arm"]["graphify"]["available_unused"] == 3
+    assert summary["validity"]["per_arm"]["graphify"]["used_skill"] == 3
+    report = (out / "report.md").read_text(encoding="utf-8")
+    assert "left untouched in 3" in report
 
 
 def test_a_cheaper_arm_that_stops_solving_is_visible(demo_repo: Path, tmp_path: Path,
@@ -268,3 +278,51 @@ def test_the_source_repository_is_never_written_to(demo_repo: Path, tmp_path: Pa
 
     assert head_before == head_after
     assert status_before == status_after
+
+
+def test_the_worktree_path_tells_the_agent_nothing(demo_repo: Path, tmp_path: Path,
+                                                   approved_manifest: Path):
+    """The agent reads its own path on every file call; it must learn nothing from it."""
+    from bench.runner import worktree_name
+
+    name = worktree_name("graphify-superset-pilot", "t018|control|3")
+    for cue in ("graphify", "control", "pilot", "t018", "bench", "skill"):
+        assert cue not in name, f"the sandbox path leaks {cue!r} to the agent"
+    assert name != worktree_name("graphify-superset-pilot", "t018|graphify|3")
+
+
+def test_an_unreachable_skill_stops_the_sweep_before_it_spends(
+    demo_repo: Path, tmp_path: Path, approved_manifest: Path
+):
+    """The failure that cost the first sweep: an arm that cannot call its own tool.
+
+    Every run would have looked like a cheap, silent success. The probe has to
+    catch it before any task runs, not after the night is gone.
+    """
+    cfg = _config(demo_repo, tmp_path, approved_manifest, activate="0", repeats=2)
+    tasks = [dict(t, review="ok", verified="ok") for t in _mined(demo_repo)]
+    out = Path(cfg.run.out_dir) / "unreachable"
+
+    state = execute(cfg, tasks, out)
+
+    assert state.get("probe_failed") is True
+    assert state["executed"] == 0, "not one task may run once the probe has failed"
+    assert not (out / "runs.jsonl").exists()
+    probe = json.loads((out / "probe.json").read_text(encoding="utf-8"))
+    assert probe["ok"] is False
+    assert probe["arms"]["graphify"]["reachable"] is False
+
+
+def test_a_reachable_skill_lets_the_sweep_run(demo_repo: Path, tmp_path: Path,
+                                              approved_manifest: Path):
+    cfg = _config(demo_repo, tmp_path, approved_manifest, activate="1", repeats=1)
+    tasks = [dict(t, review="ok", verified="ok") for t in _mined(demo_repo)]
+    out = Path(cfg.run.out_dir) / "reachable"
+
+    state = execute(cfg, tasks, out)
+
+    assert not state.get("probe_failed")
+    assert state["executed"] == 6
+    probe = json.loads((out / "probe.json").read_text(encoding="utf-8"))
+    assert probe["ok"] is True
+    assert probe["arms"]["graphify"]["reachable"] is True

@@ -98,6 +98,15 @@ ran (`activation_patterns`) or must never appear (`forbidden_patterns`).
 
 - Every run: a fresh session id, a fresh detached worktree, destroyed afterwards.
   The source repository is read-only throughout.
+- The worktree is named after a digest, never after the run, the arm or the
+  skill. The agent reads its own path back on every file operation, and a
+  directory called `graphify-superset-pilot-t018-control-3` would tell the
+  control arm what experiment it is in and which side of it it is on.
+- Before any task runs, each arm that declares a skill is given a worktree with
+  the index in it and told, in plain words, to call one of the skill's tools and
+  report the result (**the positive control**). If it cannot, the sweep stops
+  there. Every run of an unreachable arm would otherwise be a silent no-op that
+  looks exactly like a cheap success.
 - Order: all (task, arm, repeat) cells are generated, then shuffled once with a
   fixed seed. Arms are interleaved so time-of-day and API load cannot align with
   an arm.
@@ -105,9 +114,16 @@ ran (`activation_patterns`) or must never appear (`forbidden_patterns`).
   the recorded run keys.
 - A sweep-level budget stops execution and records the number of runs left
   undone. A per-session budget caps any single runaway run.
-- The index of the experimental arm is built once, in a reference checkout at
-  repository HEAD, and its wall time, exit status and artefact size are recorded
-  separately from the per-task numbers.
+- The index of the experimental arm is built **per task, at that task's parent
+  commit** — the exact tree the agent is handed — and cached by commit, so both
+  arms and all repeats of one task share a single build. Its wall time, exit
+  status and artefact size are recorded separately from the per-task numbers.
+
+  Building one index at repository HEAD would be cheaper and wrong: the task
+  commits are ancestors of HEAD, so the graph would index a codebase in which
+  the fix under test has already landed. The cost of doing it properly is that
+  the graph is never stale, while a real one always is; that limitation is
+  recorded, and it points the same way the leak did — in the skill's favour.
 
 ## 7. Validity rules
 
@@ -116,15 +132,27 @@ recorded, when any of these hold:
 
 | condition | reason |
 |---|---|
-| no trace of the skill in an arm that declares `activation_patterns` | `skill never activated` |
 | a trace of the skill in an arm that declares `forbidden_patterns` | `control arm contaminated by the skill` |
 | the session was not handed what the arm declared | `arm was not configured as declared` |
 | the agent exited non-zero, errored or hit the timeout | `agent exited with an error` / `agent timed out` |
 | the harness itself failed | `harness error: …` |
 
-Invalid runs are published with everything else. The share of invalid runs is
-reported before any figure about money: if a meaningful fraction of the
-experimental arm never activated, that is the headline, not the percentages.
+A run in which the model was handed the skill and never touched it is **not**
+invalid. It is labelled `available_unused` and counted. Discarding it would
+average the arm over only the runs where the skill happened to appeal, which is
+the flattering half of the data, and would delete the most interesting thing the
+harness can observe. The label is only readable because the positive control has
+already shown the arm could reach the skill; without that, an unused skill and an
+unreachable one produce the same transcript.
+
+Searching for a tool is not using it: `ToolSearch` takes the tool's own name as
+its argument, so its input is read as a lookup, and only the call that may follow
+counts as activation.
+
+Invalid runs are published with everything else. The share of invalid runs, and
+the share of runs where the skill went untouched, are both reported before any
+figure about money. If the experimental arm mostly ignored its skill, that is the
+headline, not the percentages.
 
 ## 8. Analysis
 

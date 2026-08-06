@@ -28,8 +28,22 @@ never runs produces exactly the numbers of a skill that works perfectly and cost
 nothing. Any benchmark that does not check activation cannot tell those two
 apart, and neither can anyone writing a review based on their own impressions.
 
-So every run in an arm that declares a skill is scanned for traces of it. A run
-with no traces is not a zero. It is invalid, excluded, and counted with a reason.
+So every run in an arm that declares a skill is scanned for traces of it, and a
+run with no traces is labelled `available_unused` and kept. Throwing it away
+would average the arm over only the runs where the skill appealed.
+
+That label is unreadable on its own, because an unused skill and an unreachable
+one leave the same transcript. The first sweep here made exactly that mistake:
+the experimental arm called nothing, and the cause turned out to be the harness —
+in a headless session the init event fires before MCP servers finish connecting,
+so the skill's tools were never in the model's catalogue. Measured on a 104MB
+graph and on a one-node graph alike, so it is a property of the session, not of
+the index.
+
+Hence the **positive control**: before any task runs, each arm is told in plain
+words to call one of its skill's tools and report the result. If it cannot, the
+sweep refuses to start. After it passes, a run with no traces is the model's own
+choice, and that is worth publishing.
 
 ## How a task is made
 

@@ -10,6 +10,7 @@ appended to JSONL as they finish, so dying on run 180 of 240 costs nothing.
 
 from __future__ import annotations
 
+import hashlib
 import random
 import shutil
 from pathlib import Path
@@ -18,6 +19,7 @@ from typing import Any, Iterable
 from . import index as index_mod
 from . import pricing as pricing_mod
 from .activation import check_arm, check_availability
+from .probe import probe_all
 from .agent import invoke, render_prompt
 from .config import Config
 from .grade import grade
@@ -42,6 +44,19 @@ def plan(tasks: Iterable[dict[str, Any]], arms: Iterable[str], repeats: int,
 
 def run_key(spec: dict[str, Any]) -> str:
     return f"{spec['task']}|{spec['arm']}|{spec['rep']}"
+
+
+def worktree_name(run_name: str, key: str) -> str:
+    """A directory name that tells the agent nothing about the experiment.
+
+    The first sweep named worktrees `graphify-superset-pilot-t018-control-3`, and
+    every Read, Edit and Bash call echoed that path back into the transcript. The
+    control arm was therefore told, dozens of times per run, that it was the
+    control in a graphify benchmark. It also tripped the contamination guard on
+    its own path. A digest carries the same uniqueness and none of the cues; the
+    mapping back to the run lives in runs.jsonl.
+    """
+    return "wt-" + hashlib.sha1(f"{run_name}|{key}".encode()).hexdigest()[:12]
 
 
 def completed_keys(runs_path: str | Path) -> set[str]:
@@ -74,7 +89,7 @@ def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
                 price_table: dict[str, pricing_mod.ModelPrice] | None = None) -> dict[str, Any]:
     arm = cfg.arm(spec["arm"])
     key = run_key(spec)
-    wt_path = Path(cfg.target.worktree_root) / f"{cfg.run.name}-{key.replace('|', '-')}"
+    wt_path = Path(cfg.target.worktree_root) / worktree_name(cfg.run.name, key)
     transcript = out_dir / "transcripts" / f"{key.replace('|', '__')}.jsonl"
 
     row: dict[str, Any] = {
@@ -123,7 +138,8 @@ def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
             from .transcript import load as load_transcript
 
             events = load_transcript(transcript)
-            checks = check_arm(events, arm.activation_patterns, arm.forbidden_patterns)
+            checks = check_arm(events, arm.activation_patterns, arm.forbidden_patterns,
+                               strip=str(wt))
             row.update({k: v for k, v in checks.items() if k not in ("valid", "invalid_reason")})
             if not checks["valid"]:
                 row["valid"] = False
@@ -190,13 +206,29 @@ def execute(cfg: Config, tasks: list[dict[str, Any]], out_dir: str | Path,
         write_json(out / "plan.json", {"state": state, "runs": specs})
         return state
 
-    index_source: Path | None = None
-    if any(a.use_index for a in cfg.arms) and cfg.index.build_cmd:
-        index_source = Path(out) / "index-source"
-        build_info = build_index(cfg, index_source)
-        write_json(out / "index_build.json", build_info)
-        if not build_info.get("built"):
+    wants_index = any(a.use_index for a in cfg.arms) and bool(cfg.index.build_cmd)
+    indexes = IndexCache(cfg, out) if wants_index else None
+
+    if indexes is not None:
+        # The probe needs a built index to be a fair test of reachability, and
+        # the first task's is as good as any.
+        first_parent = by_id[specs[0]["task"]]["parent"]
+        probe_index = indexes.for_commit(first_parent)
+        if probe_index is None:
             state["index_build_failed"] = True
+            return state
+    else:
+        first_parent = by_id[specs[0]["task"]]["parent"]
+        probe_index = None
+
+    if any(a.activation_patterns for a in cfg.arms):
+        probe_result = probe_all(cfg, first_parent, probe_index, out / "transcripts")
+        write_json(out / "probe.json", probe_result)
+        state["probe"] = {k: v["reachable"] for k, v in probe_result["arms"].items()}
+        if not probe_result["ok"]:
+            # Every run of an unreachable arm would be a silent no-op that looks
+            # exactly like a cheap success. Refuse to spend the night on it.
+            state["probe_failed"] = True
             return state
 
     prune(cfg.target.repo)
@@ -208,7 +240,9 @@ def execute(cfg: Config, tasks: list[dict[str, Any]], out_dir: str | Path,
             state["skipped_budget"] += 1
             state["stopped_on_budget"] = True
             continue
-        row = execute_one(cfg, spec, by_id[spec["task"]], out, index_source, price_table)
+        task = by_id[spec["task"]]
+        index_source = indexes.for_commit(task["parent"]) if indexes is not None else None
+        row = execute_one(cfg, spec, task, out, index_source, price_table)
         append_jsonl(runs_path, row)
         state["executed"] += 1
         state["spent_usd"] += float(row.get("cost_usd") or 0.0)
@@ -217,18 +251,47 @@ def execute(cfg: Config, tasks: list[dict[str, Any]], out_dir: str | Path,
     return state
 
 
-def build_index(cfg: Config, dest: Path) -> dict[str, Any]:
-    """Build the skill's index once, in a reference checkout at repo HEAD."""
-    if dest.exists():
-        shutil.rmtree(dest, ignore_errors=True)
-    head = run(["git", "-C", cfg.target.repo, "rev-parse", "HEAD"], timeout=60)
-    commit = head.stdout.strip()
-    arm = next(a for a in cfg.arms if a.use_index)
-    with worktree(cfg.target.repo, commit, dest.with_suffix(".wt")) as wt:
-        result = index_mod.build(cfg.index, wt, arm.env)
-        if result.built:
-            dest.mkdir(parents=True, exist_ok=True)
-            index_mod.install(wt, dest, cfg.index.paths)
-    payload = result.to_dict()
-    payload["commit"] = commit
-    return payload
+class IndexCache:
+    """One index per task, built at the commit the agent will actually see.
+
+    The first design built a single index at repo HEAD and copied it into every
+    worktree. That is wrong in a way that flatters the skill: the task commits
+    are ancestors of HEAD, so the graph indexes a codebase in which the fix under
+    test has already landed. Grepping the HEAD graph for one pilot task turned up
+    both identifiers from its solution. The task's own answer must not be sitting
+    in the experimental arm's index.
+
+    So the index is built at each task's parent commit — exactly the tree the
+    agent is handed, no future in it — and cached by commit, because repeats and
+    both arms of the same task share one.
+
+    The cost of the fix is honesty about a second thing: a real user's graph is
+    always a little stale, and this one never is. That is a limitation of the
+    measurement, recorded rather than hidden, and it points the same way as the
+    leak did — in the skill's favour.
+    """
+
+    def __init__(self, cfg: Config, out: Path) -> None:
+        self.cfg = cfg
+        self.root = Path(out) / "indexes"
+        self.builds: dict[str, dict[str, Any]] = {}
+        self.arm = next(a for a in cfg.arms if a.use_index)
+
+    def for_commit(self, commit: str) -> Path | None:
+        dest = self.root / commit[:12]
+        if commit in self.builds:
+            return dest if self.builds[commit].get("built") else None
+
+        if dest.exists():
+            shutil.rmtree(dest, ignore_errors=True)
+        with worktree(self.cfg.target.repo, commit, dest.with_suffix(".wt")) as wt:
+            result = index_mod.build(self.cfg.index, wt, self.arm.env)
+            if result.built:
+                dest.mkdir(parents=True, exist_ok=True)
+                index_mod.install(wt, dest, self.cfg.index.paths)
+
+        payload = result.to_dict()
+        payload["commit"] = commit
+        self.builds[commit] = payload
+        write_json(self.root / "builds.json", self.builds)
+        return dest if result.built else None

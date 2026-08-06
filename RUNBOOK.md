@@ -179,11 +179,20 @@ may be published. Publish the harness and the aggregate report; keep `tasks/` an
 
 ## Troubleshooting
 
-**Every experimental run is invalid with `skill never activated`.** The skill was
-offered but never used, or `activation_patterns` do not match what it actually
-emits. Read a transcript in `out/<STAMP>/transcripts/` and check which is true.
-The distinction matters: the first is a finding about the skill, the second is a
-bug in the config.
+**The sweep stops immediately with `probe_failed`.** The experimental arm could
+not call its own tool, and the run refused to spend a night proving nothing. Read
+`out/<STAMP>/probe.json` and the probe transcript: the model is asked to say what
+stopped it, and it usually does. Seen so far: an MCP server given a relative path
+that only resolves from the repository root, and a server that had not finished
+connecting when the tool catalogue was fixed — for the latter, name the tools in
+the arm's system prompt exactly as they must be called, so the model can load
+them with `ToolSearch`.
+
+**Most experimental runs come back `available_unused`.** The probe passed, so the
+arm could reach the skill and chose not to. That is a result, not a fault, and it
+belongs at the top of the write-up. Check `activation_patterns` against a
+transcript first, though: a pattern that does not match what the skill actually
+emits produces the same label for the wrong reason.
 
 **`arm was not configured as declared`.** `preflight.py` prints exactly what the
 session saw. Usually a wrong `CLAUDE_CONFIG_DIR` or an MCP server that failed to

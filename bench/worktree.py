@@ -34,8 +34,13 @@ def prune(repo: str | Path) -> None:
 def worktree(repo: str | Path, commit: str, path: str | Path) -> Iterator[Path]:
     """Check ``commit`` out at ``path`` and remove the worktree on the way out."""
     path = Path(path)
+    # A hard kill leaves the path registered in the repo's worktree list even
+    # after the directory is gone, and `worktree add` then refuses the same path
+    # forever. Clear both the registration and the directory before adding.
+    run(["git", "-C", str(repo), "worktree", "remove", "--force", str(path)], timeout=120.0)
     if path.exists():
         shutil.rmtree(path, ignore_errors=True)
+    prune(repo)
     path.parent.mkdir(parents=True, exist_ok=True)
     _git(repo, "worktree", "add", "--detach", "--force", str(path), commit)
     try:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -80,3 +81,17 @@ def test_a_tree_that_only_deletes_the_tests_still_fails(demo_repo: Path, tmp_pat
         result = grade(demo_repo, wt, task["commit"], task["test_files"], TEST_CMD, timeout=60)
 
     assert result.passed is False
+
+
+def test_a_stale_worktree_registration_does_not_block_the_next_run(demo_repo: Path,
+                                                                   tmp_path: Path):
+    """A hard kill leaves the path registered; the next run must reclaim it."""
+    task = _task(demo_repo)
+    path = tmp_path / "wt"
+
+    subprocess.run(["git", "-C", str(demo_repo), "worktree", "add", "--detach",
+                    str(path), task["parent"]], check=True, capture_output=True)
+    shutil.rmtree(path)  # the directory is gone, the registration is not
+
+    with worktree(demo_repo, task["parent"], path) as wt:
+        assert (wt / "app" / "calc.py").exists()

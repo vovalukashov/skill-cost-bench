@@ -1,0 +1,80 @@
+# Main run: apache/superset, ~400k lines, tasks from its own history.
+# The same repository the 936-run retrieval benchmark used, so the two answer
+# different questions about identical code.
+
+run:
+  name: graphify-superset-pilot
+  seed: 20260806
+  repeats: 3
+  budget_usd: 60.0
+  out_dir: out
+  tasks_file: tasks/superset.tasks.yaml
+  max_tasks: 12
+  bootstrap_resamples: 10000
+
+target:
+  repo: .targets/superset
+  test_cmd: "/Users/luka/Projects/skill-cost-bench/.targets/superset/.venv-superset/bin/python -m pytest -q --no-header -p no:cacheprovider {tests}"
+  test_timeout_s: 900
+  # No per-worktree install: the shared virtualenv holds the dependencies, and a
+  # worktree's own superset/ package shadows the editable install (verified).
+  setup_cmd: null
+  worktree_root: /tmp/skill-cost-bench-superset
+  strip_paths:
+    - .claude
+    - CLAUDE.md
+    - AGENTS.md
+    - .cursor
+
+index:
+  build_cmd: "graphify . --out graphify-out"
+  build_timeout_s: 10800
+  paths:
+    - graphify-out
+  refresh_cmd: null
+
+agent:
+  bin: claude
+  model: claude-sonnet-5
+  effort: low
+  permission_mode: acceptEdits
+  max_budget_usd: 3.0
+  timeout_s: 1800
+  extra_args:
+    - --no-session-persistence
+    - --setting-sources
+    - ""
+    - --strict-mcp-config
+    - --dangerously-skip-permissions
+
+arms:
+  - name: control
+    label: A
+    args:
+      - --disable-slash-commands
+    forbidden_patterns:
+      - graphify
+    expect_absent:
+      - graphify
+
+  - name: graphify
+    label: B
+    use_index: true
+    args:
+      - --disable-slash-commands
+      - --mcp-config
+      - .arms/graphify-mcp.json
+    append_system_prompt_file: .arms/graphify-SKILL.md
+    activation_patterns:
+      - "mcp__graphify__"
+      - "graphify-out/graph\\.json"
+    expect_present:
+      - graphify
+
+claim:
+  factor: 70.0
+  source: "https://github.com/Graphify-Labs/graphify"
+  note: >
+    71.5x fewer tokens per query than reading the raw files, measured by the
+    authors on a 52-file corpus. That is a retrieval claim; this run measures the
+    cost of a task carried to green tests.

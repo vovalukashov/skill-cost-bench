@@ -1,0 +1,80 @@
+# Secondary run: a much smaller codebase, to see how the effect behaves when
+# there is little to read in the first place.
+
+run:
+  name: graphify-night-pilot
+  seed: 20260806
+  repeats: 3
+  budget_usd: 25.0
+  out_dir: out
+  tasks_file: tasks/night.tasks.yaml
+  max_tasks: 8
+  bootstrap_resamples: 10000
+
+target:
+  repo: /Users/luka/Projects/night
+  test_cmd: "./node_modules/.bin/vitest run {tests}"
+  test_timeout_s: 600
+  # pnpm would purge a symlinked modules directory without a TTY, so the tests
+  # call the vitest binary directly and the dependencies are shared, not
+  # reinstalled per worktree.
+  setup_cmd: "ln -sfn /Users/luka/Projects/night/node_modules node_modules"
+  setup_timeout_s: 120
+  worktree_root: /tmp/skill-cost-bench-night
+  strip_paths:
+    - .claude
+    - CLAUDE.md
+    - AGENTS.md
+
+index:
+  build_cmd: "graphify . --out graphify-out"
+  build_timeout_s: 3600
+  paths:
+    - graphify-out
+  refresh_cmd: null
+
+agent:
+  bin: claude
+  model: claude-sonnet-5
+  effort: low
+  permission_mode: acceptEdits
+  max_budget_usd: 3.0
+  timeout_s: 1800
+  extra_args:
+    - --no-session-persistence
+    - --setting-sources
+    - ""
+    - --strict-mcp-config
+    - --dangerously-skip-permissions
+
+arms:
+  - name: control
+    label: A
+    args:
+      - --disable-slash-commands
+    forbidden_patterns:
+      - graphify
+    expect_absent:
+      - graphify
+
+  - name: graphify
+    label: B
+    use_index: true
+    args:
+      - --disable-slash-commands
+      - --mcp-config
+      - .arms/graphify-mcp.json
+    append_system_prompt_file: .arms/graphify-SKILL.md
+    activation_patterns:
+      - "mcp__graphify__"
+      - "graphify-out/graph\\.json"
+    expect_present:
+      - graphify
+
+claim:
+  factor: 70.0
+  source: "https://github.com/Graphify-Labs/graphify"
+  note: >
+    71.5x fewer tokens per query than reading the raw files, measured by the
+    authors on a 52-file corpus. That is a retrieval claim; this run measures the
+    cost of a task carried to green tests.

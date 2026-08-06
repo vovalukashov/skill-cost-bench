@@ -17,6 +17,8 @@ tasks/*.yaml
 # Article drafts and other working notes.
 drafts/
 config.yaml
+!config-superset.yaml
+!config-night.yaml
 
 # Local list of private sources; committing it would be the disclosure itself.
 .private-sources.yaml

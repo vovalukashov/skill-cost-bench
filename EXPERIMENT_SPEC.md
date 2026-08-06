@@ -39,7 +39,11 @@ A commit qualifies when all of the following hold:
    larger commit is several tasks in one coat;
 4. its subject is not a dependency bump, lockfile update, release or rename;
 5. it touches no path matching the sensitive list (keys, `.env`, credentials,
-   tfstate) or the infrastructure list (migrations, `*.sql`, lockfiles).
+   tfstate) or the infrastructure list (migrations, `*.sql`, lockfiles);
+6. at least one of its test files is added or modified rather than deleted. A
+   commit that only deletes tests leaves the task with no grader: restoring
+   "the commit's tests" restores nothing and both arms fail for a reason that
+   has nothing to do with the agent.
 
 From a qualifying commit:
 
@@ -179,3 +183,12 @@ versions and prices move; every run directory is stamped and carries its resolve
 config. Commit messages are a noisy proxy for a task statement: they were written
 by someone who already knew the answer, which makes some tasks easier than a real
 ticket and some harder, in both arms equally.
+
+One bias runs in a known direction and cannot be removed, only declared. A commit
+message often names the class or command it changed (`wrap Jinja rendering errors
+in AlertCommand._execute_query`). That hands both arms part of the search, and
+searching is exactly what a code graph is for, so tasks phrased this way
+understate the graph's benefit. The `leak_risk` flag catches messages naming a
+changed *file*, not a symbol, so some of these survive review. The direction of
+the bias is against the skill under test, which is the safer way for it to be
+wrong.

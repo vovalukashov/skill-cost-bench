@@ -171,7 +171,7 @@ def iter_commits(cfg: MineConfig) -> Iterable[dict[str, Any]]:
         "--no-merges",
         "--pretty=format:%x1e%H%x1f%P%x1f%ad%x1f%s%x1f%b%x1e",
         "--date=short",
-        "--name-only",
+        "--name-status",
     ]
     if cfg.since:
         args.append(f"--since={cfg.since}")
@@ -192,7 +192,21 @@ def iter_commits(cfg: MineConfig) -> Iterable[dict[str, Any]]:
             continue
         commit, parents, date, subject = parts[0], parts[1], parts[2], parts[3]
         body = "\x1f".join(parts[4:])
-        files = [line.strip() for line in files_block.splitlines() if line.strip()]
+
+        # --name-status lines are "<status>\t<path>" (renames carry two paths).
+        files: list[str] = []
+        status: dict[str, str] = {}
+        for line in files_block.splitlines():
+            if not line.strip():
+                continue
+            fields = line.split("\t")
+            if len(fields) < 2:
+                continue
+            code = fields[0].strip()
+            path = fields[-1].strip()
+            files.append(path)
+            status[path] = code[0] if code else "M"
+
         yield {
             "commit": commit,
             "parent": parents.split()[0] if parents.split() else "",
@@ -200,6 +214,7 @@ def iter_commits(cfg: MineConfig) -> Iterable[dict[str, Any]]:
             "subject": subject,
             "body": body.strip(),
             "files": files,
+            "status": status,
         }
 
 
@@ -224,6 +239,7 @@ def classify(rec: dict[str, Any], cfg: MineConfig) -> tuple[Task | None, str | N
     if infra:
         return None, f"touches migration/lockfile: {infra[0]}"
 
+    status = rec.get("status") or {}
     test_files = [f for f in files if is_test_path(f, cfg.test_globs)]
     code_files = [
         f
@@ -234,6 +250,15 @@ def classify(rec: dict[str, Any], cfg: MineConfig) -> tuple[Task | None, str | N
         return None, "no test files"
     if not code_files:
         return None, "no production code files"
+
+    # A commit that only deletes tests leaves the task with no grader at all:
+    # restoring "the commit's tests" restores nothing, the runner finds no test
+    # files, and both arms fail for a reason that has nothing to do with the
+    # agent. Keep only commits that add or change at least one test.
+    live_tests = [f for f in test_files if status.get(f, "M") != "D"]
+    if not live_tests:
+        return None, "commit only deletes tests, leaving no grader"
+    test_files = live_tests
 
     message = clean_message(rec["subject"], rec["body"], cfg.max_prompt_chars)
     hits = leak_check(message, files)

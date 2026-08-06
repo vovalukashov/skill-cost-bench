@@ -39,8 +39,13 @@ index:
   # experimental arm for context a real user never pays on every turn.
   build_cmd: '/Users/luka/Projects/skill-cost-bench/.venv/bin/graphify extract . --code-only && cp -R "$HOME/.claude/skills/graphify/SKILL.md" "$HOME/.claude/skills/graphify/references" graphify-out/'
   build_timeout_s: 3600
+  # Only what a query needs. `cache/` and `manifest.json` exist for incremental
+  # re-extraction and are 80MB of dead weight to copy into every worktree.
   paths:
-    - graphify-out
+    - graphify-out/graph.json
+    - graphify-out/.graphify_analysis.json
+    - graphify-out/SKILL.md
+    - graphify-out/references
   refresh_cmd: null
 
 agent:

@@ -31,12 +31,25 @@ Both arms run with `--setting-sources "" --strict-mcp-config
 the machine. The experimental arm gets its one skill back explicitly:
 
 ```bash
+pip install graphifyy mcp        # the MCP server needs `mcp`, which is not a dependency
+graphify install                 # writes ~/.claude/skills/graphify/SKILL.md
 mkdir -p .arms
-cp ~/.claude/skills/graphify/SKILL.md .arms/graphify-SKILL.md
 cat > .arms/graphify-mcp.json <<'JSON'
-{"mcpServers": {"graphify": {"command": "graphify", "args": ["--mcp"]}}}
+{"mcpServers": {"graphify": {"command": "<abs path>/graphify-mcp",
+                             "args": ["--graph", "graphify-out/graph.json"]}}}
 JSON
 ```
+
+`graphify install` also creates `~/.claude/CLAUDE.md` naming the skill. Delete it
+before measuring: it loads into every session, including the control arm, which
+is supposed to have never heard of the skill.
+
+Then write `.arms/graphify-SKILL.md` as a **stub** — the skill's frontmatter
+description plus a pointer to `graphify-out/SKILL.md` in the working tree, not
+the whole 41KB file. That is how Claude Code loads a skill: the description sits
+in context, the body is read when the model decides to use it. Appending the
+whole body to every request would charge the experimental arm ~10k tokens per
+turn that a real user pays once.
 
 A `CLAUDE_CONFIG_DIR` per arm looks tidier and does isolate correctly, but a
 fresh config directory cannot authenticate — the CLI answers `Not logged in`

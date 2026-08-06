@@ -49,6 +49,9 @@ def build_argv(agent: AgentConfig, arm: ArmConfig, prompt: str, session_id: str)
     argv += ["--session-id", session_id]
     argv += list(agent.extra_args)
     argv += list(arm.args)
+    if arm.append_system_prompt_file:
+        text = Path(arm.append_system_prompt_file).read_text(encoding="utf-8")
+        argv += ["--append-system-prompt", text]
     return argv
 
 

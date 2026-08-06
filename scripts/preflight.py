@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from bench import config as config_mod  # noqa: E402
 from bench.activation import check_availability  # noqa: E402
 from bench.agent import invoke  # noqa: E402
+from bench.transcript import load, result_event  # noqa: E402
 
 PROMPT = "Reply with the single word: ready. Do not use any tools."
 
@@ -43,6 +44,7 @@ def main(argv: list[str] | None = None) -> int:
 
     total = 0.0
     failures = 0
+    auth_broken = False
     for arm in cfg.arms:
         run = invoke(cfg.agent, arm, PROMPT, cfg_path.parent, out / f"{arm.name}.jsonl")
         s = run.summary
@@ -69,11 +71,20 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"    leaked (expected absent): {avail['leaked']}")
         if not run.ok:
             failures += 1
-            print(f"    stderr: {run.stderr_tail[:400]}")
+            events = load(out / f"{arm.name}.jsonl")
+            text = str((result_event(events) or {}).get("result", ""))
+            print(f"    result: {text[:200]}")
+            print(f"    stderr: {run.stderr_tail[:300]}")
+            if "not logged in" in text.lower() or "authenticate" in text.lower():
+                auth_broken = True
 
     print(f"\ntranscripts: {out}")
     print(f"preflight spend: ${total:.4f}")
-    if failures:
+    if auth_broken:
+        print("\nThe CLI is not authenticated. A sweep would produce nothing but "
+              "zero-token errors, quickly and convincingly. Run `claude` "
+              "interactively and /login first.")
+    elif failures:
         print("\nDO NOT START THE SWEEP: the arms are not what the config claims.")
     return 1 if failures else 0
 

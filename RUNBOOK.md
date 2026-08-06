@@ -26,18 +26,31 @@ the interval covers it; it should land near 95%.
 
 ## 1. Prepare the arms
 
-Each arm gets its own `CLAUDE_CONFIG_DIR` so the machine's own skills, plugins
-and hooks cannot walk into the measurement.
+Both arms run with `--setting-sources "" --strict-mcp-config
+--disable-slash-commands`, which strips settings, MCP servers and every skill on
+the machine. The experimental arm gets its one skill back explicitly:
 
 ```bash
-mkdir -p .arms/control .arms/graphify/skills
-cp -R ~/.claude/skills/graphify .arms/graphify/skills/graphify
+mkdir -p .arms
+cp ~/.claude/skills/graphify/SKILL.md .arms/graphify-SKILL.md
 cat > .arms/graphify-mcp.json <<'JSON'
 {"mcpServers": {"graphify": {"command": "graphify", "args": ["--mcp"]}}}
 JSON
 ```
 
-`.arms/control` stays empty. Nothing else belongs in either directory.
+A `CLAUDE_CONFIG_DIR` per arm looks tidier and does isolate correctly, but a
+fresh config directory cannot authenticate — the CLI answers `Not logged in`
+and every run returns a zero-token error. If you have a way to authenticate a
+separate config directory, use it; otherwise the flags above do the same job.
+
+Check the CLI can log in at all before going further:
+
+```bash
+claude -p 'say ready' < /dev/null
+```
+
+`OAuth session expired and could not be refreshed` means the sweep would produce
+240 zero-token failures. Run `claude` interactively and `/login` first.
 
 ## 2. Configure
 

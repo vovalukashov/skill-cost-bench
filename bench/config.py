@@ -24,6 +24,10 @@ class ArmConfig:
     label: str = ""
     env: dict[str, str] = field(default_factory=dict)
     args: list[str] = field(default_factory=list)
+    # A skill is usually a markdown file of instructions plus a set of tools.
+    # Handing the file to --append-system-prompt gives an arm exactly that skill
+    # and nothing else, which a shared config directory cannot promise.
+    append_system_prompt_file: str | None = None
     activation_patterns: list[str] = field(default_factory=list)
     forbidden_patterns: list[str] = field(default_factory=list)
     expect_present: list[str] = field(default_factory=list)
@@ -135,6 +139,12 @@ def load(path: str | Path) -> Config:
     if arms[0].name == arms[1].name:
         raise ConfigError("arms must have distinct names")
 
+    for arm in arms:
+        if arm.append_system_prompt_file and not Path(arm.append_system_prompt_file).is_absolute():
+            arm.append_system_prompt_file = str(
+                (p.parent / arm.append_system_prompt_file).resolve()
+            )
+
     cfg = Config(
         run=RunConfig(**_section(data, "run")),
         target=TargetConfig(**_section(data, "target")),
@@ -163,6 +173,14 @@ def validate(cfg: Config) -> None:
         )
     if any(a.use_index for a in cfg.arms) and not cfg.index.build_cmd:
         raise ConfigError("an arm sets use_index but index.build_cmd is empty")
+    for arm in cfg.arms:
+        path = arm.append_system_prompt_file
+        if path and not Path(path).exists():
+            raise ConfigError(
+                f"arm '{arm.name}': append_system_prompt_file not found: {path}\n"
+                "See RUNBOOK.md step 1 — the arm's skill file has to be copied in "
+                "before anything can be measured."
+            )
 
 
 def resolve_paths(cfg: Config, base: str | Path) -> Config:

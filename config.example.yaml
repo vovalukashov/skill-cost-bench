@@ -53,13 +53,20 @@ index:
     - graphify-out
   refresh_cmd: null
 
+# Both arms start from the same bare session: --setting-sources "" drops user,
+# project and local settings, --strict-mcp-config drops every MCP server that did
+# not come from --mcp-config, and --disable-slash-commands drops ALL skills,
+# including the forty living in the operator's ~/.claude. The experimental arm
+# then gets its one skill back explicitly: the MCP server plus the skill's own
+# markdown appended to the system prompt.
+#
+# A separate CLAUDE_CONFIG_DIR per arm would be tidier in principle and does
+# isolate correctly, but a fresh config directory cannot authenticate: the CLI
+# reports "Not logged in". Flags it is. preflight.py prints what each arm was
+# actually handed, which is the thing that matters either way.
 arms:
   - name: control
     label: A
-    # A config directory of its own, so the machine's ~/.claude skills, plugins
-    # and hooks cannot walk into the measurement.
-    env:
-      CLAUDE_CONFIG_DIR: .arms/control
     args:
       - --disable-slash-commands
     forbidden_patterns:
@@ -70,11 +77,11 @@ arms:
   - name: graphify
     label: B
     use_index: true
-    env:
-      CLAUDE_CONFIG_DIR: .arms/graphify     # contains only skills/graphify
     args:
+      - --disable-slash-commands
       - --mcp-config
       - .arms/graphify-mcp.json
+    append_system_prompt_file: .arms/graphify-SKILL.md
     # Traces that prove the skill actually ran. Without a hit the run is invalid,
     # not zero.
     activation_patterns:

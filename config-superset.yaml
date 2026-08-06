@@ -27,7 +27,17 @@ target:
     - .cursor
 
 index:
-  build_cmd: "graphify . --out graphify-out"
+  # Local AST extraction only. Graphify's full mode sends documents and images
+  # to an LLM for semantic extraction, which needs an API key this run does not
+  # have — and the claim under test is about navigating code, so the code graph
+  # is the honest subject. Recorded as a limitation, not hidden.
+  #
+  # The build also copies the skill's own text into the index directory, so the
+  # agent can read the full instructions on demand. The system prompt carries
+  # only the skill's description and a pointer, which is how Claude Code loads a
+  # skill in normal use: appending all 41KB to every request would charge the
+  # experimental arm for context a real user never pays on every turn.
+  build_cmd: '/Users/luka/Projects/skill-cost-bench/.venv/bin/graphify extract . --code-only && cp -R "$HOME/.claude/skills/graphify/SKILL.md" "$HOME/.claude/skills/graphify/references" graphify-out/'
   build_timeout_s: 10800
   paths:
     - graphify-out

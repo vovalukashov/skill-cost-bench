@@ -65,7 +65,10 @@ Set at minimum:
 - `target.setup_cmd` — whatever a fresh checkout needs before tests can run
   (`pip install -e .`, `pnpm install --frozen-lockfile`, …);
 - `agent.model`, `agent.effort` — identical for both arms, by construction;
-- `run.budget_usd` — the sweep stops here and says what it did not run.
+- `run.budget_usd` — the sweep stops here and says what it did not run;
+- `pricing` — USD per million tokens for the model you are running, dated. Cost
+  is computed from token counts, so a model with no entry here is refused at
+  config load rather than silently reported as free.
 
 ## 3. Mine tasks
 

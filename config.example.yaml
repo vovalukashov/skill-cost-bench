@@ -99,3 +99,37 @@ claim:
     authors on a 52-file corpus of Karpathy repositories, five papers and four
     images. That is a retrieval claim. This harness measures a different thing:
     the cost of a task carried to green tests.
+
+# USD per million tokens. Cost is computed from token counts against this table
+# rather than read from the session's own `total_cost_usd`, which is zero or
+# absent on a subscription. Publishing the token counts means a reader can
+# re-price the whole run at different rates without re-running it.
+pricing:
+  source: "https://platform.claude.com/docs/en/about-claude/models/overview"
+  dated: "2026-08-06"
+  note: >
+    Standard list rates. Claude Sonnet 5 carries an introductory $2.00/$10.00
+    through 2026-08-31, which covers this run; the standard rate is used because
+    it is the one a reader reproducing this later will pay. The choice barely
+    moves the headline: the metric is a ratio between two arms, so a uniform
+    price change cancels out except through the input/output/cache mix.
+    Cache write is 1.25x input at the 5-minute TTL and 2x at one hour; cache
+    read is 0.1x input.
+  claude-sonnet-5:
+    input: 3.00
+    output: 15.00
+    cache_write_5m: 3.75
+    cache_write_1h: 6.00
+    cache_read: 0.30
+  claude-opus-5:
+    input: 5.00
+    output: 25.00
+    cache_write_5m: 6.25
+    cache_write_1h: 10.00
+    cache_read: 0.50
+  claude-haiku-4-5:
+    input: 1.00
+    output: 5.00
+    cache_write_5m: 1.25
+    cache_write_1h: 2.00
+    cache_read: 0.10

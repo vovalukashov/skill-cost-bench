@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from . import index as index_mod
+from . import pricing as pricing_mod
 from .activation import check_arm, check_availability
 from .agent import invoke, render_prompt
 from .config import Config
@@ -69,7 +70,8 @@ def _prepare_worktree(cfg: Config, wt: Path, task: dict[str, Any]) -> dict[str, 
 
 
 def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
-                out_dir: Path, index_source: Path | None) -> dict[str, Any]:
+                out_dir: Path, index_source: Path | None,
+                price_table: dict[str, pricing_mod.ModelPrice] | None = None) -> dict[str, Any]:
     arm = cfg.arm(spec["arm"])
     key = run_key(spec)
     wt_path = Path(cfg.target.worktree_root) / f"{cfg.run.name}-{key.replace('|', '-')}"
@@ -104,7 +106,13 @@ def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
             row["agent"] = agent_run.to_dict()
 
             summary = agent_run.summary
-            row["cost_usd"] = summary.get("cost_usd")
+            # Reported by the CLI; zero or absent on a subscription, so it is
+            # recorded as a cross-check and never used as the primary metric.
+            row["cost_reported_usd"] = summary.get("cost_usd")
+            row["cost_usd"] = pricing_mod.price_run(
+                summary.get("usage"), summary.get("model"), price_table or {}
+            )
+            row["usage"] = summary.get("usage")
             row["total_tokens"] = summary.get("total_tokens")
             row["output_tokens"] = summary.get("output_tokens")
             row["num_turns"] = summary.get("num_turns")
@@ -161,6 +169,7 @@ def execute(cfg: Config, tasks: list[dict[str, Any]], out_dir: str | Path,
     runs_path = out / "runs.jsonl"
 
     by_id = {t["id"]: t for t in tasks}
+    price_table = pricing_mod.load_table(cfg.pricing)
     specs = plan(tasks, [a.name for a in cfg.arms], cfg.run.repeats, cfg.run.seed)
     done = completed_keys(runs_path) if resume else set()
     already = spent_usd(runs_path) if resume else 0.0
@@ -197,7 +206,7 @@ def execute(cfg: Config, tasks: list[dict[str, Any]], out_dir: str | Path,
             state["skipped_budget"] += 1
             state["stopped_on_budget"] = True
             continue
-        row = execute_one(cfg, spec, by_id[spec["task"]], out, index_source)
+        row = execute_one(cfg, spec, by_id[spec["task"]], out, index_source, price_table)
         append_jsonl(runs_path, row)
         state["executed"] += 1
         state["spent_usd"] += float(row.get("cost_usd") or 0.0)

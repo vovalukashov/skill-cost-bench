@@ -107,6 +107,9 @@ class SessionSummary:
     tools: list[str]
     mcp_servers: list[str]
     slash_commands: list[str]
+    # The raw usage block is kept so cost can be recomputed at any price table,
+    # including the per-TTL cache-write split the summary fields flatten away.
+    usage: dict[str, Any]
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -153,4 +156,5 @@ def summarize(events: list[Event]) -> SessionSummary:
         mcp_servers=[n for n in mcp_names if n],
         slash_commands=[str(c) for c in init.get("slash_commands", [])
                         if isinstance(init.get("slash_commands"), list)],
+        usage=dict(usage),
     )

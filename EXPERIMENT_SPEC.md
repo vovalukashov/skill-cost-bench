@@ -84,6 +84,12 @@ budget, timeout, prompt, worktree, setup command and hidden tests.
   worktree in **both** arms so that neither inherits guidance the other lacks.
 - **B (experimental)** — the same, plus the skill under test and its index.
 
+Both arms also run with the host's own agent environment cleared (`CLAUDECODE`,
+`CLAUDE_EFFORT`, `ANTHROPIC_BASE_URL` and friends). A sweep launched from inside
+an agent session would otherwise inherit settings that silently change effort or
+endpoint — identically in both arms, and differently from a sweep launched out of
+a plain shell.
+
 Each arm declares what it expects to be handed (`expect_present`,
 `expect_absent`, checked against the session's init event) and what proves it
 ran (`activation_patterns`) or must never appear (`forbidden_patterns`).
@@ -122,7 +128,17 @@ experimental arm never activated, that is the headline, not the percentages.
 
 ## 8. Analysis
 
-**Primary metric.** Cost in USD per task, on tasks solved by both arms.
+**Primary metric.** Cost in USD per task, on tasks solved by both arms,
+**computed from the run's token counts** against a dated price table in the
+config — not read from the session's own `total_cost_usd`.
+
+That field is convenient and wrong to depend on: on a subscription it can be
+zero or absent, because nothing was billed per token, while the work still
+happened and still had a price. A benchmark that reads it measures the billing
+arrangement of whoever ran it. Input, output, the two cache-write TTLs and cache
+reads are priced separately, the reported figure is kept alongside as a
+cross-check, and because the raw token counts are published a reader can
+re-price the entire run at different rates without re-running it.
 
 **Sensitivity.** The same computation over all valid pairs regardless of
 outcome, reported next to it. Total tokens, output tokens, turns and wall clock

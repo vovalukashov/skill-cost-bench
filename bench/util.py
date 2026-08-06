@@ -63,14 +63,22 @@ class Proc:
 def run(
     args: Sequence[str],
     cwd: str | Path | None = None,
-    env: dict[str, str] | None = None,
+    env: dict[str, str | None] | None = None,
     timeout: float | None = None,
     stdin: str | None = None,
 ) -> Proc:
-    """Run a command, capture output, never raise on a non-zero exit."""
+    """Run a command, capture output, never raise on a non-zero exit.
+
+    A ``None`` value in ``env`` removes that variable from the child's
+    environment rather than setting it — the only way to keep an inherited
+    variable out of a subprocess.
+    """
     full_env = dict(os.environ)
-    if env:
-        full_env.update(env)
+    for key, value in (env or {}).items():
+        if value is None:
+            full_env.pop(key, None)
+        else:
+            full_env[key] = value
     started = time.time()
     try:
         cp = subprocess.run(

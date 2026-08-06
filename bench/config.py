@@ -94,6 +94,7 @@ class Config:
     arms: list[ArmConfig]
     index: IndexConfig
     claim: dict[str, Any] = field(default_factory=dict)
+    pricing: dict[str, Any] = field(default_factory=dict)
     raw: dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -114,6 +115,7 @@ class Config:
             "arms": [asdict(a) for a in self.arms],
             "index": asdict(self.index),
             "claim": self.claim,
+            "pricing": self.pricing,
         }
 
 
@@ -152,6 +154,7 @@ def load(path: str | Path) -> Config:
         arms=arms,
         index=IndexConfig(**_section(data, "index")),
         claim=_section(data, "claim"),
+        pricing=_section(data, "pricing"),
         raw=data,
     )
     validate(cfg)
@@ -173,6 +176,14 @@ def validate(cfg: Config) -> None:
         )
     if any(a.use_index for a in cfg.arms) and not cfg.index.build_cmd:
         raise ConfigError("an arm sets use_index but index.build_cmd is empty")
+    table = cfg.pricing or {}
+    priced = [k for k in table if k not in ("source", "dated", "note")]
+    if priced and cfg.agent.model and cfg.agent.model not in priced:
+        raise ConfigError(
+            f"agent.model '{cfg.agent.model}' has no entry in the pricing table "
+            f"({', '.join(sorted(priced))}). Cost is computed from token counts, "
+            "so an unpriced model would report no cost at all."
+        )
     for arm in cfg.arms:
         path = arm.append_system_prompt_file
         if path and not Path(path).exists():

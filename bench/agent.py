@@ -21,6 +21,28 @@ from .transcript import SessionSummary, load, summarize
 from .util import Proc, run, tail
 
 
+# A sweep is often launched from inside an agent session, which exports its own
+# CLAUDE_* and ANTHROPIC_* variables. Inherited, they would reach both arms and
+# silently change effort, endpoint or auth mode — identically in both arms, and
+# differently from a sweep run out of a plain shell. Cleared unless an arm sets
+# one on purpose.
+SCRUBBED_ENV = (
+    "CLAUDECODE",
+    "CLAUDE_CODE_ENTRYPOINT",
+    "CLAUDE_CODE_SESSION_ID",
+    "CLAUDE_CODE_HOST_SESSION_ID",
+    "CLAUDE_CODE_CHILD_SESSION",
+    "CLAUDE_CODE_EXECPATH",
+    "CLAUDE_EFFORT",
+    "CLAUDE_PID",
+    "CLAUDE_AGENT_SDK_VERSION",
+    "ANTHROPIC_BASE_URL",
+    "ANTHROPIC_MODEL",
+    "ANTHROPIC_SMALL_FAST_MODEL",
+    "MAX_THINKING_TOKENS",
+)
+
+
 @dataclass
 class AgentRun:
     ok: bool
@@ -71,6 +93,8 @@ def invoke(
         merged_env.update(env)
     # Keep the harness out of the agent's own telemetry-shaped decisions.
     merged_env.setdefault("CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC", "1")
+    for name in SCRUBBED_ENV:
+        merged_env.setdefault(name, None)  # type: ignore[arg-type]
 
     proc: Proc = run(argv, cwd=cwd, env=merged_env, timeout=agent.timeout_s)
 

@@ -77,6 +77,11 @@ tool that does not are two different tools.
 
 ## How the numbers are made
 
+Cost is computed from the run's token counts against a dated price table, not
+taken from the session's own `total_cost_usd` — that field is zero or absent on a
+subscription, so reading it would measure the billing arrangement rather than the
+work. The token counts ship with the results, so anyone can re-price the run.
+
 The advertised claim is a ratio, so the statistics are multiplicative. Per task,
 the ratio of control cost to experimental cost (above 1.0 means the skill is
 cheaper), with repeats collapsed by median. Then:

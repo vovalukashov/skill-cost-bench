@@ -95,6 +95,9 @@ def _config(repo: Path, tmp_path: Path, tasks_file: Path, *, control_cost="0.20"
         ],
         index=IndexConfig(),
         claim={"factor": 70.0, "source": "test"},
+        pricing={"fake-model": {"input": 1.0, "output": 1.0,
+                                "cache_write_5m": 1.0, "cache_write_1h": 1.0,
+                                "cache_read": 1.0}},
     )
 
 

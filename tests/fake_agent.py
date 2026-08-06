@@ -134,11 +134,18 @@ def main() -> int:
         "duration_ms": 1000,
         "duration_api_ms": 800,
         "total_cost_usd": round(cost, 6),
+        # Token counts scale with the intended cost, because the harness prices
+        # runs from tokens rather than from the cost field. A fake agent whose
+        # tokens were constant would flatten any planted effect.
         "usage": {
-            "input_tokens": int(2000 * cost / max(base, 1e-9)),
-            "output_tokens": int(500 * cost / max(base, 1e-9)),
-            "cache_creation_input_tokens": 0,
-            "cache_read_input_tokens": int(10000 * cost / max(base, 1e-9)),
+            "input_tokens": round(cost * 100_000),
+            "output_tokens": round(cost * 20_000),
+            "cache_creation_input_tokens": round(cost * 30_000),
+            "cache_creation": {
+                "ephemeral_5m_input_tokens": round(cost * 30_000),
+                "ephemeral_1h_input_tokens": 0,
+            },
+            "cache_read_input_tokens": round(cost * 500_000),
         },
         "result": "done",
     })

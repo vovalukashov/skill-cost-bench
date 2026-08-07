@@ -49,6 +49,9 @@ class IndexConfig:
     paths: list[str] = field(default_factory=list)
     refresh_cmd: str | None = None
     refresh_timeout_s: float = 900.0
+    # An earlier run's directory whose indexes may be adopted instead of rebuilt.
+    # Only safe because an index is keyed by the commit it was built at.
+    reuse_from: str | None = None
 
 
 @dataclass
@@ -202,6 +205,8 @@ def resolve_paths(cfg: Config, base: str | Path) -> Config:
         cfg.run.tasks_file = str((base / cfg.run.tasks_file).resolve())
     if not Path(cfg.run.out_dir).is_absolute():
         cfg.run.out_dir = str((base / cfg.run.out_dir).resolve())
+    if cfg.index.reuse_from and not Path(cfg.index.reuse_from).is_absolute():
+        cfg.index.reuse_from = str((base / cfg.index.reuse_from).resolve())
     if not cfg.target.worktree_root:
         cfg.target.worktree_root = str(Path("/tmp") / "skill-cost-bench-worktrees")
     return cfg

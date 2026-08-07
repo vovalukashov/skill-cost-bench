@@ -11,6 +11,7 @@ appended to JSONL as they finish, so dying on run 180 of 240 costs nothing.
 from __future__ import annotations
 
 import hashlib
+import json
 import random
 import shutil
 from pathlib import Path
@@ -271,16 +272,45 @@ class IndexCache:
     leak did — in the skill's favour.
     """
 
-    def __init__(self, cfg: Config, out: Path) -> None:
+    def __init__(self, cfg: Config, out: Path, reuse_from: str | Path | None = None) -> None:
         self.cfg = cfg
         self.root = Path(out) / "indexes"
         self.builds: dict[str, dict[str, Any]] = {}
         self.arm = next(a for a in cfg.arms if a.use_index)
+        # Defaulting to the config keeps a caller from silently getting no reuse
+        # by forgetting an argument, which is how this was first written.
+        source = reuse_from if reuse_from is not None else cfg.index.reuse_from
+        self.reuse_from = Path(source) / "indexes" if source else None
+        ledger = self.root / "builds.json"
+        if ledger.exists():
+            # A sweep that died halfway rebuilt every index on restart, which is
+            # a quarter-hour of CPU for files already on disk.
+            self.builds = json.loads(ledger.read_text(encoding="utf-8"))
+
+    def _adopt(self, commit: str, dest: Path) -> bool:
+        """Take an index built by an earlier run, if one is offered and complete."""
+        if self.reuse_from is None:
+            return False
+        src = self.reuse_from / commit[:12]
+        if not all((src / p).exists() for p in self.cfg.index.paths):
+            return False
+        shutil.copytree(src, dest, dirs_exist_ok=True)
+        self.builds[commit] = {"built": True, "commit": commit, "reused_from": str(src),
+                               "wall_s": 0.0, "command": self.cfg.index.build_cmd}
+        write_json(self.root / "builds.json", self.builds)
+        return True
 
     def for_commit(self, commit: str) -> Path | None:
         dest = self.root / commit[:12]
         if commit in self.builds:
-            return dest if self.builds[commit].get("built") else None
+            built = self.builds[commit].get("built")
+            if built and all((dest / p).exists() for p in self.cfg.index.paths):
+                return dest
+            if built:
+                self.builds.pop(commit)  # recorded but gone from disk
+
+        if self._adopt(commit, dest):
+            return dest
 
         if dest.exists():
             shutil.rmtree(dest, ignore_errors=True)

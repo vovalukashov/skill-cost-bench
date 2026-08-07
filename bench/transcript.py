@@ -107,6 +107,10 @@ class SessionSummary:
     tools: list[str]
     mcp_servers: list[str]
     slash_commands: list[str]
+    # Which credential paid for the session. Runs scrub inherited keys so a sweep
+    # cannot silently move onto API billing, and recording this is the other half
+    # of that: the credential is on the record rather than assumed.
+    api_key_source: str | None
     # The raw usage block is kept so cost can be recomputed at any price table,
     # including the per-TTL cache-write split the summary fields flatten away.
     usage: dict[str, Any]
@@ -156,5 +160,6 @@ def summarize(events: list[Event]) -> SessionSummary:
         mcp_servers=[n for n in mcp_names if n],
         slash_commands=[str(c) for c in init.get("slash_commands", [])
                         if isinstance(init.get("slash_commands"), list)],
+        api_key_source=init.get("apiKeySource"),
         usage=dict(usage),
     )

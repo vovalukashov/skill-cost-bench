@@ -1,0 +1,9 @@
+
+[tool.pytest.ini_options]
+# Collect only this project's tests. Without this, a `pytest` run started while a
+# sweep is building an index walks into the target repository's own worktree
+# under out/ and tries to import its test suite, which fails on dependencies
+# this virtualenv has no reason to hold — and the resulting errors look like the
+# harness is broken when nothing is wrong with it.
+testpaths = ["tests"]
+norecursedirs = ["out", ".targets", ".arms", "drafts", ".venv", "*.wt"]

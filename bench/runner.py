@@ -138,6 +138,7 @@ def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
             row["total_tokens"] = summary.get("total_tokens")
             row["output_tokens"] = summary.get("output_tokens")
             row["num_turns"] = summary.get("num_turns")
+            row["api_key_source"] = summary.get("api_key_source")
             row["wall_s"] = agent_run.wall_s
 
             from .transcript import load as load_transcript

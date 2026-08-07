@@ -348,3 +348,23 @@ def test_the_used_only_scope_drops_repeats_that_ignored_the_skill(
     if not scopes["used_only"].get("insufficient"):
         assert scopes["used_only"]["n"] <= scopes["all_valid"]["n"]
     assert "read that row as description" in (out / "report.md").read_text(encoding="utf-8")
+
+
+def test_the_report_splits_tasks_by_whether_the_search_was_given(
+    demo_repo: Path, tmp_path: Path, approved_manifest: Path
+):
+    """The graph's claim is about the search, so tasks with no search are apart."""
+    cfg = _config(demo_repo, tmp_path, approved_manifest, repeats=2)
+    tasks = [dict(t, review="ok", verified="ok",
+                  navigation="given" if i == 0 else "needed")
+             for i, t in enumerate(_mined(demo_repo))]
+    out = Path(cfg.run.out_dir) / "nav"
+
+    execute(cfg, tasks, out)
+    rows = list(read_jsonl(out / "runs.jsonl"))
+    assert {r["navigation"] for r in rows} == {"given", "needed"}
+
+    summary = analyze(cfg, out)
+    needed = summary["by_navigation"]["needed"]
+    assert needed.get("n") == 2, "two of the three tasks left a search to do"
+    assert summary["by_navigation"]["given"].get("insufficient") is True

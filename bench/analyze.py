@@ -94,6 +94,7 @@ def pair_ratios(
     experiment: str,
     solved_only: bool,
     used_only: bool = False,
+    navigation: str | None = None,
 ) -> tuple[list[float], list[str]]:
     """One ratio per task: median over repeats, control divided by experiment.
 
@@ -104,6 +105,8 @@ def pair_ratios(
     the tasks that were confusing it. Read as description, never as effect.
     """
     usable = [r for r in rows if r.get("valid") and (r.get("solved") or not solved_only)]
+    if navigation:
+        usable = [r for r in usable if r.get("navigation") == navigation]
     if used_only:
         usable = [
             r for r in usable
@@ -201,6 +204,23 @@ def analyze(cfg: Config, out_dir: str | Path) -> dict[str, Any]:
                 "verdict": verdict(est.ci_low, est.ci_high, cfg.claim_factor),
             }
         summary["metrics"][metric] = entry
+
+    # The mechanism under test, isolated. A code graph shortens the search; on a
+    # task whose own words lead straight to the file, there is no search to
+    # shorten, and averaging the two kinds together dilutes the thing being
+    # measured in whichever direction the mix happens to fall.
+    summary["by_navigation"] = {}
+    for label in ("needed", "given"):
+        ratios, tasks = pair_ratios(rows, "cost_usd", control, experiment,
+                                    solved_only=True, navigation=label)
+        if len(ratios) < 2:
+            summary["by_navigation"][label] = {"n": len(ratios), "insufficient": True}
+            continue
+        est = estimate(ratios, n_resamples=cfg.run.bootstrap_resamples, seed=cfg.run.seed)
+        summary["by_navigation"][label] = {
+            **est.to_dict(), "tasks": tasks,
+            "verdict": verdict(est.ci_low, est.ci_high, cfg.claim_factor),
+        }
 
     import json
 
@@ -359,6 +379,27 @@ def render(summary: dict[str, Any]) -> str:
             "single task. Everything above rests on averaging across tasks, not on "
             "any individual comparison.")
     add("")
+
+    nav = summary.get("by_navigation") or {}
+    if any(not v.get("insufficient") for v in nav.values()):
+        add("### 3a. Where there was searching to do")
+        add("")
+        add("A task is `given` when grepping its own words lands on the file that "
+            "has to change, and `needed` otherwise. The graph's whole claim is "
+            "about the search, so a task that hands the location over cannot show "
+            "it working. Cost, tasks solved by both arms.")
+        add("")
+        add("| navigation | n | geo mean | 95% CI | verdict |")
+        add("|---|---|---|---|---|")
+        for label in ("needed", "given"):
+            entry = nav.get(label, {})
+            if entry.get("insufficient"):
+                add(f"| {label} | {entry.get('n', 0)} | — | — | not enough pairs |")
+                continue
+            add(f"| {label} | {entry.get('n')} | {_fmt(entry.get('geometric_mean'))} "
+                f"| {_fmt(entry.get('ci_low'))}–{_fmt(entry.get('ci_high'))} "
+                f"| {entry.get('verdict')} |")
+        add("")
 
     add("## 4. Did it still work")
     add("")

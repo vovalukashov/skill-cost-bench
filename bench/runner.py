@@ -100,6 +100,10 @@ def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
         "rep": spec["rep"],
         "commit": task.get("commit"),
         "parent": task.get("parent"),
+        # Whether grepping the task's own words already lands on the file that
+        # must change. On a task that hands the location over there is no
+        # searching left for a code graph to shorten.
+        "navigation": task.get("navigation"),
         "started_at": utc_iso(),
         "valid": True,
         "invalid_reason": None,

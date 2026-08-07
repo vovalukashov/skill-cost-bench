@@ -40,6 +40,15 @@ SCRUBBED_ENV = (
     "ANTHROPIC_MODEL",
     "ANTHROPIC_SMALL_FAST_MODEL",
     "MAX_THINKING_TOKENS",
+    # Credentials last, and for a different reason than the rest. A sweep is
+    # hundreds of sessions; with one of these in the shell it would bill an API
+    # account for real money instead of drawing on a subscription, and nothing
+    # in the output would say so. Cleared, the worst case is a loud "not logged
+    # in" on the first run. An arm that genuinely wants key-based auth sets it
+    # in `arm.env`, where the choice is written down.
+    "ANTHROPIC_API_KEY",
+    "ANTHROPIC_AUTH_TOKEN",
+    "CLAUDE_CODE_OAUTH_TOKEN",
 )
 
 

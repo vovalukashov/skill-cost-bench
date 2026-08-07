@@ -295,8 +295,21 @@ class IndexCache:
         if not all((src / p).exists() for p in self.cfg.index.paths):
             return False
         shutil.copytree(src, dest, dirs_exist_ok=True)
-        self.builds[commit] = {"built": True, "commit": commit, "reused_from": str(src),
-                               "wall_s": 0.0, "command": self.cfg.index.build_cmd}
+
+        # Carry the original's figures across. Recording a reused index as
+        # costing nothing would let a run that skipped the build report the
+        # index as free, which is the one thing this section exists to prevent.
+        ledger = self.reuse_from / "builds.json"
+        origin: dict[str, Any] = {}
+        if ledger.exists():
+            origin = json.loads(ledger.read_text(encoding="utf-8")).get(commit, {})
+        self.builds[commit] = {
+            **origin,
+            "built": True,
+            "commit": commit,
+            "reused_from": str(src),
+            "command": self.cfg.index.build_cmd,
+        }
         write_json(self.root / "builds.json", self.builds)
         return True
 

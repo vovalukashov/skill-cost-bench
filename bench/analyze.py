@@ -211,6 +211,7 @@ def analyze(cfg: Config, out_dir: str | Path) -> dict[str, Any]:
         summary["index_build"] = {
             "n_indexes": len(per_commit),
             "n_built": len(done),
+            "n_reused": sum(1 for b in per_commit.values() if b.get("reused_from")),
             "command": next((b.get("command") for b in per_commit.values()), None),
             "wall_s_total": round(sum(float(b.get("wall_s") or 0) for b in done), 1),
             "wall_s_each": round(
@@ -293,13 +294,17 @@ def render(summary: dict[str, Any]) -> str:
             add(f"| {name} | {mark} | {str(res.get('detail', ''))[:110]} |")
         add("")
 
-    unused = {a: b for a, b in v["per_arm"].items() if b.get("available_unused")}
-    if unused:
-        for arm, bucket in unused.items():
-            offered = bucket["used_skill"] + bucket["available_unused"]
-            share = bucket["available_unused"] / offered * 100 if offered else 0.0
-            add(f"- `{arm}`: skill offered in {offered} valid runs, "
-                f"left untouched in {bucket['available_unused']} of them ({share:.0f}%)")
+    offered_any = False
+    for arm, bucket in v["per_arm"].items():
+        offered = bucket["used_skill"] + bucket["available_unused"]
+        if not offered:
+            continue
+        offered_any = True
+        share = bucket["available_unused"] / offered * 100
+        add(f"- `{arm}`: skill offered in {offered} valid runs, used in "
+            f"{bucket['used_skill']}, left untouched in "
+            f"{bucket['available_unused']} ({share:.0f}%)")
+    if offered_any:
         add("")
 
     add("A valid run in which the model was handed the skill and did not touch it "
@@ -372,8 +377,11 @@ def render(summary: dict[str, Any]) -> str:
         add("## 5. What the index cost")
         add("")
         add(f"- command: `{ib.get('command')}`")
+        reused = ib.get("n_reused") or 0
         add(f"- indexes built: {ib.get('n_built')}/{ib.get('n_indexes')}, one per task, "
-            f"each at that task's parent commit")
+            f"each at that task's parent commit"
+            + (f" ({reused} copied from an earlier run rather than rebuilt; the "
+               f"figures below are that run's)" if reused else ""))
         add(f"- wall clock: {_fmt(ib.get('wall_s_each'), 1)} s each, "
             f"{_fmt(ib.get('wall_s_total'), 1)} s in total")
         add(f"- artefacts: {', '.join(ib.get('paths') or []) or '—'} "

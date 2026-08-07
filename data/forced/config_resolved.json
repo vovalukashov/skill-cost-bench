@@ -1,0 +1,127 @@
+{
+  "run": {
+    "name": "graphify-superset-forced",
+    "seed": 20260806,
+    "repeats": 3,
+    "budget_usd": 60.0,
+    "out_dir": "/Users/luka/Projects/skill-cost-bench/out",
+    "tasks_file": "/Users/luka/Projects/skill-cost-bench/tasks/superset.tasks.yaml",
+    "max_tasks": 12,
+    "bootstrap_resamples": 10000
+  },
+  "target": {
+    "repo": "/Users/luka/Projects/skill-cost-bench/.targets/superset",
+    "test_cmd": "/Users/luka/Projects/skill-cost-bench/.targets/superset/.venv-superset/bin/python -m pytest -q --no-header -p no:cacheprovider {tests}",
+    "test_timeout_s": 900,
+    "setup_cmd": null,
+    "setup_timeout_s": 1800.0,
+    "worktree_root": "/tmp/repo-work",
+    "strip_paths": [
+      ".claude",
+      "CLAUDE.md",
+      "AGENTS.md",
+      ".cursor"
+    ]
+  },
+  "agent": {
+    "bin": "claude",
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "permission_mode": "acceptEdits",
+    "max_budget_usd": 3.0,
+    "timeout_s": 1800,
+    "extra_args": [
+      "--no-session-persistence",
+      "--setting-sources",
+      "",
+      "--strict-mcp-config",
+      "--dangerously-skip-permissions"
+    ],
+    "prompt_template": "{prompt}"
+  },
+  "arms": [
+    {
+      "name": "control",
+      "label": "A",
+      "env": {},
+      "args": [
+        "--disable-slash-commands"
+      ],
+      "append_system_prompt_file": null,
+      "activation_patterns": [],
+      "forbidden_patterns": [
+        "graphify"
+      ],
+      "expect_present": [],
+      "expect_absent": [
+        "graphify"
+      ],
+      "use_index": false
+    },
+    {
+      "name": "graphify",
+      "label": "B",
+      "env": {},
+      "args": [
+        "--disable-slash-commands",
+        "--mcp-config",
+        "/Users/luka/Projects/skill-cost-bench/.arms/graphify-mcp.json"
+      ],
+      "append_system_prompt_file": "/Users/luka/Projects/skill-cost-bench/.arms/graphify-SKILL-forced.md",
+      "activation_patterns": [
+        "mcp__graphify__",
+        "graphify-out/graph\\.json"
+      ],
+      "forbidden_patterns": [],
+      "expect_present": [
+        "graphify"
+      ],
+      "expect_absent": [],
+      "use_index": true
+    }
+  ],
+  "index": {
+    "build_cmd": "/Users/luka/Projects/skill-cost-bench/.venv/bin/graphify extract . --code-only && cp -R \"$HOME/.claude/skills/graphify/SKILL.md\" \"$HOME/.claude/skills/graphify/references\" graphify-out/",
+    "build_timeout_s": 10800,
+    "paths": [
+      "graphify-out/graph.json",
+      "graphify-out/.graphify_analysis.json",
+      "graphify-out/SKILL.md",
+      "graphify-out/references"
+    ],
+    "refresh_cmd": null,
+    "refresh_timeout_s": 900.0,
+    "reuse_from": "/Users/luka/Projects/skill-cost-bench/out/20260806T212246Z-graphify-superset-pilot"
+  },
+  "claim": {
+    "factor": 70.0,
+    "source": "https://github.com/Graphify-Labs/graphify",
+    "note": "71.5x fewer tokens per query than reading the raw files, measured by the authors on a 52-file corpus. That is a retrieval claim; this run measures the cost of a task carried to green tests.\n"
+  },
+  "pricing": {
+    "source": "https://platform.claude.com/docs/en/about-claude/models/overview",
+    "dated": "2026-08-06",
+    "note": "Standard list rates. Claude Sonnet 5 carries an introductory $2.00/$10.00 through 2026-08-31, which covers this run; the standard rate is used because it is the one a reader reproducing this later will pay. The choice barely moves the headline: the metric is a ratio between two arms, so a uniform price change cancels out except through the input/output/cache mix. Cache write is 1.25x input at the 5-minute TTL and 2x at one hour; cache read is 0.1x input.\n",
+    "claude-sonnet-5": {
+      "input": 3.0,
+      "output": 15.0,
+      "cache_write_5m": 3.75,
+      "cache_write_1h": 6.0,
+      "cache_read": 0.3
+    },
+    "claude-opus-5": {
+      "input": 5.0,
+      "output": 25.0,
+      "cache_write_5m": 6.25,
+      "cache_write_1h": 10.0,
+      "cache_read": 0.5
+    },
+    "claude-haiku-4-5": {
+      "input": 1.0,
+      "output": 5.0,
+      "cache_write_5m": 1.25,
+      "cache_write_1h": 2.0,
+      "cache_read": 0.1
+    }
+  }
+}

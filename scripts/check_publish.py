@@ -34,6 +34,14 @@ import yaml
 CONFIG_NAME = ".private-sources.yaml"
 NEVER_TRACKED = ("tasks/", "out/", ".targets/", ".arms/", "drafts/")
 
+# A task manifest carries commit messages and file paths out of whatever
+# repository it was mined from, which is why `tasks/` is banned outright. But
+# results from a public target are worth publishing, and copying a manifest to
+# another directory walks straight around that ban — so a tracked manifest has
+# to say, in itself, where it came from and that the source is public.
+MANIFEST_SUFFIX = ".tasks.yaml"
+PUBLIC_SOURCE_KEY = "public_source"
+
 
 def repo_root() -> Path:
     out = subprocess.run(["git", "rev-parse", "--show-toplevel"],
@@ -80,6 +88,24 @@ def scan(root: Path, cfg: dict[str, Any]) -> list[str]:
                     f"{rel}: lives under {prefix} and must never be tracked — "
                     "that is where measured source and commit messages land"
                 )
+
+    for rel in files:
+        if not rel.endswith(MANIFEST_SUFFIX) or rel.startswith("tasks/"):
+            continue
+        try:
+            doc = yaml.safe_load((root / rel).read_text(encoding="utf-8")) or {}
+        except (yaml.YAMLError, OSError, UnicodeDecodeError):
+            problems.append(f"{rel}: is a task manifest and could not be read to "
+                            "check where it came from")
+            continue
+        source = doc.get(PUBLIC_SOURCE_KEY) if isinstance(doc, dict) else None
+        if not (isinstance(source, str) and source.startswith("https://")):
+            problems.append(
+                f"{rel}: a tracked task manifest must carry `{PUBLIC_SOURCE_KEY}:` "
+                "with the https URL of the public repository it was mined from. "
+                "Without it there is nothing stopping a private repository's "
+                "commit messages from being published under a different path"
+            )
 
     haystack_targets = [f for f in files if not f.startswith(".git")]
     for rel in haystack_targets:

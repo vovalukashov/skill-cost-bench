@@ -120,3 +120,38 @@ def test_the_hook_refuses_rather_than_skips_when_it_cannot_run():
     assert "exit 1" in hook, "the hook must fail closed when no interpreter works"
     assert "import yaml" in hook, "it must verify the interpreter can actually run the guard"
     assert ".venv/bin/python" in hook, "it should prefer the project venv, which has PyYAML"
+
+
+def test_a_tracked_manifest_must_name_its_public_source(tmp_path: Path):
+    """`tasks/` is banned outright; copying a manifest elsewhere must not evade that."""
+    root = _git_repo(tmp_path)
+    (root / "data").mkdir()
+    (root / "data" / "x.tasks.yaml").write_text("tasks: []\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(root), "add", "-A"], check=True, capture_output=True)
+
+    problems = scan(root, RULES)
+    assert any("public_source" in p for p in problems), (
+        "a manifest outside tasks/ still carries commit messages out of some repository"
+    )
+
+
+def test_a_manifest_that_declares_a_public_source_passes(tmp_path: Path):
+    root = _git_repo(tmp_path)
+    (root / "data").mkdir()
+    (root / "data" / "x.tasks.yaml").write_text(
+        "public_source: https://github.com/apache/superset\ntasks: []\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(root), "add", "-A"], check=True, capture_output=True)
+
+    assert scan(root, RULES) == []
+
+
+def test_a_manifest_claiming_a_local_path_as_its_source_is_refused(tmp_path: Path):
+    root = _git_repo(tmp_path)
+    (root / "data").mkdir()
+    (root / "data" / "x.tasks.yaml").write_text(
+        "public_source: /Users/someone/work/private-repo\ntasks: []\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(root), "add", "-A"], check=True, capture_output=True)
+
+    assert any("public_source" in p for p in scan(root, RULES)), (
+        "only an https URL counts as a public source"
+    )

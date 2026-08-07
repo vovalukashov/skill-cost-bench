@@ -1,0 +1,633 @@
+{
+  "generated_at": "2026-08-07T09:07:03Z",
+  "run_name": "graphify-superset-forced",
+  "control_arm": "control",
+  "experiment_arm": "graphify",
+  "claim_factor": 70.0,
+  "claim_source": "https://github.com/Graphify-Labs/graphify",
+  "repeats": 3,
+  "seed": 20260806,
+  "validity": {
+    "n_rows": 72,
+    "n_valid": 72,
+    "n_invalid": 0,
+    "invalid_share": 0.0,
+    "invalid_reasons": {},
+    "per_arm": {
+      "graphify": {
+        "runs": 36,
+        "valid": 36,
+        "solved": 18,
+        "used_skill": 36,
+        "available_unused": 0
+      },
+      "control": {
+        "runs": 36,
+        "valid": 36,
+        "solved": 18,
+        "used_skill": 0,
+        "available_unused": 0
+      }
+    }
+  },
+  "noise": {
+    "cells": [
+      {
+        "task": "t004",
+        "arm": "control",
+        "n": 3,
+        "min": 0.29940269999999997,
+        "max": 0.55758,
+        "spread_ratio": 1.862307854939184,
+        "geometric_sd": 1.3646700950352215
+      },
+      {
+        "task": "t004",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.4461573,
+        "max": 0.7511505,
+        "spread_ratio": 1.683600156267756,
+        "geometric_sd": 1.316651358443694
+      },
+      {
+        "task": "t005",
+        "arm": "control",
+        "n": 3,
+        "min": 0.13317389999999998,
+        "max": 0.18967559999999997,
+        "spread_ratio": 1.4242700709373233,
+        "geometric_sd": 1.2216879839965273
+      },
+      {
+        "task": "t005",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.21759689999999998,
+        "max": 0.3560799,
+        "spread_ratio": 1.6364199122322056,
+        "geometric_sd": 1.2854002097413868
+      },
+      {
+        "task": "t009",
+        "arm": "control",
+        "n": 3,
+        "min": 0.43145279999999997,
+        "max": 0.5798892,
+        "spread_ratio": 1.3440385599537192,
+        "geometric_sd": 1.1594164002258924
+      },
+      {
+        "task": "t009",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.19863659999999997,
+        "max": 0.6480735,
+        "spread_ratio": 3.2626087035319777,
+        "geometric_sd": 1.8067074014052555
+      },
+      {
+        "task": "t010",
+        "arm": "control",
+        "n": 3,
+        "min": 0.12196229999999998,
+        "max": 0.14808839999999998,
+        "spread_ratio": 1.2142145564653997,
+        "geometric_sd": 1.105794270475956
+      },
+      {
+        "task": "t010",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.19820970000000002,
+        "max": 0.212982,
+        "spread_ratio": 1.0745286431491496,
+        "geometric_sd": 1.0413814175806255
+      },
+      {
+        "task": "t013",
+        "arm": "control",
+        "n": 3,
+        "min": 0.2261397,
+        "max": 0.32069790000000004,
+        "spread_ratio": 1.4181406449199323,
+        "geometric_sd": 1.1910421214425788
+      },
+      {
+        "task": "t013",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.39227219999999996,
+        "max": 0.43330379999999996,
+        "spread_ratio": 1.1045998161480728,
+        "geometric_sd": 1.0574513071692524
+      },
+      {
+        "task": "t015",
+        "arm": "control",
+        "n": 3,
+        "min": 0.4854633,
+        "max": 1.1639496,
+        "spread_ratio": 2.397605751042355,
+        "geometric_sd": 1.6256645425719503
+      },
+      {
+        "task": "t015",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.35858819999999997,
+        "max": 0.7136562,
+        "spread_ratio": 1.990183168325115,
+        "geometric_sd": 1.4449869822055512
+      },
+      {
+        "task": "t016",
+        "arm": "control",
+        "n": 3,
+        "min": 0.7183301999999999,
+        "max": 0.8579148000000001,
+        "spread_ratio": 1.1943181561905656,
+        "geometric_sd": 1.093236130043096
+      },
+      {
+        "task": "t016",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.6943728,
+        "max": 1.2379826999999999,
+        "spread_ratio": 1.7828790240631542,
+        "geometric_sd": 1.3373177162354988
+      },
+      {
+        "task": "t018",
+        "arm": "control",
+        "n": 3,
+        "min": 0.10573379999999999,
+        "max": 0.32862,
+        "spread_ratio": 3.1079938487030643,
+        "geometric_sd": 1.7822043566710133
+      },
+      {
+        "task": "t018",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.19696709999999998,
+        "max": 0.34686209999999995,
+        "spread_ratio": 1.7610154183109767,
+        "geometric_sd": 1.3546214741865608
+      },
+      {
+        "task": "t019",
+        "arm": "control",
+        "n": 3,
+        "min": 0.1280943,
+        "max": 0.13175820000000002,
+        "spread_ratio": 1.0286031462758298,
+        "geometric_sd": 1.014454996182741
+      },
+      {
+        "task": "t019",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.13771470000000002,
+        "max": 0.1586517,
+        "spread_ratio": 1.1520317003195735,
+        "geometric_sd": 1.0814353581055292
+      },
+      {
+        "task": "t023",
+        "arm": "control",
+        "n": 3,
+        "min": 0.3001425,
+        "max": 0.40320540000000005,
+        "spread_ratio": 1.343379894550089,
+        "geometric_sd": 1.1729298495268972
+      },
+      {
+        "task": "t023",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.2510769,
+        "max": 0.488148,
+        "spread_ratio": 1.9442170904611298,
+        "geometric_sd": 1.4078792815302281
+      },
+      {
+        "task": "t026",
+        "arm": "control",
+        "n": 3,
+        "min": 0.27761579999999997,
+        "max": 0.7727750999999999,
+        "spread_ratio": 2.7836135407278695,
+        "geometric_sd": 1.7044434642448585
+      },
+      {
+        "task": "t026",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.28812,
+        "max": 0.7809626999999999,
+        "spread_ratio": 2.7105466472303203,
+        "geometric_sd": 1.7076637158814398
+      },
+      {
+        "task": "t029",
+        "arm": "control",
+        "n": 3,
+        "min": 0.8239943999999999,
+        "max": 1.1718558,
+        "spread_ratio": 1.4221647622847922,
+        "geometric_sd": 1.1928212522012365
+      },
+      {
+        "task": "t029",
+        "arm": "graphify",
+        "n": 3,
+        "min": 1.1957571,
+        "max": 1.5605856,
+        "spread_ratio": 1.305102516221731,
+        "geometric_sd": 1.1425458561701642
+      }
+    ],
+    "median_geometric_sd": 1.253544096868957,
+    "median_spread_ratio": 1.5303449915847644,
+    "n_cells": 24
+  },
+  "solve": {
+    "both_solved": 5,
+    "only_control": 1,
+    "only_experiment": 1,
+    "neither": 5,
+    "p_discordant": 1.0
+  },
+  "metrics": {
+    "cost_usd": {
+      "both_solved": {
+        "n": 6,
+        "geometric_mean": 0.6826738518630827,
+        "ci_low": 0.5556039302185848,
+        "ci_high": 0.8192357526299368,
+        "median": 0.7244429742324088,
+        "p_sign": 0.03125,
+        "p_wilcoxon": 0.03125,
+        "geometric_sd": 1.3114978465409415,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t018",
+          "t019"
+        ],
+        "verdict": "worse"
+      },
+      "all_valid": {
+        "n": 12,
+        "geometric_mean": 0.8623116566624703,
+        "ci_low": 0.7081081268185254,
+        "ci_high": 1.0497582552997153,
+        "median": 0.8176584140181076,
+        "p_sign": 0.3876953125,
+        "p_wilcoxon": 0.20361328125,
+        "geometric_sd": 1.4413306850332652,
+        "tasks": [
+          "t004",
+          "t005",
+          "t009",
+          "t010",
+          "t013",
+          "t015",
+          "t016",
+          "t018",
+          "t019",
+          "t023",
+          "t026",
+          "t029"
+        ],
+        "verdict": "null"
+      },
+      "used_only": {
+        "n": 6,
+        "geometric_mean": 0.6826738518630827,
+        "ci_low": 0.5556039302185848,
+        "ci_high": 0.8192357526299368,
+        "median": 0.7244429742324088,
+        "p_sign": 0.03125,
+        "p_wilcoxon": 0.03125,
+        "geometric_sd": 1.3114978465409415,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t018",
+          "t019"
+        ],
+        "verdict": "worse"
+      }
+    },
+    "total_tokens": {
+      "both_solved": {
+        "n": 6,
+        "geometric_mean": 0.6020996847240262,
+        "ci_low": 0.43778075763806185,
+        "ci_high": 0.8312507456247296,
+        "median": 0.5569381075752848,
+        "p_sign": 0.21875,
+        "p_wilcoxon": 0.09375,
+        "geometric_sd": 1.570153353061197,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t018",
+          "t019"
+        ],
+        "verdict": "worse"
+      },
+      "all_valid": {
+        "n": 12,
+        "geometric_mean": 0.8307730716449444,
+        "ci_low": 0.6602515130844802,
+        "ci_high": 1.0472547935445105,
+        "median": 0.877950095594737,
+        "p_sign": 0.3876953125,
+        "p_wilcoxon": 0.1513671875,
+        "geometric_sd": 1.526028894983662,
+        "tasks": [
+          "t004",
+          "t005",
+          "t009",
+          "t010",
+          "t013",
+          "t015",
+          "t016",
+          "t018",
+          "t019",
+          "t023",
+          "t026",
+          "t029"
+        ],
+        "verdict": "null"
+      },
+      "used_only": {
+        "n": 6,
+        "geometric_mean": 0.6020996847240262,
+        "ci_low": 0.43778075763806185,
+        "ci_high": 0.8312507456247296,
+        "median": 0.5569381075752848,
+        "p_sign": 0.21875,
+        "p_wilcoxon": 0.09375,
+        "geometric_sd": 1.570153353061197,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t018",
+          "t019"
+        ],
+        "verdict": "worse"
+      }
+    },
+    "output_tokens": {
+      "both_solved": {
+        "n": 6,
+        "geometric_mean": 0.7114769683075555,
+        "ci_low": 0.5521942188107644,
+        "ci_high": 0.8809509471624927,
+        "median": 0.7476759885554836,
+        "p_sign": 0.21875,
+        "p_wilcoxon": 0.0625,
+        "geometric_sd": 1.3804304734880706,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t018",
+          "t019"
+        ],
+        "verdict": "worse"
+      },
+      "all_valid": {
+        "n": 12,
+        "geometric_mean": 0.9637862846568492,
+        "ci_low": 0.7607281649883632,
+        "ci_high": 1.2805762725853467,
+        "median": 0.8145370338671352,
+        "p_sign": 0.3876953125,
+        "p_wilcoxon": 0.33935546875,
+        "geometric_sd": 1.6233096972056895,
+        "tasks": [
+          "t004",
+          "t005",
+          "t009",
+          "t010",
+          "t013",
+          "t015",
+          "t016",
+          "t018",
+          "t019",
+          "t023",
+          "t026",
+          "t029"
+        ],
+        "verdict": "null"
+      },
+      "used_only": {
+        "n": 6,
+        "geometric_mean": 0.7114769683075555,
+        "ci_low": 0.5521942188107644,
+        "ci_high": 0.8809509471624927,
+        "median": 0.7476759885554836,
+        "p_sign": 0.21875,
+        "p_wilcoxon": 0.0625,
+        "geometric_sd": 1.3804304734880706,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t018",
+          "t019"
+        ],
+        "verdict": "worse"
+      }
+    },
+    "num_turns": {
+      "both_solved": {
+        "n": 6,
+        "geometric_mean": 0.6800760263586907,
+        "ci_low": 0.5313292845913055,
+        "ci_high": 0.8835343628677943,
+        "median": 0.659375,
+        "p_sign": 0.21875,
+        "p_wilcoxon": 0.05847526156565297,
+        "geometric_sd": 1.418337984454241,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t018",
+          "t019"
+        ],
+        "verdict": "worse"
+      },
+      "all_valid": {
+        "n": 12,
+        "geometric_mean": 0.8965721629212702,
+        "ci_low": 0.7507535720981078,
+        "ci_high": 1.074750087781544,
+        "median": 0.9199999999999999,
+        "p_sign": 0.75390625,
+        "p_wilcoxon": 0.22097173539101211,
+        "geometric_sd": 1.387702216989455,
+        "tasks": [
+          "t004",
+          "t005",
+          "t009",
+          "t010",
+          "t013",
+          "t015",
+          "t016",
+          "t018",
+          "t019",
+          "t023",
+          "t026",
+          "t029"
+        ],
+        "verdict": "null"
+      },
+      "used_only": {
+        "n": 6,
+        "geometric_mean": 0.6800760263586907,
+        "ci_low": 0.5313292845913055,
+        "ci_high": 0.8835343628677943,
+        "median": 0.659375,
+        "p_sign": 0.21875,
+        "p_wilcoxon": 0.05847526156565297,
+        "geometric_sd": 1.418337984454241,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t018",
+          "t019"
+        ],
+        "verdict": "worse"
+      }
+    },
+    "wall_s": {
+      "both_solved": {
+        "n": 6,
+        "geometric_mean": 0.6604925290068123,
+        "ci_low": 0.5134953372235649,
+        "ci_high": 0.7864729905255414,
+        "median": 0.7121069093471726,
+        "p_sign": 0.03125,
+        "p_wilcoxon": 0.03125,
+        "geometric_sd": 1.3514735866364094,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t018",
+          "t019"
+        ],
+        "verdict": "worse"
+      },
+      "all_valid": {
+        "n": 12,
+        "geometric_mean": 0.8683110871788838,
+        "ci_low": 0.7220469076670303,
+        "ci_high": 1.0547263577298003,
+        "median": 0.8159249184221892,
+        "p_sign": 0.14599609375,
+        "p_wilcoxon": 0.26611328125,
+        "geometric_sd": 1.4145593888636452,
+        "tasks": [
+          "t004",
+          "t005",
+          "t009",
+          "t010",
+          "t013",
+          "t015",
+          "t016",
+          "t018",
+          "t019",
+          "t023",
+          "t026",
+          "t029"
+        ],
+        "verdict": "null"
+      },
+      "used_only": {
+        "n": 6,
+        "geometric_mean": 0.6604925290068123,
+        "ci_low": 0.5134953372235649,
+        "ci_high": 0.7864729905255414,
+        "median": 0.7121069093471726,
+        "p_sign": 0.03125,
+        "p_wilcoxon": 0.03125,
+        "geometric_sd": 1.3514735866364094,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t018",
+          "t019"
+        ],
+        "verdict": "worse"
+      }
+    }
+  },
+  "spent_usd": 34.0944,
+  "index_build": {
+    "n_indexes": 12,
+    "n_built": 12,
+    "n_reused": 12,
+    "command": "/Users/luka/Projects/skill-cost-bench/.venv/bin/graphify extract . --code-only && cp -R \"$HOME/.claude/skills/graphify/SKILL.md\" \"$HOME/.claude/skills/graphify/references\" graphify-out/",
+    "wall_s_total": 1083.4,
+    "wall_s_each": 90.3,
+    "bytes_total": 1306777540,
+    "paths": [
+      "graphify-out/graph.json",
+      "graphify-out/.graphify_analysis.json",
+      "graphify-out/SKILL.md",
+      "graphify-out/references"
+    ]
+  },
+  "probe": {
+    "ok": true,
+    "arms": {
+      "graphify": {
+        "arm": "graphify",
+        "reachable": true,
+        "detail": "tool_name: …mcp__graphify__graph_stats…",
+        "wall_s": 7.98,
+        "cost_reported_usd": 0.19975590000000001,
+        "transcript_path": "/Users/luka/Projects/skill-cost-bench/out/20260807T072646Z-graphify-superset-forced/transcripts/probe__graphify.jsonl",
+        "checked_at": "2026-08-07T07:26:56Z"
+      }
+    },
+    "prompt": "Use the skill described in your instructions, right now, on this checkout.\n\nCall one of its tools and report, in one line, what it returned. If a tool's\nschema is not loaded, load it first. If you cannot call any of them, say exactly\nwhat stopped you.\n\nDo not read source files and do not answer from memory. The only thing being\nchecked here is whether the tool works."
+  },
+  "headline": {
+    "metric": "cost_usd",
+    "scope": "both_solved",
+    "geometric_mean": 0.6826738518630827,
+    "ci": [
+      0.5556039302185848,
+      0.8192357526299368
+    ],
+    "verdict": "worse",
+    "verdict_meaning": "interval lies entirely below 1.0 — the skill costs more",
+    "effect_below_noise": false
+  }
+}

@@ -5,8 +5,8 @@
 # The pilot answered "does the model reach for this skill" with a flat no across
 # 36 runs and two delivery mechanisms. This answers the separate question the
 # advertised figure is actually about: when the graph *is* used, does it pay for
-# itself? JetBrains had to do the same thing for ponytail, which self-activated
-# zero times and needed a SessionStart hook before it could be measured at all.
+# itself? The natural arm never reached for the graph once, so without removing
+# the choice there is no number to report at all.
 #
 # The forcing instruction is a cost of its own — extra tokens, and tool calls the
 # model would not have made. That is the honest question: whether the saving on

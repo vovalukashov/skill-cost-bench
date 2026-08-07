@@ -1,0 +1,86 @@
+{
+  "delivery": "registered skill in the working copy, --setting-sources project",
+  "n_tasks": 6,
+  "n_used": 0,
+  "n_mentioned_only": 0,
+  "results": [
+    {
+      "task": "t004",
+      "used_skill": false,
+      "hits": {
+        "mcp__graphify__": 0,
+        "graphify-out/graph\\.json": 0
+      },
+      "evidence": [],
+      "mentioned_only": false,
+      "skill_registered": true,
+      "cost_usd": 0.46937490000000004,
+      "wall_s": 64.89
+    },
+    {
+      "task": "t005",
+      "used_skill": false,
+      "hits": {
+        "mcp__graphify__": 0,
+        "graphify-out/graph\\.json": 0
+      },
+      "evidence": [],
+      "mentioned_only": false,
+      "skill_registered": true,
+      "cost_usd": 0.26805270000000003,
+      "wall_s": 24.2
+    },
+    {
+      "task": "t009",
+      "used_skill": false,
+      "hits": {
+        "mcp__graphify__": 0,
+        "graphify-out/graph\\.json": 0
+      },
+      "evidence": [],
+      "mentioned_only": false,
+      "skill_registered": true,
+      "cost_usd": 0.5881473,
+      "wall_s": 69.82
+    },
+    {
+      "task": "t010",
+      "used_skill": false,
+      "hits": {
+        "mcp__graphify__": 0,
+        "graphify-out/graph\\.json": 0
+      },
+      "evidence": [],
+      "mentioned_only": false,
+      "skill_registered": true,
+      "cost_usd": 0.1667751,
+      "wall_s": 25.11
+    },
+    {
+      "task": "t013",
+      "used_skill": false,
+      "hits": {
+        "mcp__graphify__": 0,
+        "graphify-out/graph\\.json": 0
+      },
+      "evidence": [],
+      "mentioned_only": false,
+      "skill_registered": true,
+      "cost_usd": 0.2953023,
+      "wall_s": 48.53
+    },
+    {
+      "task": "t015",
+      "used_skill": false,
+      "hits": {
+        "mcp__graphify__": 0,
+        "graphify-out/graph\\.json": 0
+      },
+      "evidence": [],
+      "mentioned_only": false,
+      "skill_registered": true,
+      "cost_usd": 0.6185799,
+      "wall_s": 102.4
+    }
+  ]
+}

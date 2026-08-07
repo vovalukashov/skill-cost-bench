@@ -14,19 +14,28 @@ arm block in the config and it measures something else.
 
 ## Why this exists
 
-Skills are advertised with impressive multipliers. When those numbers get
-measured on real agent work they tend to shrink, and sometimes reverse:
+Skills are advertised with impressive multipliers, and the multiplier is almost
+always about a *query*: tokens to answer one question. An agent does not answer
+questions, it edits code until the tests pass, and that bill includes the
+edit-test-edit loop, the dead ends and the backtracking. The two numbers are
+different claims, and the first can be true while the second fails.
 
-| skill | advertised | measured by JetBrains on SkillsBench |
-|---|---|---|
-| caveman | 65% fewer tokens | 8.5% fewer output tokens over 86 tasks (a 10-task pilot had said 29.5%) |
-| rtk | 60–90% fewer tokens | +7.6% **more** expensive at low effort (p=0.004), ±0% at high |
-| ponytail | −54% code, −22% tokens, −20% cost | −15% code, −10.3% cost over 80 paired tasks — and zero self-activations in ten sessions without a SessionStart hook |
+Here is that gap, measured on the first skill this harness was pointed at — a
+code-graph tool advertising 71.5x fewer tokens per query:
 
-That last row is the one this harness is built around. A skill that silently
-never runs produces exactly the numbers of a skill that works perfectly and costs
+| question | answer |
+|---|---|
+| Does the model use the skill when it has it? | **0 of 36 runs**, and 0 of 6 more with the skill properly installed |
+| When forced to use it, is the task cheaper? | **No: 19–25% more expensive** (0.843, 95% CI 0.726–0.989, over 80 tasks) |
+| Where does the extra cost come from? | Context, not work: 90% of it is the graph's answers being written to the session cache and re-read every turn |
+| Does it help more where the searching is hardest? | No difference: 0.840 where the file had to be found, 0.862 where the task named it |
+
+The first row is what this harness is built around. A skill that silently never
+runs produces exactly the numbers of a skill that works perfectly and costs
 nothing. Any benchmark that does not check activation cannot tell those two
-apart, and neither can anyone writing a review based on their own impressions.
+apart, and neither can anyone judging by their own impressions.
+
+Full numbers, raw runs and transcripts are in [`data/`](data/).
 
 So every run in an arm that declares a skill is scanned for traces of it, and a
 run with no traces is labelled `available_unused` and kept. Throwing it away

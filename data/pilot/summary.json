@@ -1,0 +1,562 @@
+{
+  "generated_at": "2026-08-06T23:43:34Z",
+  "run_name": "graphify-superset-pilot",
+  "control_arm": "control",
+  "experiment_arm": "graphify",
+  "claim_factor": 70.0,
+  "claim_source": "https://github.com/Graphify-Labs/graphify",
+  "repeats": 3,
+  "seed": 20260806,
+  "validity": {
+    "n_rows": 72,
+    "n_valid": 72,
+    "n_invalid": 0,
+    "invalid_share": 0.0,
+    "invalid_reasons": {},
+    "per_arm": {
+      "graphify": {
+        "runs": 36,
+        "valid": 36,
+        "solved": 20,
+        "used_skill": 0,
+        "available_unused": 36
+      },
+      "control": {
+        "runs": 36,
+        "valid": 36,
+        "solved": 20,
+        "used_skill": 0,
+        "available_unused": 0
+      }
+    }
+  },
+  "noise": {
+    "cells": [
+      {
+        "task": "t004",
+        "arm": "control",
+        "n": 3,
+        "min": 0.35123669999999996,
+        "max": 0.37177469999999996,
+        "spread_ratio": 1.0584733884585522,
+        "geometric_sd": 1.0288287766644277
+      },
+      {
+        "task": "t004",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.3584508,
+        "max": 0.6763083000000001,
+        "spread_ratio": 1.8867534958772587,
+        "geometric_sd": 1.4370226983224006
+      },
+      {
+        "task": "t005",
+        "arm": "control",
+        "n": 3,
+        "min": 0.1769019,
+        "max": 0.4166304,
+        "spread_ratio": 2.355149379401804,
+        "geometric_sd": 1.5528309431253167
+      },
+      {
+        "task": "t005",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.12411479999999998,
+        "max": 0.2743302,
+        "spread_ratio": 2.21029401811871,
+        "geometric_sd": 1.5290833190992354
+      },
+      {
+        "task": "t009",
+        "arm": "control",
+        "n": 3,
+        "min": 0.2706645,
+        "max": 0.4709625,
+        "spread_ratio": 1.7400231652100666,
+        "geometric_sd": 1.3493437310525935
+      },
+      {
+        "task": "t009",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.436335,
+        "max": 0.5454783000000001,
+        "spread_ratio": 1.2501364777063497,
+        "geometric_sd": 1.1195084779294548
+      },
+      {
+        "task": "t010",
+        "arm": "control",
+        "n": 3,
+        "min": 0.1320285,
+        "max": 0.15428429999999999,
+        "spread_ratio": 1.1685681500585101,
+        "geometric_sd": 1.0916279448475992
+      },
+      {
+        "task": "t010",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.1542525,
+        "max": 0.1584945,
+        "spread_ratio": 1.027500364661837,
+        "geometric_sd": 1.0136597486178043
+      },
+      {
+        "task": "t013",
+        "arm": "control",
+        "n": 3,
+        "min": 0.27527519999999994,
+        "max": 0.330963,
+        "spread_ratio": 1.202298645137666,
+        "geometric_sd": 1.1107236761525963
+      },
+      {
+        "task": "t013",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.36738659999999995,
+        "max": 0.45451919999999996,
+        "spread_ratio": 1.237168693686705,
+        "geometric_sd": 1.1201981689031577
+      },
+      {
+        "task": "t015",
+        "arm": "control",
+        "n": 3,
+        "min": 0.6227598000000001,
+        "max": 1.7131167,
+        "spread_ratio": 2.7508466346093625,
+        "geometric_sd": 1.700232623048188
+      },
+      {
+        "task": "t015",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.8268831,
+        "max": 1.5151266,
+        "spread_ratio": 1.832334703660046,
+        "geometric_sd": 1.35433666432477
+      },
+      {
+        "task": "t016",
+        "arm": "control",
+        "n": 3,
+        "min": 0.8310975,
+        "max": 1.1780267999999998,
+        "spread_ratio": 1.4174351384765322,
+        "geometric_sd": 1.200951246851444
+      },
+      {
+        "task": "t016",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.6111273,
+        "max": 0.7883061,
+        "spread_ratio": 1.289921265176666,
+        "geometric_sd": 1.1535323552921535
+      },
+      {
+        "task": "t018",
+        "arm": "control",
+        "n": 3,
+        "min": 0.15065520000000002,
+        "max": 0.4373157,
+        "spread_ratio": 2.9027587497809564,
+        "geometric_sd": 1.704958743992244
+      },
+      {
+        "task": "t018",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.1590663,
+        "max": 0.2722065,
+        "spread_ratio": 1.7112769958187248,
+        "geometric_sd": 1.3082326131147457
+      },
+      {
+        "task": "t019",
+        "arm": "control",
+        "n": 3,
+        "min": 0.1179936,
+        "max": 0.11889419999999999,
+        "spread_ratio": 1.0076326173622976,
+        "geometric_sd": 1.0038862387268677
+      },
+      {
+        "task": "t019",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.13154670000000002,
+        "max": 0.16532670000000002,
+        "spread_ratio": 1.2567909343221837,
+        "geometric_sd": 1.1213857858149523
+      },
+      {
+        "task": "t023",
+        "arm": "control",
+        "n": 3,
+        "min": 0.35441009999999995,
+        "max": 0.6243816,
+        "spread_ratio": 1.7617488892105504,
+        "geometric_sd": 1.3303035814211588
+      },
+      {
+        "task": "t023",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.2548155,
+        "max": 0.5984988,
+        "spread_ratio": 2.3487535098924517,
+        "geometric_sd": 1.5560653643664135
+      },
+      {
+        "task": "t026",
+        "arm": "control",
+        "n": 3,
+        "min": 0.2457111,
+        "max": 0.7799715,
+        "spread_ratio": 3.174343772015184,
+        "geometric_sd": 1.9056959636149458
+      },
+      {
+        "task": "t026",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.2111712,
+        "max": 0.8011083,
+        "spread_ratio": 3.7936437355093875,
+        "geometric_sd": 2.0394274361432307
+      },
+      {
+        "task": "t029",
+        "arm": "control",
+        "n": 3,
+        "min": 0.8749220999999999,
+        "max": 1.9116456,
+        "spread_ratio": 2.184932349977215,
+        "geometric_sd": 1.4911646250864
+      },
+      {
+        "task": "t029",
+        "arm": "graphify",
+        "n": 3,
+        "min": 0.5916945,
+        "max": 1.9991679,
+        "spread_ratio": 3.378716381511067,
+        "geometric_sd": 1.8424036199310263
+      }
+    ],
+    "median_geometric_sd": 1.3398236562368762,
+    "median_spread_ratio": 1.7508860272103086,
+    "n_cells": 24
+  },
+  "solve": {
+    "both_solved": 5,
+    "only_control": 1,
+    "only_experiment": 2,
+    "neither": 4,
+    "p_discordant": 1.0
+  },
+  "metrics": {
+    "cost_usd": {
+      "both_solved": {
+        "n": 7,
+        "geometric_mean": 1.0096982577014313,
+        "ci_low": 0.8551430146760592,
+        "ci_high": 1.2299414223420218,
+        "median": 0.9461686905924186,
+        "p_sign": 0.453125,
+        "p_wilcoxon": 0.9375,
+        "geometric_sd": 1.3057573833927258,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t015",
+          "t018",
+          "t019"
+        ],
+        "verdict": "null"
+      },
+      "all_valid": {
+        "n": 12,
+        "geometric_mean": 1.031514549695584,
+        "ci_low": 0.9045704949205986,
+        "ci_high": 1.1876525951149206,
+        "median": 0.9985787556717496,
+        "p_sign": 1.0,
+        "p_wilcoxon": 0.791015625,
+        "geometric_sd": 1.2878051006396578,
+        "tasks": [
+          "t004",
+          "t005",
+          "t009",
+          "t010",
+          "t013",
+          "t015",
+          "t016",
+          "t018",
+          "t019",
+          "t023",
+          "t026",
+          "t029"
+        ],
+        "verdict": "null"
+      },
+      "used_only": {
+        "n": 0,
+        "insufficient": true
+      }
+    },
+    "total_tokens": {
+      "both_solved": {
+        "n": 7,
+        "geometric_mean": 1.014595910336804,
+        "ci_low": 0.8221290616399791,
+        "ci_high": 1.277499123565309,
+        "median": 1.0169265701166619,
+        "p_sign": 1.0,
+        "p_wilcoxon": 0.9375,
+        "geometric_sd": 1.3820203577725343,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t015",
+          "t018",
+          "t019"
+        ],
+        "verdict": "null"
+      },
+      "all_valid": {
+        "n": 12,
+        "geometric_mean": 1.0334834911567496,
+        "ci_low": 0.884534591389603,
+        "ci_high": 1.205119152490048,
+        "median": 1.0216419994882786,
+        "p_sign": 0.7744140625,
+        "p_wilcoxon": 0.791015625,
+        "geometric_sd": 1.330026125308663,
+        "tasks": [
+          "t004",
+          "t005",
+          "t009",
+          "t010",
+          "t013",
+          "t015",
+          "t016",
+          "t018",
+          "t019",
+          "t023",
+          "t026",
+          "t029"
+        ],
+        "verdict": "null"
+      },
+      "used_only": {
+        "n": 0,
+        "insufficient": true
+      }
+    },
+    "output_tokens": {
+      "both_solved": {
+        "n": 7,
+        "geometric_mean": 1.0141009916895483,
+        "ci_low": 0.8683584295380016,
+        "ci_high": 1.2146645781153487,
+        "median": 0.9465346534653465,
+        "p_sign": 1.0,
+        "p_wilcoxon": 1.0,
+        "geometric_sd": 1.277232595166694,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t015",
+          "t018",
+          "t019"
+        ],
+        "verdict": "null"
+      },
+      "all_valid": {
+        "n": 12,
+        "geometric_mean": 1.0787652299839159,
+        "ci_low": 0.9067643557936608,
+        "ci_high": 1.3046499410597743,
+        "median": 1.0118986913639687,
+        "p_sign": 1.0,
+        "p_wilcoxon": 0.5693359375,
+        "geometric_sd": 1.399551936915122,
+        "tasks": [
+          "t004",
+          "t005",
+          "t009",
+          "t010",
+          "t013",
+          "t015",
+          "t016",
+          "t018",
+          "t019",
+          "t023",
+          "t026",
+          "t029"
+        ],
+        "verdict": "null"
+      },
+      "used_only": {
+        "n": 0,
+        "insufficient": true
+      }
+    },
+    "num_turns": {
+      "both_solved": {
+        "n": 7,
+        "geometric_mean": 1.0459014048267674,
+        "ci_low": 0.8631560079932895,
+        "ci_high": 1.25993232817844,
+        "median": 1.0666666666666667,
+        "p_sign": 1.0,
+        "p_wilcoxon": 0.8125,
+        "geometric_sd": 1.3243482936963573,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t015",
+          "t018",
+          "t019"
+        ],
+        "verdict": "null"
+      },
+      "all_valid": {
+        "n": 12,
+        "geometric_mean": 1.0299734780137448,
+        "ci_low": 0.9041066429792259,
+        "ci_high": 1.1685382180796589,
+        "median": 1.0333333333333332,
+        "p_sign": 1.0,
+        "p_wilcoxon": 0.7646484375,
+        "geometric_sd": 1.2665470052812295,
+        "tasks": [
+          "t004",
+          "t005",
+          "t009",
+          "t010",
+          "t013",
+          "t015",
+          "t016",
+          "t018",
+          "t019",
+          "t023",
+          "t026",
+          "t029"
+        ],
+        "verdict": "null"
+      },
+      "used_only": {
+        "n": 0,
+        "insufficient": true
+      }
+    },
+    "wall_s": {
+      "both_solved": {
+        "n": 7,
+        "geometric_mean": 1.0588314792449876,
+        "ci_low": 0.8912830784580228,
+        "ci_high": 1.2875303458358267,
+        "median": 1.0263558033451596,
+        "p_sign": 1.0,
+        "p_wilcoxon": 0.6875,
+        "geometric_sd": 1.310303139330659,
+        "tasks": [
+          "t004",
+          "t005",
+          "t010",
+          "t013",
+          "t015",
+          "t018",
+          "t019"
+        ],
+        "verdict": "null"
+      },
+      "all_valid": {
+        "n": 12,
+        "geometric_mean": 1.2005126977972307,
+        "ci_low": 0.9943518809237765,
+        "ci_high": 1.4804010348553427,
+        "median": 1.0576713543802605,
+        "p_sign": 0.14599609375,
+        "p_wilcoxon": 0.10986328125,
+        "geometric_sd": 1.4427720314634827,
+        "tasks": [
+          "t004",
+          "t005",
+          "t009",
+          "t010",
+          "t013",
+          "t015",
+          "t016",
+          "t018",
+          "t019",
+          "t023",
+          "t026",
+          "t029"
+        ],
+        "verdict": "null"
+      },
+      "used_only": {
+        "n": 0,
+        "insufficient": true
+      }
+    }
+  },
+  "spent_usd": 36.7462,
+  "index_build": {
+    "n_indexes": 12,
+    "n_built": 12,
+    "command": "/Users/luka/Projects/skill-cost-bench/.venv/bin/graphify extract . --code-only && cp -R \"$HOME/.claude/skills/graphify/SKILL.md\" \"$HOME/.claude/skills/graphify/references\" graphify-out/",
+    "wall_s_total": 1083.4,
+    "wall_s_each": 90.3,
+    "bytes_total": 1306777540,
+    "paths": [
+      "graphify-out/graph.json",
+      "graphify-out/.graphify_analysis.json",
+      "graphify-out/SKILL.md",
+      "graphify-out/references"
+    ]
+  },
+  "probe": {
+    "ok": true,
+    "arms": {
+      "graphify": {
+        "arm": "graphify",
+        "reachable": true,
+        "detail": "tool_name: …mcp__graphify__graph_stats…",
+        "wall_s": 6.82,
+        "cost_reported_usd": 0.0752004,
+        "transcript_path": "/Users/luka/Projects/skill-cost-bench/out/20260806T212246Z-graphify-superset-pilot/transcripts/probe__graphify.jsonl",
+        "checked_at": "2026-08-06T21:24:30Z"
+      }
+    },
+    "prompt": "Use the skill described in your instructions, right now, on this checkout.\n\nCall one of its tools and report, in one line, what it returned. If a tool's\nschema is not loaded, load it first. If you cannot call any of them, say exactly\nwhat stopped you.\n\nDo not read source files and do not answer from memory. The only thing being\nchecked here is whether the tool works."
+  },
+  "headline": {
+    "metric": "cost_usd",
+    "scope": "both_solved",
+    "geometric_mean": 1.0096982577014313,
+    "ci": [
+      0.8551430146760592,
+      1.2299414223420218
+    ],
+    "verdict": "null",
+    "verdict_meaning": "interval covers 1.0 — parity cannot be excluded",
+    "effect_below_noise": true
+  }
+}

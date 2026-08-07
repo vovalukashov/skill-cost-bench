@@ -176,7 +176,7 @@ def test_full_sweep_measures_the_planted_saving(demo_repo: Path, tmp_path: Path,
 
 def test_unused_skill_runs_are_counted_and_reported(demo_repo: Path, tmp_path: Path,
                                                     approved_manifest: Path):
-    """The ponytail trap: every second experimental run never touches the skill.
+    """The silent no-op: every second experimental run never touches the skill.
 
     Those runs stay in. Dropping them would compute the arm's average over only
     the runs where the skill appealed, which is the flattering half of the data.

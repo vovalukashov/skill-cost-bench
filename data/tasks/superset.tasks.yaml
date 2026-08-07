@@ -1,0 +1,4097 @@
+public_source: https://github.com/apache/superset
+source_note: Mined from this repository's own history. Every task is a real commit that touched code and tests; the commit's tests are the grader. Apache-2.0.
+meta:
+  repo: /Users/luka/Projects/skill-cost-bench/.targets/superset
+  repo_head: 01a9fdc6216ad529dca409b3542fadc963cc0baf
+  generated_at: '2026-08-06T18:31:35Z'
+  private: false
+  private_marker: null
+  test_cmd: /Users/luka/Projects/skill-cost-bench/.targets/superset/.venv-superset/bin/python -m pytest -q --no-header -p no:cacheprovider {tests}
+  filters:
+    test_globs:
+    - tests/unit_tests/*
+    code_globs:
+    - superset/*
+    since: '2026-04-01'
+    until: null
+    max_files: 25
+    min_files: 2
+    paths: []
+  rejected:
+    'touches migration/lockfile: superset-frontend/package-lock.json': 10
+    touches N files (< N): 239
+    no files: 10
+    'touches migration/lockfile: superset/migrations/versions/N-N-N_N-N_cNaNbNeNdN_databend_secure_to_sslmode.py': 1
+    no test files: 237
+    merge/revert/dependency/rename commit: 278
+    no production code files: 11
+    'touches migration/lockfile: superset/migrations/versions/N-N-N_N-N_NaNdN_restore_pivot_table_percent_display.py': 1
+    'touches migration/lockfile: superset/migrations/versions/N-N-N_N-N_NdNcaNae_drop__customer_location_uc_take_N.py': 1
+    touches N files (> N): 39
+    'touches migration/lockfile: superset/migrations/versions/N-N-N_N-N_eNdNaNffN_add_purge_audit_log.py': 1
+    'touches migration/lockfile: superset/migrations/versions/N-N-N_N-N_dNbNaNfNcN_version_transaction_issued_at_index.py': 1
+    'touches migration/lockfile: superset/migrations/shared/native_filters.py': 1
+    'touches sensitive path: helm/superset/templates/secret-env.yaml': 3
+    'touches migration/lockfile: superset/migrations/versions/N-N-N_N-N_eNdbfNcfefN_datasource_cluster_fk.py': 1
+    ? 'touches migration/lockfile: superset/migrations/versions/N-N-N_N-N_dNeNbNaNcNf_strip_metricsqlexpressions_from_ag_grid_params.py'
+    : 1
+    'touches migration/lockfile: tests/unit_tests/migrations/test_add_deleted_at_to_dashboards.py': 1
+    'touches migration/lockfile: superset-websocket/package-lock.json': 1
+    'touches migration/lockfile: docs/yarn.lock': 2
+    'touches migration/lockfile: superset/migrations/versions/N-N-N_N-N_bNaNfNeNdNcN_fix_security_view_menu_case.py': 1
+    'touches migration/lockfile: superset/migrations/versions/N-N-N_N-N_NbeeNeN_composite_pk_association_tables.py': 1
+    'touches migration/lockfile: superset/migrations/versions/N-N-N_N-N_aNdNfNbNcNeN_cleanup_stale_can_import_pvm.py': 1
+    'touches migration/lockfile: superset-embedded-sdk/package-lock.json': 1
+  verified_at: '2026-08-07T09:59:06Z'
+  verify_tally:
+    ok: 142
+    fails_at_commit: 7
+    passes_at_parent: 9
+tasks:
+- id: t001
+  commit: 01a9fdc6216ad529dca409b3542fadc963cc0baf
+  parent: ba09f399ac0fbd2c7be871c8cb052937b17602b4
+  date: '2026-08-06'
+  subject: 'chore(reports): thread cache-key/execution-id log context through screenshot capture logs'
+  prompt: 'chore(reports): thread cache-key/execution-id log context through screenshot capture logs'
+  code_files:
+  - superset/utils/screenshot_utils.py
+  - superset/utils/screenshots.py
+  - superset/utils/webdriver.py
+  test_files:
+  - tests/unit_tests/utils/screenshot_test.py
+  - tests/unit_tests/utils/test_screenshot_utils.py
+  - tests/unit_tests/utils/webdriver_test.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t002
+  commit: ba09f399ac0fbd2c7be871c8cb052937b17602b4
+  parent: e4c306f5eb904f938529cd19fdc159608531d283
+  date: '2026-08-06'
+  subject: 'feat(soft-delete): enable soft delete by default and purge for real'
+  prompt: 'feat(soft-delete): enable soft delete by default and purge for real'
+  code_files:
+  - superset/config.py
+  test_files:
+  - tests/unit_tests/tasks/test_deletion_retention.py
+  n_files: 8
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t003
+  commit: d594a4d1578d506597cc902490e1139794acef8a
+  parent: 442995481c4ece05ebb7a768754d700941298fa3
+  date: '2026-08-05'
+  subject: 'fix(mcp): make streamable-http session mode configurable via MCP_STATELESS_HTTP'
+  prompt: 'fix(mcp): make streamable-http session mode configurable via MCP_STATELESS_HTTP'
+  code_files:
+  - superset/mcp_service/__main__.py
+  - superset/mcp_service/mcp_config.py
+  - superset/mcp_service/server.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_mcp_config.py
+  - tests/unit_tests/mcp_service/test_mcp_e2e_smoke.py
+  - tests/unit_tests/mcp_service/test_mcp_server.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: fails_at_commit
+  navigation: needed
+  navigation_hit: null
+- id: t004
+  commit: 1de35d136117e171c92acaf6cf898ab8ab395a42
+  parent: 3f011edabba499ce8cb8a0c49eed25fef88f67f5
+  date: '2026-08-05'
+  subject: 'fix(mcp): reject unknown fields in nested chart-config models too (#42626)'
+  prompt: 'fix(mcp): reject unknown fields in nested chart-config models too (#42626)'
+  code_files:
+  - superset/mcp_service/chart/schemas.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_chart_schemas.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t005
+  commit: 3f011edabba499ce8cb8a0c49eed25fef88f67f5
+  parent: f5bca3bf3f158c3d6fe81fea76854bc4622245a8
+  date: '2026-08-05'
+  subject: 'fix(mcp): supply required DBEventLogger args so mcp_tool_error events are logged (#42579)'
+  prompt: 'fix(mcp): supply required DBEventLogger args so mcp_tool_error events are logged (#42579)'
+  code_files:
+  - superset/mcp_service/middleware.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_middleware.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: given
+  navigation_hit: mcp_tool_error
+- id: t006
+  commit: 32e4e3c6a88455b7861cdc0230cbff97323f9700
+  parent: ad0538935da3551589157b7bc4d417edfe78927b
+  date: '2026-08-06'
+  subject: 'fix(reports): enforce dashboard readiness and execution budget'
+  prompt: 'fix(reports): enforce dashboard readiness and execution budget'
+  code_files:
+  - superset/commands/report/execute.py
+  - superset/commands/report/execute_now.py
+  - superset/config.py
+  - superset/initialization/__init__.py
+  - superset/mcp_service/screenshot/pooled_screenshot.py
+  - superset/tasks/scheduler.py
+  - superset/utils/report_execution.py
+  - superset/utils/screenshot_utils.py
+  - superset/utils/screenshots.py
+  - superset/utils/webdriver.py
+  test_files:
+  - tests/unit_tests/commands/report/execute_test.py
+  - tests/unit_tests/commands/report/test_execute_now.py
+  - tests/unit_tests/initialization_test.py
+  - tests/unit_tests/tasks/test_scheduler_soft_timeout.py
+  - tests/unit_tests/utils/test_report_execution.py
+  - tests/unit_tests/utils/test_screenshot_utils.py
+  - tests/unit_tests/utils/webdriver_test.py
+  n_files: 21
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t007
+  commit: 0e4e368768ffa238b44bc02660fe788bd2feeb1f
+  parent: 126c93b4958b890d2d734ec654d8780592e9a25c
+  date: '2026-08-05'
+  subject: 'feat(mcp): add observability to MCP service'
+  prompt: 'feat(mcp): add observability to MCP service'
+  code_files:
+  - superset/mcp_service/PRODUCTION.md
+  - superset/mcp_service/chart/tool/get_chart_data.py
+  - superset/mcp_service/chart/tool/get_chart_type_schema.py
+  - superset/mcp_service/dataset/tool/query_dataset.py
+  - superset/mcp_service/mcp_config.py
+  - superset/mcp_service/middleware.py
+  - superset/mcp_service/tag/tool/get_tag_info.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/tool/test_get_chart_data.py
+  - tests/unit_tests/mcp_service/test_middleware.py
+  - tests/unit_tests/mcp_service/test_middleware_logging.py
+  n_files: 10
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t008
+  commit: 126c93b4958b890d2d734ec654d8780592e9a25c
+  parent: e880711bbbfd1c7684eaec19f679d92ed1ec2d9c
+  date: '2026-08-05'
+  subject: 'fix(versioning): pin shadow-row reads and restore to (id, uuid)'
+  prompt: 'fix(versioning): pin shadow-row reads and restore to (id, uuid)'
+  code_files:
+  - superset/daos/version.py
+  - superset/versioning/api_helpers.py
+  - superset/versioning/baseline/collection.py
+  - superset/versioning/queries.py
+  - superset/versioning/restore.py
+  test_files:
+  - tests/unit_tests/versioning/test_collection.py
+  n_files: 9
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: restore'
+  verified: unverified
+- id: t009
+  commit: 47a4dabd14a619a58b8f6299888afb49b20c406b
+  parent: 657e2d2267ac34a4a39ef6c052a0a1bfa8b17972
+  date: '2026-08-05'
+  subject: 'feat(soft-delete): warn at startup when a retention task''s Celery config is incomplete'
+  prompt: 'feat(soft-delete): warn at startup when a retention task''s Celery config is incomplete'
+  code_files:
+  - superset/initialization/__init__.py
+  test_files:
+  - tests/unit_tests/initialization_test.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t010
+  commit: f65b42408e50318395f2b15313ed221d44bf5b83
+  parent: 482a59ec72e297d1dea8eb7f656b6fa82571f643
+  date: '2026-08-05'
+  subject: 'fix(tasks): gate exception_type in task properties behind SHOW_STACKTRACE'
+  prompt: 'fix(tasks): gate exception_type in task properties behind SHOW_STACKTRACE'
+  code_files:
+  - superset/tasks/schemas.py
+  test_files:
+  - tests/unit_tests/tasks/test_schemas.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t011
+  commit: e7338a2add9d98c56ef0e06d9d43b83c706e6c4b
+  parent: 9c97d4859c6825c776b84b4b559d814953caeee8
+  date: '2026-08-05'
+  subject: 'fix(mcp): route FastMCP ValidationError through the validation error handler (#42578)'
+  prompt: 'fix(mcp): route FastMCP ValidationError through the validation error handler (#42578)'
+  code_files:
+  - superset/mcp_service/middleware.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_middleware.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t012
+  commit: 9c97d4859c6825c776b84b4b559d814953caeee8
+  parent: 19399a506811a2afaac0d8d1cbaa4bc25ddb2bfe
+  date: '2026-08-05'
+  subject: 'fix(mcp): stop false-flagging successful responses with error_type:null as failures (#42580)'
+  prompt: 'fix(mcp): stop false-flagging successful responses with error_type:null as failures (#42580)'
+  code_files:
+  - superset/mcp_service/middleware.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_middleware_logging.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t013
+  commit: 1605676aa79c172b63ae1ca167f8490eae9fcb19
+  parent: d6c8fdd10d835a7b58c4e46f2181f0f9ff00484a
+  date: '2026-08-05'
+  subject: 'fix(reports): use zip extension for bundled CSV attachments'
+  prompt: 'fix(reports): use zip extension for bundled CSV attachments'
+  code_files:
+  - superset/reports/notifications/email.py
+  test_files:
+  - tests/unit_tests/reports/notifications/email_tests.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t014
+  commit: 956231b9eecb10981721113a012873862435a496
+  parent: 2f9bde55797627288297207e43d32c0abd9306ec
+  date: '2026-08-05'
+  subject: 'fix(dataset): make post-save column refresh best-effort for Jinja SQL'
+  prompt: 'fix(dataset): make post-save column refresh best-effort for Jinja SQL'
+  code_files:
+  - superset/commands/dataset/refresh.py
+  - superset/connectors/sqla/utils.py
+  - superset/exceptions.py
+  test_files:
+  - tests/unit_tests/commands/dataset/refresh_test.py
+  - tests/unit_tests/connectors/sqla/test_utils.py
+  n_files: 5
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: refresh'
+  verified: unverified
+- id: t015
+  commit: 2f9bde55797627288297207e43d32c0abd9306ec
+  parent: 5720e9c7fd3bc47ab26d5020748a056ecc2423bd
+  date: '2026-08-04'
+  subject: 'fix(sql): preserve quoted-identifier casing for the HANA dialect (#39328)'
+  prompt: 'fix(sql): preserve quoted-identifier casing for the HANA dialect (#39328)'
+  code_files:
+  - superset/sql/dialects/__init__.py
+  - superset/sql/dialects/hana.py
+  - superset/sql/parse.py
+  test_files:
+  - tests/unit_tests/sql/dialects/hana_tests.py
+  - tests/unit_tests/sql/parse_tests.py
+  n_files: 5
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t016
+  commit: 86b20761697103d09a42533c55f46307a690442b
+  parent: a0895a1fbd3b6daf256a8e0d5136c12b6f924025
+  date: '2026-08-04'
+  subject: 'fix(mcp): handle missing metrics/columns and null data in chart preview'
+  prompt: 'fix(mcp): handle missing metrics/columns and null data in chart preview'
+  code_files:
+  - superset/mcp_service/chart/chart_helpers.py
+  - superset/mcp_service/chart/tool/get_chart_preview.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_chart_helpers.py
+  - tests/unit_tests/mcp_service/chart/tool/test_get_chart_preview.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t017
+  commit: 043163b54c0cbd7423ff9cda28ac24999c3887f5
+  parent: 33c386a2d6f3288ce6260ad451df9135030df847
+  date: '2026-08-04'
+  subject: 'fix(mcp): reject unparseable time_range instead of silently matching full table'
+  prompt: 'fix(mcp): reject unparseable time_range instead of silently matching full table'
+  code_files:
+  - superset/mcp_service/common/time_range_validation.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dataset/schemas.py
+  - superset/mcp_service/semantic_layer/schemas.py
+  test_files:
+  - tests/unit_tests/mcp_service/common/test_time_range_validation.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_manage_native_filters.py
+  - tests/unit_tests/mcp_service/dataset/tool/test_query_dataset.py
+  - tests/unit_tests/mcp_service/semantic_layer/tool/test_get_table.py
+  n_files: 8
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t018
+  commit: 33c386a2d6f3288ce6260ad451df9135030df847
+  parent: 7c0373662380800b4c7141b569b0c424b6bb6a67
+  date: '2026-08-04'
+  subject: 'fix(core): reduce metric expression log noise'
+  prompt: 'fix(core): reduce metric expression log noise'
+  code_files:
+  - superset/utils/core.py
+  test_files:
+  - tests/unit_tests/utils/map_type_tests.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t019
+  commit: 7c0373662380800b4c7141b569b0c424b6bb6a67
+  parent: 4e9e884dd8c9a86f75577c166f0ed87efc8b16c8
+  date: '2026-08-04'
+  subject: 'fix(alerts): wrap Jinja rendering errors in AlertCommand._execute_query'
+  prompt: 'fix(alerts): wrap Jinja rendering errors in AlertCommand._execute_query'
+  code_files:
+  - superset/commands/report/alert.py
+  test_files:
+  - tests/unit_tests/commands/report/alert_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: given
+  navigation_hit: AlertCommand
+- id: t020
+  commit: 4e9e884dd8c9a86f75577c166f0ed87efc8b16c8
+  parent: 1478e32bc26fdd91c984062f64f421161e898049
+  date: '2026-08-04'
+  subject: 'fix(sqllab): wrap process_template() in QueryEstimationCommand to prevent raw UndefinedError leak'
+  prompt: 'fix(sqllab): wrap process_template() in QueryEstimationCommand to prevent raw UndefinedError leak'
+  code_files:
+  - superset/commands/sql_lab/estimate.py
+  test_files:
+  - tests/unit_tests/commands/sql_lab/test_estimate.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: given
+  navigation_hit: QueryEstimationCommand
+- id: t021
+  commit: 1478e32bc26fdd91c984062f64f421161e898049
+  parent: e103d92b4894807b46c975f8574debd2ede4b106
+  date: '2026-08-04'
+  subject: 'fix(mcp): persist Handlebars template under camelCase key so it renders'
+  prompt: 'fix(mcp): persist Handlebars template under camelCase key so it renders'
+  code_files:
+  - superset/mcp_service/chart/chart_utils.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_handlebars_chart.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t022
+  commit: 457cd3487ded7f09c6b260141dc6c2bc25045e4c
+  parent: 03b35186e5d1d8d912336054e668ef77870f27b2
+  date: '2026-08-04'
+  subject: 'fix(api): include query lifecycle timing in /api/v1/chart/data response'
+  prompt: 'fix(api): include query lifecycle timing in /api/v1/chart/data response'
+  code_files:
+  - superset/charts/data/api.py
+  - superset/charts/schemas.py
+  - superset/commands/chart/data/get_data_command.py
+  - superset/common/chart_data_timing.py
+  - superset/common/query_actions.py
+  - superset/common/query_context.py
+  - superset/common/query_context_processor.py
+  - superset/config.py
+  test_files:
+  - tests/unit_tests/charts/commands/data/test_get_data_command.py
+  - tests/unit_tests/charts/test_chart_data_api.py
+  - tests/unit_tests/charts/test_schemas.py
+  - tests/unit_tests/common/test_query_actions.py
+  - tests/unit_tests/common/test_query_actions_drill_detail.py
+  - tests/unit_tests/common/test_query_context_processor.py
+  - tests/unit_tests/common/test_query_context_processor_timing.py
+  n_files: 18
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t023
+  commit: 03b35186e5d1d8d912336054e668ef77870f27b2
+  parent: 25ab96188f1bea54029345ac79f4cc3b05a4d1d4
+  date: '2026-08-03'
+  subject: 'fix(jinja): handle UndefinedError from virtual dataset templates'
+  prompt: 'fix(jinja): handle UndefinedError from virtual dataset templates'
+  code_files:
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/jinja_context_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t024
+  commit: 25ab96188f1bea54029345ac79f4cc3b05a4d1d4
+  parent: 4b11fa09c71665a8179759908ceb8926000959c4
+  date: '2026-08-03'
+  subject: 'fix(sqllab): roll back session before retrying get_query after a broken transaction'
+  prompt: 'fix(sqllab): roll back session before retrying get_query after a broken transaction'
+  code_files:
+  - superset/sql_lab.py
+  test_files:
+  - tests/unit_tests/sql_lab_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t025
+  commit: 4b11fa09c71665a8179759908ceb8926000959c4
+  parent: 5075253b911799c4a71349d4eadb16dc51c05a36
+  date: '2026-08-03'
+  subject: 'fix(errors): map uncaught SupersetException status/log-level correctly'
+  prompt: 'fix(errors): map uncaught SupersetException status/log-level correctly'
+  code_files:
+  - superset/views/error_handling.py
+  test_files:
+  - tests/unit_tests/views/test_error_handling.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t026
+  commit: bf34c7f2b479b8aadc5294d941fc58e725f39e26
+  parent: db0b8b15138b92a23023c88db571afd22d725094
+  date: '2026-08-03'
+  subject: 'fix(versioning): stop filing every operational failure under the migration race'
+  prompt: 'fix(versioning): stop filing every operational failure under the migration race'
+  code_files:
+  - superset/versioning/baseline/collection.py
+  - superset/versioning/changes/listener.py
+  - superset/versioning/db_errors.py
+  - superset/versioning/metrics.py
+  - superset/versioning/queries.py
+  test_files:
+  - tests/unit_tests/versioning/test_collection.py
+  - tests/unit_tests/versioning/test_db_errors.py
+  - tests/unit_tests/versioning/test_listener.py
+  - tests/unit_tests/versioning/test_queries_change_records.py
+  n_files: 9
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t027
+  commit: 081515d52fb21d49411b55c9a30ed922996c1c20
+  parent: df2786692fd928049e43d6750925a69c397c8527
+  date: '2026-08-03'
+  subject: 'fix(versioning): drop username from version-history attribution'
+  prompt: 'fix(versioning): drop username from version-history attribution'
+  code_files:
+  - superset/versioning/queries.py
+  - superset/versioning/schemas.py
+  test_files:
+  - tests/unit_tests/versioning/test_queries.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t028
+  commit: ac97484b2a7b22531c2494242c1e42f9969ffafc
+  parent: 5b31e0fee6f87f80019685362d61ff2513f60432
+  date: '2026-08-03'
+  subject: 'fix(mcp): missing params in MCP tool call logs'
+  prompt: 'fix(mcp): missing params in MCP tool call logs'
+  code_files:
+  - superset/mcp_service/middleware.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_middleware.py
+  - tests/unit_tests/mcp_service/test_middleware_logging.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t029
+  commit: 06628bbd68ed5c5822e2877eb545db6d20a8f811
+  parent: d64eaf9cdb7f1915d4dc1de4e95ba6e18d928f98
+  date: '2026-08-02'
+  subject: 'feat(i18n): serve language packs as versioned, immutable-cacheable scripts'
+  prompt: 'feat(i18n): serve language packs as versioned, immutable-cacheable scripts'
+  code_files:
+  - superset/embedded/view.py
+  - superset/templates/superset/spa.html
+  - superset/translations/utils.py
+  - superset/views/base.py
+  - superset/views/core.py
+  test_files:
+  - tests/unit_tests/translations/__init__.py
+  - tests/unit_tests/translations/utils_test.py
+  - tests/unit_tests/views/test_bootstrap_auth.py
+  - tests/unit_tests/views/test_language_pack_script.py
+  n_files: 12
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: given
+  navigation_hit: packs
+- id: t030
+  commit: 4915a3e8c78a956d59b8e3e69669d2f9eefe779e
+  parent: 7ce56d369aa72a95b704d77d2a4fe56bfcbcef41
+  date: '2026-08-02'
+  subject: 'fix(mcp): report the committed chart when its instance is detached'
+  prompt: 'fix(mcp): report the committed chart when its instance is detached'
+  code_files:
+  - superset/mcp_service/auth.py
+  - superset/mcp_service/chart/chart_utils.py
+  - superset/mcp_service/chart/tool/generate_chart.py
+  - superset/mcp_service/chart/tool/get_chart_data.py
+  - superset/mcp_service/chart/tool/get_chart_info.py
+  - superset/mcp_service/chart/tool/get_chart_preview.py
+  - superset/mcp_service/chart/tool/get_chart_sql.py
+  - superset/mcp_service/chart/tool/update_chart.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_chart_utils.py
+  - tests/unit_tests/mcp_service/chart/tool/test_generate_chart.py
+  n_files: 10
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t031
+  commit: 9f66cb566bf1f7baf120ccdc8b408e1c518585d6
+  parent: 29ac93862e6ff82f94e3db062f162373ebc14ddb
+  date: '2026-08-01'
+  subject: 'feat(semantic layers): don''t show samples tab in explore'
+  prompt: 'feat(semantic layers): don''t show samples tab in explore'
+  code_files:
+  - superset/common/query_actions.py
+  - superset/connectors/sqla/models.py
+  - superset/semantic_layers/models.py
+  - superset/superset_typing.py
+  - superset/views/datasource/views.py
+  test_files:
+  - tests/unit_tests/common/test_query_actions_drill_detail.py
+  - tests/unit_tests/semantic_layers/models_test.py
+  - tests/unit_tests/views/datasource/views_test.py
+  n_files: 19
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t032
+  commit: 6929d032b873d598298c3dae752c9fcdb5ca1c80
+  parent: f6c574edd85014bd4ebf77ec6c68fe75b745d14f
+  date: '2026-07-31'
+  subject: 'fix(reports): time-budget tiled screenshot to fail cleanly instead of hitting Celery kill'
+  prompt: 'fix(reports): time-budget tiled screenshot to fail cleanly instead of hitting Celery kill'
+  code_files:
+  - superset/utils/screenshot_utils.py
+  - superset/utils/webdriver.py
+  test_files:
+  - tests/unit_tests/utils/test_screenshot_utils.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t033
+  commit: f6c574edd85014bd4ebf77ec6c68fe75b745d14f
+  parent: b452c1634dcacddf01466625a608a0bf7260ca7d
+  date: '2026-07-31'
+  subject: 'fix(screenshots): validate cached screenshot image bytes on read and write'
+  prompt: 'fix(screenshots): validate cached screenshot image bytes on read and write'
+  code_files:
+  - superset/utils/screenshots.py
+  test_files:
+  - tests/unit_tests/utils/screenshot_test.py
+  - tests/unit_tests/utils/test_screenshot_cache_fix.py
+  n_files: 3
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: screenshots'
+  verified: unverified
+- id: t034
+  commit: 1bfbce3cfd65615124ae0c1b6e3efeec3767f436
+  parent: 85bab0b07c780b2df73de531a116ac25e2514705
+  date: '2026-07-31'
+  subject: 'fix(alerts-reports): catch CroniterBadDateError in report frequency validation'
+  prompt: 'fix(alerts-reports): catch CroniterBadDateError in report frequency validation'
+  code_files:
+  - superset/commands/report/base.py
+  - superset/commands/report/exceptions.py
+  test_files:
+  - tests/unit_tests/commands/report/base_test.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t035
+  commit: 85bab0b07c780b2df73de531a116ac25e2514705
+  parent: 0981b1101a26c55359e87e01c8962b48449bfb52
+  date: '2026-07-31'
+  subject: 'fix(reports): downgrade chart-container timeout log level and fix tiling veto on unknown height'
+  prompt: 'fix(reports): downgrade chart-container timeout log level and fix tiling veto on unknown height'
+  code_files:
+  - superset/utils/webdriver.py
+  test_files:
+  - tests/unit_tests/utils/webdriver_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: given
+  navigation_hit: tiling
+- id: t036
+  commit: f607e17e3a7fd98b2bb2c0441b6aefb15474bcc9
+  parent: 6c8763bf5a48caea94acc979b2fd3a432eed7e97
+  date: '2026-07-31'
+  subject: 'fix(reports): fail loudly instead of falling back to unguarded screenshot when tiled capture fails'
+  prompt: 'fix(reports): fail loudly instead of falling back to unguarded screenshot when tiled capture fails'
+  code_files:
+  - superset/utils/webdriver.py
+  test_files:
+  - tests/unit_tests/utils/webdriver_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t037
+  commit: 6c8763bf5a48caea94acc979b2fd3a432eed7e97
+  parent: 035eaa8b80c8b168d7e21cc2be57d81cb9e66973
+  date: '2026-07-31'
+  subject: 'fix(db2): stop truncating table comments to one character'
+  prompt: 'fix(db2): stop truncating table comments to one character'
+  code_files:
+  - superset/db_engine_specs/db2.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_db2.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t038
+  commit: 035eaa8b80c8b168d7e21cc2be57d81cb9e66973
+  parent: ec8405aeea625e82864bfa4e7796d4e61037a88d
+  date: '2026-07-31'
+  subject: 'fix(time-comparison): preserve inner bounds for relative offsets'
+  prompt: 'fix(time-comparison): preserve inner bounds for relative offsets'
+  code_files:
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/common/test_query_context_processor.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t039
+  commit: dc632a9737e6af2bcede60e3b1bf4f848cdf3bc0
+  parent: e391691328cbf9b172002eb0bd453ad20a1725b5
+  date: '2026-07-31'
+  subject: 'fix(db_engine_specs): stop filtering out Postgres schemas prefixed with pg'
+  prompt: 'fix(db_engine_specs): stop filtering out Postgres schemas prefixed with pg'
+  code_files:
+  - superset/db_engine_specs/postgres.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_postgres.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t040
+  commit: 8235d0c4fb114487d820b1a504e1791cd11ed707
+  parent: 67d05d0ed7a9bdbae41221dd082632deac070fcf
+  date: '2026-07-31'
+  subject: 'fix(alerts-reports): skip inactive users when resolving report executor'
+  prompt: 'fix(alerts-reports): skip inactive users when resolving report executor'
+  code_files:
+  - superset/tasks/utils.py
+  test_files:
+  - tests/unit_tests/tasks/test_utils.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t041
+  commit: 7b351d53cf74afdd5723af5490a28560edda9a4e
+  parent: 6279cafbbd89252b00a094d27ea605226347297b
+  date: '2026-07-30'
+  subject: 'fix(mcp): fall back to a temporal dataset column'
+  prompt: 'fix(mcp): fall back to a temporal dataset column'
+  code_files:
+  - superset/mcp_service/chart/chart_utils.py
+  - superset/mcp_service/chart/schemas.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_big_number_chart.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t042
+  commit: 6e1c2fbcb8f2301723103be91d53df895930bea9
+  parent: 9f5611aca5425416d6eecd9ebe68fa3c865c4abe
+  date: '2026-07-30'
+  subject: 'chore: Mask specific Druid/Presto/Trino fields'
+  prompt: 'chore: Mask specific Druid/Presto/Trino fields'
+  code_files:
+  - superset/db_engine_specs/druid.py
+  - superset/db_engine_specs/presto.py
+  - superset/db_engine_specs/trino.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_druid.py
+  - tests/unit_tests/db_engine_specs/test_presto.py
+  - tests/unit_tests/db_engine_specs/test_trino.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t043
+  commit: 8cd7793cd2556aeaa2924dc279295a5a3dc211b5
+  parent: 69801a57b1d3d38749b1eb501232a63e7ccc33e9
+  date: '2026-07-30'
+  subject: 'fix(db-engine-specs): handle bare-year python_date_format columns in time-grain expressions'
+  prompt: 'fix(db-engine-specs): handle bare-year python_date_format columns in time-grain expressions'
+  code_files:
+  - superset/db_engine_specs/base.py
+  - superset/db_engine_specs/sqlite.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_sqlite.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t044
+  commit: e71ade5824e882629cd1a7a0734437ef217ea9b2
+  parent: 3588c9ad8661d3fff950c461e070611fb80406d6
+  date: '2026-07-30'
+  subject: 'fix(clickhouse): use equality for boolean filters instead of IS'
+  prompt: 'fix(clickhouse): use equality for boolean filters instead of IS'
+  code_files:
+  - superset/db_engine_specs/clickhouse.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_clickhouse.py
+  n_files: 2
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: clickhouse'
+  verified: unverified
+- id: t045
+  commit: d9c0f19b0c83c5c557312e60b4f55b75e17b2d83
+  parent: 8955593b858f40e6ebafc30bc4199edee24e9e1b
+  date: '2026-07-29'
+  subject: 'fix(pivot-table): keep each Rows field as its own CSV/XLSX column'
+  prompt: 'fix(pivot-table): keep each Rows field as its own CSV/XLSX column'
+  code_files:
+  - superset/charts/client_processing.py
+  test_files:
+  - tests/unit_tests/charts/test_client_processing.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t046
+  commit: 8955593b858f40e6ebafc30bc4199edee24e9e1b
+  parent: bab40cf437c69336cb19b650ced19d44de0967ed
+  date: '2026-07-29'
+  subject: 'fix: close gaps in pkg_resources/sqlalchemy-redshift warning suppression'
+  prompt: 'fix: close gaps in pkg_resources/sqlalchemy-redshift warning suppression'
+  code_files:
+  - superset/db_engine_specs/redshift.py
+  - superset/initialization/__init__.py
+  - superset/mcp_service/__init__.py
+  - superset/mcp_service/server.py
+  test_files:
+  - tests/unit_tests/initialization_test.py
+  - tests/unit_tests/mcp_service/test_mcp_server.py
+  n_files: 6
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: redshift'
+  verified: unverified
+- id: t047
+  commit: bab40cf437c69336cb19b650ced19d44de0967ed
+  parent: e553910240052d5ed9f7516ad130d6a8b5627334
+  date: '2026-07-29'
+  subject: 'fix(errors): downgrade SSH tunnel connection-failure logging to WARNING (SC-115347)'
+  prompt: 'fix(errors): downgrade SSH tunnel connection-failure logging to WARNING (SC-115347)'
+  code_files:
+  - superset/views/error_handling.py
+  test_files:
+  - tests/unit_tests/views/test_error_handling.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t048
+  commit: afb863684b1f23ae11c0db7058c110d75e51a748
+  parent: 5286e565e497548b7a1d30190e4d11e6998ddc87
+  date: '2026-07-29'
+  subject: 'feat(cache): add DATA_CACHE_MAX_VALUE_SIZE to skip caching oversized results'
+  prompt: 'feat(cache): add DATA_CACHE_MAX_VALUE_SIZE to skip caching oversized results'
+  code_files:
+  - superset/config.py
+  - superset/utils/cache.py
+  test_files:
+  - tests/unit_tests/utils/cache_test.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t049
+  commit: f8c05bba6ed308fc306116bdb6ab8bae19acf127
+  parent: 9d2dcf219804950f8085bc92ca3c6f5bc90ad32f
+  date: '2026-07-29'
+  subject: 'fix(clickhouse): bound system sampling reads instead of failing on max_rows_to_read'
+  prompt: 'fix(clickhouse): bound system sampling reads instead of failing on max_rows_to_read'
+  code_files:
+  - superset/common/query_actions.py
+  - superset/databases/schemas.py
+  - superset/datasets/datetime_format_detector.py
+  - superset/db_engine_specs/base.py
+  - superset/db_engine_specs/clickhouse.py
+  - superset/models/core.py
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/charts/test_schemas.py
+  - tests/unit_tests/common/test_query_actions.py
+  - tests/unit_tests/datasets/test_datetime_format_detector.py
+  - tests/unit_tests/db_engine_specs/test_clickhouse.py
+  - tests/unit_tests/models/helpers_test.py
+  n_files: 13
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: clickhouse'
+  verified: unverified
+- id: t050
+  commit: 940b670636e4360423035c1a57322fcdf4d018c3
+  parent: 069605828d109cfc73b38f0424128eb446fc434c
+  date: '2026-07-29'
+  subject: 'feat(versioning): version-restore engine and endpoints for charts, dashboards, and datasets'
+  prompt: 'feat(versioning): version-restore engine and endpoints for charts, dashboards, and datasets'
+  code_files:
+  - superset/charts/api.py
+  - superset/commands/chart/restore_version.py
+  - superset/commands/dashboard/restore_version.py
+  - superset/commands/dataset/restore_version.py
+  - superset/commands/version_restore.py
+  - superset/daos/version.py
+  - superset/dashboards/api.py
+  - superset/datasets/api.py
+  - superset/initialization/__init__.py
+  - superset/versioning/api_helpers.py
+  - superset/versioning/baseline/__init__.py
+  - superset/versioning/baseline/shadow.py
+  - superset/versioning/changes/shadow_queries.py
+  - superset/versioning/queries.py
+  - superset/versioning/restore.py
+  - superset/versioning/utils.py
+  test_files:
+  - tests/unit_tests/versioning/test_restore.py
+  n_files: 20
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: restore'
+  - 'changed-file name in message: version'
+  verified: unverified
+- id: t051
+  commit: 1d4c3a2adb5f4115c890fbfcbc39c3a98ce27a5d
+  parent: 4a4f0685fd671d592c4e03891ba1ba4c4250542b
+  date: '2026-07-28'
+  subject: 'fix(core): don''t blank a datetime column when its format coerces every value to NaT'
+  prompt: 'fix(core): don''t blank a datetime column when its format coerces every value to NaT'
+  code_files:
+  - superset/utils/core.py
+  test_files:
+  - tests/unit_tests/utils/test_core.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t052
+  commit: 4a4f0685fd671d592c4e03891ba1ba4c4250542b
+  parent: 22ad3f2c34e4f7136e7c52f3c06fc7ef628de844
+  date: '2026-07-28'
+  subject: 'fix(reports): prevent bad-date crontab from crashing the report scheduler for all tenants'
+  prompt: 'fix(reports): prevent bad-date crontab from crashing the report scheduler for all tenants'
+  code_files:
+  - superset/tasks/cron_util.py
+  test_files:
+  - tests/unit_tests/tasks/test_cron_util.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t053
+  commit: 5aaf9d337b549c2d7e7dbde174d7f32a7d474566
+  parent: 181f5bc9c1ed38b9ee4b589b907fdf11f5f5f22e
+  date: '2026-07-28'
+  subject: 'fix(jinja): handle non-JSON body with JSON content-type in get_form_data'
+  prompt: 'fix(jinja): handle non-JSON body with JSON content-type in get_form_data'
+  code_files:
+  - superset/views/utils.py
+  test_files:
+  - tests/unit_tests/views/test_utils.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t054
+  commit: 181f5bc9c1ed38b9ee4b589b907fdf11f5f5f22e
+  parent: e426fb7bc6e682e5aaf5de2069b75930d546ac58
+  date: '2026-07-28'
+  subject: 'fix(mcp): capture created chart/dashboard id in generate_chart/generate_dashboard audit logs'
+  prompt: 'fix(mcp): capture created chart/dashboard id in generate_chart/generate_dashboard audit logs'
+  code_files:
+  - superset/mcp_service/middleware.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_middleware_logging.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t055
+  commit: b983161eeff4a28f5c6088f4f69065e2bf1aa686
+  parent: 7b767f6c1d5a4d8813ae4c0eda659d1218297b60
+  date: '2026-07-28'
+  subject: 'feat(async): cancel running chart queries under GLOBAL_ASYNC_QUERIES'
+  prompt: 'feat(async): cancel running chart queries under GLOBAL_ASYNC_QUERIES'
+  code_files:
+  - superset/async_events/api.py
+  - superset/async_events/async_query_manager.py
+  - superset/async_events/cache_backend.py
+  - superset/tasks/async_queries.py
+  test_files:
+  - tests/unit_tests/async_events/async_query_manager_tests.py
+  - tests/unit_tests/tasks/test_async_queries.py
+  n_files: 10
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t056
+  commit: ecc7f726a4ea2694ed888bcc2429624f3d4c3f1e
+  parent: 26b6f7bb5df8fad7b62ef08fa6bc4e9b6ee67bc7
+  date: '2026-07-28'
+  subject: 'fix: guard potential null derefs and remove dead branches'
+  prompt: 'fix: guard potential null derefs and remove dead branches'
+  code_files:
+  - superset/common/query_context_factory.py
+  - superset/common/utils/query_cache_manager.py
+  - superset/db_engine_specs/databricks.py
+  - superset/db_engine_specs/presto.py
+  test_files:
+  - tests/unit_tests/common/test_query_context_factory.py
+  n_files: 5
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: passes_at_parent
+  navigation: needed
+  navigation_hit: null
+- id: t057
+  commit: 26b6f7bb5df8fad7b62ef08fa6bc4e9b6ee67bc7
+  parent: a10c3f0b1dd481670b1b3252c972489034d79429
+  date: '2026-07-28'
+  subject: 'fix(dashboard): preserve refresh_frequency when absent from save data'
+  prompt: 'fix(dashboard): preserve refresh_frequency when absent from save data'
+  code_files:
+  - superset/daos/dashboard.py
+  test_files:
+  - tests/unit_tests/dao/dashboard_test.py
+  n_files: 2
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: dashboard'
+  verified: unverified
+- id: t058
+  commit: c792752a58b1e4d553df95beb70a8a20f8f4bed0
+  parent: eb914b8ae35b02502540cbaeb530b820f1afa707
+  date: '2026-07-28'
+  subject: 'fix(db_engine_specs): preserve DATE semantics when applying Postgres time grains (#42254)'
+  prompt: 'fix(db_engine_specs): preserve DATE semantics when applying Postgres time grains (#42254)'
+  code_files:
+  - superset/db_engine_specs/postgres.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_postgres.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t059
+  commit: eb914b8ae35b02502540cbaeb530b820f1afa707
+  parent: 276b7e2d678a7ea8e9a5504ca10456082fdb75ef
+  date: '2026-07-27'
+  subject: 'fix(datasets): log datetime format-detection DB query failures at WARNING'
+  prompt: 'fix(datasets): log datetime format-detection DB query failures at WARNING'
+  code_files:
+  - superset/datasets/datetime_format_detector.py
+  test_files:
+  - tests/unit_tests/datasets/test_datetime_format_detector.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t060
+  commit: 276b7e2d678a7ea8e9a5504ca10456082fdb75ef
+  parent: 3e7ae85cc24caa0662c1ab81b34bd56d9dc654e0
+  date: '2026-07-27'
+  subject: 'fix(importers): catch YAMLError instead of narrower ParserError in dataset v0 importer'
+  prompt: 'fix(importers): catch YAMLError instead of narrower ParserError in dataset v0 importer'
+  code_files:
+  - superset/commands/dataset/importers/v0.py
+  test_files:
+  - tests/unit_tests/datasets/commands/importers/v0/import_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: given
+  navigation_hit: ParserError
+- id: t061
+  commit: 3e7ae85cc24caa0662c1ab81b34bd56d9dc654e0
+  parent: 12d7179c21b2016daf3b0ee493451e0a539a189c
+  date: '2026-07-27'
+  subject: 'fix(importers): catch YAMLError instead of narrower ParserError in load_yaml'
+  prompt: 'fix(importers): catch YAMLError instead of narrower ParserError in load_yaml'
+  code_files:
+  - superset/commands/importers/v1/utils.py
+  test_files:
+  - tests/unit_tests/commands/importers/v1/utils_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: given
+  navigation_hit: YAMLError
+- id: t062
+  commit: 12d7179c21b2016daf3b0ee493451e0a539a189c
+  parent: 1d752a0ced6925d0b9b73a303660de497bc30ea1
+  date: '2026-07-27'
+  subject: 'fix(hive): select schema via USE prequery instead of rewriting the URI database'
+  prompt: 'fix(hive): select schema via USE prequery instead of rewriting the URI database'
+  code_files:
+  - superset/db_engine_specs/hive.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_hive.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t063
+  commit: 1d752a0ced6925d0b9b73a303660de497bc30ea1
+  parent: a44afd810587c7f021a43f74ce9d6c989859032f
+  date: '2026-07-27'
+  subject: 'fix(embedded): load guest charts with missing or stale query_context'
+  prompt: 'fix(embedded): load guest charts with missing or stale query_context'
+  code_files:
+  - superset/security/manager.py
+  test_files:
+  - tests/unit_tests/security/manager_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t064
+  commit: 74924ae73a41a8beb3b0f161bb8bd8ae136f6882
+  parent: 748e1e80f06b59be0b0b9edcc93ae74740819314
+  date: '2026-07-28'
+  subject: 'fix(db_engine_specs): use CAST(DATE({col}) AS DATETIME) in MySQL HOUR time grain'
+  prompt: 'fix(db_engine_specs): use CAST(DATE({col}) AS DATETIME) in MySQL HOUR time grain'
+  code_files:
+  - superset/db_engine_specs/mysql.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_mysql.py
+  - tests/unit_tests/db_engine_specs/test_starrocks.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: fails_at_commit
+  navigation: needed
+  navigation_hit: null
+- id: t065
+  commit: 90040fc1f6a9b81e65fa8434daa750e6069f7c79
+  parent: ba0900d2b32fc4b294d5192312b136cd1851b349
+  date: '2026-07-26'
+  subject: 'fix(mcp_service): downgrade client-disconnect transport noise to WARNING (SC-115264)'
+  prompt: 'fix(mcp_service): downgrade client-disconnect transport noise to WARNING (SC-115264)'
+  code_files:
+  - superset/mcp_service/server.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_logging_filters.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t066
+  commit: ba0900d2b32fc4b294d5192312b136cd1851b349
+  parent: 9a025267bdf6cc5da5c4c454877b94735fecf379
+  date: '2026-07-26'
+  subject: 'fix(semantic-layers): show a friendly warning when schema enrichment falls back'
+  prompt: 'fix(semantic-layers): show a friendly warning when schema enrichment falls back'
+  code_files:
+  - superset/semantic_layers/api.py
+  test_files:
+  - tests/unit_tests/semantic_layers/api_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: given
+  navigation_hit: enrichment
+- id: t067
+  commit: 9a025267bdf6cc5da5c4c454877b94735fecf379
+  parent: e3d3262e977fb86a153470d5bb074c346c4f68b9
+  date: '2026-07-25'
+  subject: 'fix(reports): positive readiness check for non-tiled screenshots'
+  prompt: 'fix(reports): positive readiness check for non-tiled screenshots'
+  code_files:
+  - superset/config.py
+  - superset/utils/screenshot_utils.py
+  - superset/utils/webdriver.py
+  test_files:
+  - tests/unit_tests/utils/test_screenshot_utils.py
+  - tests/unit_tests/utils/webdriver_test.py
+  n_files: 5
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t068
+  commit: c65bedf2d760dab5758ccdaefa4bf751cd498f35
+  parent: 2a07f7967d4b4a91037bbc6fc60abb9a46029301
+  date: '2026-07-24'
+  subject: 'fix(extensions): make LOCAL_EXTENSIONS hot reload reliable in Docker'
+  prompt: 'fix(extensions): make LOCAL_EXTENSIONS hot reload reliable in Docker'
+  code_files:
+  - superset/extensions/api.py
+  - superset/extensions/cache_middleware.py
+  - superset/extensions/local_extensions_watcher.py
+  - superset/extensions/utils.py
+  test_files:
+  - tests/unit_tests/extensions/test_cache_middleware.py
+  - tests/unit_tests/extensions/test_local_extensions_watcher.py
+  n_files: 9
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t069
+  commit: 5ffdac1871d2b2d5579c13130eecdd499c242c79
+  parent: 52552c8278ecbced4149dde5b90f4544e5eb8e66
+  date: '2026-07-24'
+  subject: 'fix(mcp): align pooled screenshot override signature'
+  prompt: 'fix(mcp): align pooled screenshot override signature'
+  code_files:
+  - superset/mcp_service/screenshot/pooled_screenshot.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_pooled_screenshot.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: given
+  navigation_hit: pooled
+- id: t070
+  commit: f3fa1c7d4f6303e7a075bd91b41d1e4d1275d781
+  parent: 99841fb504bbc3c42c4b3055fbc783b74e368676
+  date: '2026-07-24'
+  subject: 'fix(reports): write a single execution log row per report run (#29857)'
+  prompt: 'fix(reports): write a single execution log row per report run (#29857)'
+  code_files:
+  - superset/commands/report/execute.py
+  test_files:
+  - tests/unit_tests/commands/report/execute_test.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: passes_at_parent
+  navigation: needed
+  navigation_hit: null
+- id: t071
+  commit: 99841fb504bbc3c42c4b3055fbc783b74e368676
+  parent: 3a53c4ebc3b202d16fcbbe648a01c302d3770d5a
+  date: '2026-07-24'
+  subject: 'fix(async): include datasets and rev claims in guest channel HMAC'
+  prompt: 'fix(async): include datasets and rev claims in guest channel HMAC'
+  code_files:
+  - superset/async_events/async_query_manager.py
+  test_files:
+  - tests/unit_tests/async_events/async_query_manager_tests.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t072
+  commit: 7eceebce1ceaca78b548e705ab3630fa1e9dd687
+  parent: 3bdf134aaa2f3cc34739964f7c276506949f0653
+  date: '2026-07-24'
+  subject: 'feat(dbspec): Support apache datafusion dbspec'
+  prompt: 'feat(dbspec): Support apache datafusion dbspec'
+  code_files:
+  - superset/db_engine_specs/datafusion.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_datafusion.py
+  n_files: 6
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: datafusion'
+  verified: unverified
+- id: t073
+  commit: 4ee500e47bf064f098f359201994279b4e3ffaeb
+  parent: 3ff5dbfe81e68662974ac4d15f5eb2de60ad40e1
+  date: '2026-07-24'
+  subject: 'fix(explore): render Jinja before validating legacy chart filters'
+  prompt: 'fix(explore): render Jinja before validating legacy chart filters'
+  code_files:
+  - superset/utils/core.py
+  - superset/viz.py
+  test_files:
+  - tests/unit_tests/core_tests.py
+  - tests/unit_tests/test_viz_query_obj.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t074
+  commit: bcf0361a919312331da8e2b4aca40902091d914c
+  parent: 5776aff50ac6e4069eb8858dca39ea6330d744e7
+  date: '2026-07-24'
+  subject: 'feat(KustoKQL): Add support for NULL / IS NOT NULL operator'
+  prompt: 'feat(KustoKQL): Add support for NULL / IS NOT NULL operator'
+  code_files:
+  - superset/db_engine_specs/kusto.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_kusto.py
+  - tests/unit_tests/sql/parse_tests.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t075
+  commit: 206fe7ab1200a4d5e1869c6987ee756c2f351d95
+  parent: 1049826bc15c7a12578f331846a21a6fda009ea7
+  date: '2026-07-23'
+  subject: 'fix(embedded): stop rejecting guest chart data built from control-specific params keys'
+  prompt: 'fix(embedded): stop rejecting guest chart data built from control-specific params keys'
+  code_files:
+  - superset/security/manager.py
+  test_files:
+  - tests/unit_tests/security/manager_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t076
+  commit: 2317d9cf918248e2b6b8d9887742ea9aacd59533
+  parent: df8bbb548a301753714f96e8017e87fab2c61383
+  date: '2026-07-23'
+  subject: 'fix(mcp): truncate query-tool responses instead of hard-failing'
+  prompt: 'fix(mcp): truncate query-tool responses instead of hard-failing'
+  code_files:
+  - superset/mcp_service/middleware.py
+  - superset/mcp_service/utils/token_utils.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_middleware.py
+  - tests/unit_tests/mcp_service/utils/test_token_utils.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t077
+  commit: cb319c9b8179668a46781eca55628311470b04a5
+  parent: cc8edd2231853f9d99fbb24d944d12cbb179805a
+  date: '2026-07-23'
+  subject: 'fix(mcp): trust dataset is_dttm flag when applying time_grain to VARCHAR temporal columns'
+  prompt: 'fix(mcp): trust dataset is_dttm flag when applying time_grain to VARCHAR temporal columns'
+  code_files:
+  - superset/mcp_service/chart/chart_utils.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_chart_utils.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t078
+  commit: 17bd286ae9b6cc9c1947d001271176dfe3a912cb
+  parent: 32937f24d259b6aec01b0cb49ac07df2fb8722a9
+  date: '2026-07-22'
+  subject: 'fix(forecast): resolve time grain robustly for Prophet forecasting'
+  prompt: 'fix(forecast): resolve time grain robustly for Prophet forecasting'
+  code_files:
+  - superset/utils/pandas_postprocessing/prophet.py
+  test_files:
+  - tests/unit_tests/pandas_postprocessing/test_prophet.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t079
+  commit: e075133a83323f790028480ca68d0fd78840ba9a
+  parent: 8d034ef65ca829e842eea233dcc91023992deb84
+  date: '2026-07-22'
+  subject: 'fix(pandas_postprocessing): avoid FutureWarning for max/min in boxplot MINMAX'
+  prompt: 'fix(pandas_postprocessing): avoid FutureWarning for max/min in boxplot MINMAX'
+  code_files:
+  - superset/utils/pandas_postprocessing/boxplot.py
+  test_files:
+  - tests/unit_tests/pandas_postprocessing/test_boxplot.py
+  n_files: 2
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: boxplot'
+  verified: unverified
+- id: t080
+  commit: 8c5d465a6587db367bdd9063037a9afe7a67cf60
+  parent: c5935b6904d30f7c2a2c20d975876261c62f7e93
+  date: '2026-07-22'
+  subject: 'feat(datasets): add RLS filter indicator badge to dataset list and explore view'
+  prompt: 'feat(datasets): add RLS filter indicator badge to dataset list and explore view'
+  code_files:
+  - superset/commands/datasource/list.py
+  - superset/commands/explore/get.py
+  - superset/daos/dataset.py
+  - superset/datasets/api.py
+  - superset/explore/schemas.py
+  - superset/superset_typing.py
+  test_files:
+  - tests/unit_tests/commands/datasource/list_test.py
+  - tests/unit_tests/commands/explore/test_get_explore_rls.py
+  - tests/unit_tests/dao/dataset_rls_test.py
+  n_files: 17
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: dataset'
+  verified: unverified
+- id: t081
+  commit: 1c0f259e3808a1182e76d8eeee412b7fad602dc2
+  parent: b8f3b768d4fe531b37a44b9d32a69366b5c70586
+  date: '2026-07-22'
+  subject: 'refactor(mcp): dedupe list-tool schemas and delete dead middleware'
+  prompt: 'refactor(mcp): dedupe list-tool schemas and delete dead middleware'
+  code_files:
+  - superset/mcp_service/annotation_layer/schemas.py
+  - superset/mcp_service/chart/schemas.py
+  - superset/mcp_service/chart/tool/generate_chart.py
+  - superset/mcp_service/chart/tool/list_charts.py
+  - superset/mcp_service/common/pagination_schemas.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/database/schemas.py
+  - superset/mcp_service/dataset/schemas.py
+  - superset/mcp_service/middleware.py
+  - superset/mcp_service/query/schemas.py
+  - superset/mcp_service/report/schemas.py
+  - superset/mcp_service/rls/schemas.py
+  - superset/mcp_service/role/schemas.py
+  - superset/mcp_service/saved_query/schemas.py
+  - superset/mcp_service/tag/schemas.py
+  - superset/mcp_service/task/schemas.py
+  - superset/mcp_service/theme/schemas.py
+  - superset/mcp_service/user/schemas.py
+  - superset/mcp_service/utils/permissions_utils.py
+  test_files:
+  - tests/unit_tests/mcp_service/dataset/test_dataset_schemas.py
+  n_files: 21
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: middleware'
+  - 'changed-file name in message: schemas'
+  verified: unverified
+- id: t082
+  commit: 1392fbc9b2424707d994d3a74d185b84b3087d30
+  parent: a086b2eae9b6f84fc84bcef450714f0d0dc840f7
+  date: '2026-07-22'
+  subject: 'fix(sql): validate Custom SQL metric has an aggregate under GROUP BY'
+  prompt: 'fix(sql): validate Custom SQL metric has an aggregate under GROUP BY'
+  code_files:
+  - superset/models/helpers.py
+  - superset/sql/parse.py
+  test_files:
+  - tests/unit_tests/models/helpers_test.py
+  - tests/unit_tests/sql/parse_tests.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t083
+  commit: a086b2eae9b6f84fc84bcef450714f0d0dc840f7
+  parent: 788165b5bbb68a544506119edd5e1773fe73b79b
+  date: '2026-07-22'
+  subject: 'fix(clickhouse): retry adhoc column type probe with comment-safe SQL'
+  prompt: 'fix(clickhouse): retry adhoc column type probe with comment-safe SQL'
+  code_files:
+  - superset/connectors/sqla/utils.py
+  - superset/db_engine_specs/base.py
+  - superset/db_engine_specs/clickhouse.py
+  test_files:
+  - tests/unit_tests/connectors/sqla/utils_test.py
+  - tests/unit_tests/db_engine_specs/test_clickhouse.py
+  - tests/unit_tests/models/helpers_test.py
+  n_files: 6
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: clickhouse'
+  verified: unverified
+- id: t084
+  commit: cae61b51e123317d3e47bd7ee6c98887102a51dd
+  parent: 9c08240fdc81201d946d5bd0fd362dca3715d663
+  date: '2026-07-21'
+  subject: 'fix(cache): QueryCacheManager.get() should fail open on cache backend errors'
+  prompt: 'fix(cache): QueryCacheManager.get() should fail open on cache backend errors'
+  code_files:
+  - superset/common/utils/query_cache_manager.py
+  test_files:
+  - tests/unit_tests/common/test_query_cache_manager.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t085
+  commit: 072ff014062a8018ecb52292718f91548d6dabec
+  parent: 8b1ef3a4cba0e547f2cafb3ed9936423835df868
+  date: '2026-07-22'
+  subject: 'fix: disable recaptcha for LDAP authentication'
+  prompt: 'fix: disable recaptcha for LDAP authentication'
+  code_files:
+  - superset/views/base.py
+  test_files:
+  - tests/unit_tests/views/test_bootstrap_auth.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t086
+  commit: 2ddea33bb680d144140568c51e5034de87074bfe
+  parent: 15d7d365804c744f93e80ca66a230dbc41a9a2c7
+  date: '2026-07-22'
+  subject: 'fix(models): inline calculated column expression in raw-records queries (#34784)'
+  prompt: 'fix(models): inline calculated column expression in raw-records queries (#34784)'
+  code_files:
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/models/helpers_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: passes_at_parent
+  navigation: needed
+  navigation_hit: null
+- id: t087
+  commit: 15d7d365804c744f93e80ca66a230dbc41a9a2c7
+  parent: ab8e23d8749bcd351b9e3f09002f0f9f8db8120e
+  date: '2026-07-21'
+  subject: 'chore: remove deprecated from_dttm and to_dttm jinja vars'
+  prompt: 'chore: remove deprecated from_dttm and to_dttm jinja vars'
+  code_files:
+  - superset/jinja_context.py
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/connectors/sqla/utils_test.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: passes_at_parent
+  navigation: needed
+  navigation_hit: null
+- id: t088
+  commit: e5c418a1878a4deb110a4d66cbe87d2c8b0dca78
+  parent: 34ebe3d22ad71f475824d9b3e7046f316af8226c
+  date: '2026-07-21'
+  subject: 'fix(mcp): normalize bracket-shorthand time ranges in query_dataset'
+  prompt: 'fix(mcp): normalize bracket-shorthand time ranges in query_dataset'
+  code_files:
+  - superset/mcp_service/dataset/schemas.py
+  test_files:
+  - tests/unit_tests/mcp_service/dataset/tool/test_query_dataset.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t089
+  commit: e1a265447f606626923c56d986c380588577c0ef
+  parent: f999afaac017094750fd59db81bced7bc63f9232
+  date: '2026-07-21'
+  subject: 'fix(charts): use chart name in CSV/XLSX/zip export filenames'
+  prompt: 'fix(charts): use chart name in CSV/XLSX/zip export filenames'
+  code_files:
+  - superset/charts/data/api.py
+  test_files:
+  - tests/unit_tests/charts/test_chart_data_api.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t090
+  commit: f999afaac017094750fd59db81bced7bc63f9232
+  parent: 1a862476e1ea5b5dcbbb6df3d8a59c9310157dfc
+  date: '2026-07-21'
+  subject: 'fix(mcp): coerce float rowcount to int in ChartData to prevent PydanticSerializationError'
+  prompt: 'fix(mcp): coerce float rowcount to int in ChartData to prevent PydanticSerializationError'
+  code_files:
+  - superset/mcp_service/chart/schemas.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/tool/test_get_chart_data.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t091
+  commit: df34b5d27750215ffddc79e8aa88ded160285c1c
+  parent: b362d3601933f19658c65d6ac834ae07db816cae
+  date: '2026-07-21'
+  subject: 'fix(drill-detail): paginate Elasticsearch samples via engine cursor'
+  prompt: 'fix(drill-detail): paginate Elasticsearch samples via engine cursor'
+  code_files:
+  - superset/databases/schemas.py
+  - superset/db_engine_specs/base.py
+  - superset/db_engine_specs/elasticsearch.py
+  - superset/models/helpers.py
+  - superset/views/datasource/utils.py
+  test_files:
+  - tests/unit_tests/databases/api_test.py
+  - tests/unit_tests/databases/test_schemas.py
+  - tests/unit_tests/db_engine_specs/test_base.py
+  - tests/unit_tests/db_engine_specs/test_elasticsearch.py
+  - tests/unit_tests/models/test_helpers_offset.py
+  - tests/unit_tests/views/__init__.py
+  - tests/unit_tests/views/datasource/test_utils.py
+  n_files: 14
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t092
+  commit: f75171686759f3d9dab63dd78024e92df9dceb87
+  parent: bafe5ad9ba3fa3cb308ddedbee93629a73644f1e
+  date: '2026-07-21'
+  subject: 'fix(trino): quote nested ROW field paths per-segment in physical column expressions'
+  prompt: 'fix(trino): quote nested ROW field paths per-segment in physical column expressions'
+  code_files:
+  - superset/connectors/sqla/models.py
+  - superset/db_engine_specs/trino.py
+  - superset/superset_typing.py
+  test_files:
+  - tests/unit_tests/connectors/sqla/models_test.py
+  - tests/unit_tests/db_engine_specs/test_trino.py
+  n_files: 5
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t093
+  commit: 2d3cbc162e499c79db9f87353b464f7e81482fd1
+  parent: e4005f02c6b74f045dd5662104173e163361d200
+  date: '2026-07-21'
+  subject: 'fix(db_engine_specs): map var_string to STRING for MySQL/StarRocks'
+  prompt: 'fix(db_engine_specs): map var_string to STRING for MySQL/StarRocks'
+  code_files:
+  - superset/db_engine_specs/mysql.py
+  - superset/db_engine_specs/starrocks.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_mysql.py
+  - tests/unit_tests/db_engine_specs/test_starrocks.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: fails_at_commit
+  navigation: needed
+  navigation_hit: null
+- id: t094
+  commit: 4b659da5c4c5dcd957465b3e258d9f3d0810f8d8
+  parent: b4529c2654f5bd6b935bdd3b2e2ca5ccf8db190c
+  date: '2026-07-20'
+  subject: 'fix(reports): positive per-tile chart readiness check for tiled screenshots'
+  prompt: 'fix(reports): positive per-tile chart readiness check for tiled screenshots'
+  code_files:
+  - superset/commands/report/execute.py
+  - superset/utils/screenshot_utils.py
+  - superset/utils/screenshots.py
+  - superset/utils/webdriver.py
+  test_files:
+  - tests/unit_tests/utils/test_screenshot_utils.py
+  - tests/unit_tests/utils/webdriver_test.py
+  n_files: 7
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: screenshots'
+  verified: unverified
+- id: t095
+  commit: b3757870cce7e6863a69c51654693e364b55b061
+  parent: 158e3219922a63f8da6d3b97a33f4039d2973d89
+  date: '2026-07-20'
+  subject: 'fix(sqllab): apply SQL_QUERY_MUTATOR in SQL Lab when MUTATE_AFTER_SPLIT is set'
+  prompt: 'fix(sqllab): apply SQL_QUERY_MUTATOR in SQL Lab when MUTATE_AFTER_SPLIT is set'
+  code_files:
+  - superset/config.py
+  - superset/sql/execution/celery_task.py
+  - superset/sql/execution/executor.py
+  - superset/sql_lab.py
+  test_files:
+  - tests/unit_tests/models/core_test.py
+  - tests/unit_tests/sql/execution/conftest.py
+  - tests/unit_tests/sql/execution/test_celery_task.py
+  - tests/unit_tests/sql/execution/test_executor.py
+  - tests/unit_tests/sql_lab_test.py
+  n_files: 11
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: given
+  navigation_hit: MUTATE_AFTER_SPLIT
+- id: t096
+  commit: 64053271e87ec6e3fd61df6bed45f44f02164bcb
+  parent: 940e2c34a25e661a8eefe5ca5cb22807883eb7dd
+  date: '2026-07-20'
+  subject: 'fix(views): remove stray space in @deprecated new_target log message'
+  prompt: 'fix(views): remove stray space in @deprecated new_target log message'
+  code_files:
+  - superset/views/base.py
+  test_files:
+  - tests/unit_tests/views/test_base.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t097
+  commit: f03a66db9c9d2ea2a20e48a8c3eb4298a58d00b1
+  parent: 515dfef9554776e2afa7e8092e836d715c69bc2f
+  date: '2026-07-20'
+  subject: 'fix(dataset): apply HOURS OFFSET to all temporal columns, not just the time column'
+  prompt: 'fix(dataset): apply HOURS OFFSET to all temporal columns, not just the time column'
+  code_files:
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/models/helpers_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t098
+  commit: 515dfef9554776e2afa7e8092e836d715c69bc2f
+  parent: 5a17ae1224730d3ec629bfc2ea6c62c61782e6f3
+  date: '2026-07-20'
+  subject: 'fix(dashboard import): Importing existing dashboard via UI won''t update charts and datasets'
+  prompt: 'fix(dashboard import): Importing existing dashboard via UI won''t update charts and datasets'
+  code_files:
+  - superset/commands/dashboard/importers/v1/__init__.py
+  - superset/dashboards/api.py
+  test_files:
+  - tests/unit_tests/commands/dashboard/importers/v1/assets_test.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t099
+  commit: 3e40bebba86ff45bf5bb1765c3544101762f3bcc
+  parent: 36dbff091f4280db544b8dafd92146408cb43405
+  date: '2026-07-20'
+  subject: 'fix(import): enforce write permission for objects created by legacy import paths'
+  prompt: 'fix(import): enforce write permission for objects created by legacy import paths'
+  code_files:
+  - superset/commands/dashboard/importers/v0.py
+  - superset/commands/dataset/importers/v0.py
+  test_files:
+  - tests/unit_tests/dashboards/commands/importers/v0/__init__.py
+  - tests/unit_tests/dashboards/commands/importers/v0/import_test.py
+  - tests/unit_tests/datasets/commands/importers/v0/__init__.py
+  - tests/unit_tests/datasets/commands/importers/v0/import_test.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t100
+  commit: caf017bd0b3636c6a2e19f9a98958866d0a500d5
+  parent: a83171bce6b5178d42a220695b8ac8fd29c403ee
+  date: '2026-07-18'
+  subject: 'feat(versioning): cross-entity version activity view'
+  prompt: 'feat(versioning): cross-entity version activity view'
+  code_files:
+  - superset/charts/api.py
+  - superset/constants.py
+  - superset/dashboards/api.py
+  - superset/datasets/api.py
+  - superset/versioning/activity/__init__.py
+  - superset/versioning/activity/impact.py
+  - superset/versioning/activity/kinds.py
+  - superset/versioning/activity/orchestrator.py
+  - superset/versioning/activity/queries.py
+  - superset/versioning/activity/render.py
+  - superset/versioning/activity/scope.py
+  - superset/versioning/activity/visibility.py
+  - superset/versioning/activity/windows.py
+  - superset/versioning/api_helpers.py
+  - superset/versioning/changes/listener.py
+  - superset/versioning/diff.py
+  - superset/versioning/schemas.py
+  test_files:
+  - tests/unit_tests/versioning/test_activity.py
+  n_files: 22
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t101
+  commit: a83171bce6b5178d42a220695b8ac8fd29c403ee
+  parent: 6c13ab665745ca2d667ee19abd4451629b351280
+  date: '2026-07-19'
+  subject: 'fix(database): capture result metadata after fetch'
+  prompt: 'fix(database): capture result metadata after fetch'
+  code_files:
+  - superset/models/core.py
+  test_files:
+  - tests/unit_tests/models/core_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t102
+  commit: 0f61d9a3fb8e7ac67d25eac44fbc498b7954ed4e
+  parent: b432f8c9175ccfcba669563429b2186b7d62641f
+  date: '2026-07-18'
+  subject: 'fix(bigquery): ensure BigQuery client uses project from engine URI'
+  prompt: 'fix(bigquery): ensure BigQuery client uses project from engine URI'
+  code_files:
+  - superset/db_engine_specs/bigquery.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_bigquery.py
+  n_files: 2
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: bigquery'
+  verified: unverified
+- id: t103
+  commit: 5750d82426ca012255248cc2dc1c1f70af801751
+  parent: c84a154b524839fa1d216a2c563d0889d1e40a4e
+  date: '2026-07-17'
+  subject: 'fix(pandas_postprocessing): avoid FutureWarning for mean/median in boxplot'
+  prompt: 'fix(pandas_postprocessing): avoid FutureWarning for mean/median in boxplot'
+  code_files:
+  - superset/utils/pandas_postprocessing/boxplot.py
+  test_files:
+  - tests/unit_tests/pandas_postprocessing/test_boxplot.py
+  n_files: 2
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: boxplot'
+  verified: unverified
+- id: t104
+  commit: 5b837e844e9c94bab241823a88c3821edde7e674
+  parent: a99c98c6fee0ef77efd3fabbe5840c43ab937109
+  date: '2026-07-17'
+  subject: 'fix(sqla): cast native UUID columns to string for LIKE/ILIKE filters'
+  prompt: 'fix(sqla): cast native UUID columns to string for LIKE/ILIKE filters'
+  code_files:
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/models/helpers_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t105
+  commit: a99c98c6fee0ef77efd3fabbe5840c43ab937109
+  parent: f8cfa459efb2360c58ae0291e3934f2f1f8083d0
+  date: '2026-07-17'
+  subject: 'feat(mcp): waterfall chart type plugin'
+  prompt: 'feat(mcp): waterfall chart type plugin'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/chart/chart_utils.py
+  - superset/mcp_service/chart/plugins/__init__.py
+  - superset/mcp_service/chart/plugins/waterfall.py
+  - superset/mcp_service/chart/schemas.py
+  - superset/mcp_service/chart/tool/generate_chart.py
+  - superset/mcp_service/chart/tool/get_chart_data.py
+  - superset/mcp_service/chart/tool/get_chart_preview.py
+  - superset/mcp_service/chart/tool/get_chart_type_schema.py
+  - superset/mcp_service/chart/validation/dataset_validator.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_waterfall_chart.py
+  - tests/unit_tests/mcp_service/chart/tool/test_get_chart_type_schema.py
+  n_files: 12
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: waterfall'
+  verified: unverified
+- id: t106
+  commit: f8cfa459efb2360c58ae0291e3934f2f1f8083d0
+  parent: eef3dac72f8972a3965d6f1459cabe1de6d78e22
+  date: '2026-07-18'
+  subject: 'fix(presto): fix latest_sub_partition guard bypass + escape partition filter values'
+  prompt: 'fix(presto): fix latest_sub_partition guard bypass + escape partition filter values'
+  code_files:
+  - superset/db_engine_specs/presto.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_presto.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t107
+  commit: 73aa8ef280d8e9694b0c10d5fa05fdd01f557b91
+  parent: f3255c46ac8ffa24b57a539132fa9338356db5d5
+  date: '2026-07-17'
+  subject: 'docs(mcp): fix instruction/docstring drift and annotation metadata in mcp_service'
+  prompt: 'docs(mcp): fix instruction/docstring drift and annotation metadata in mcp_service'
+  code_files:
+  - superset/mcp_service/CLAUDE.md
+  - superset/mcp_service/app.py
+  - superset/mcp_service/chart/tool/generate_chart.py
+  - superset/mcp_service/chart/tool/get_chart_type_schema.py
+  - superset/mcp_service/chart/tool/list_charts.py
+  - superset/mcp_service/chart/tool/update_chart_preview.py
+  - superset/mcp_service/dashboard/tool/list_dashboards.py
+  - superset/mcp_service/dashboard/tool/update_dashboard.py
+  test_files:
+  - tests/unit_tests/mcp_service/system/resources/__init__.py
+  - tests/unit_tests/mcp_service/system/resources/test_schema_discovery.py
+  n_files: 10
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: passes_at_parent
+  navigation: needed
+  navigation_hit: null
+- id: t108
+  commit: f3255c46ac8ffa24b57a539132fa9338356db5d5
+  parent: 9f230bcfc0ce8e7dfc000c0881d929302c053cdf
+  date: '2026-07-17'
+  subject: 'feat(mcp): add dashboard owner, role, and certification management tools'
+  prompt: 'feat(mcp): add dashboard owner, role, and certification management tools'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/__init__.py
+  - superset/mcp_service/dashboard/tool/governance_utils.py
+  - superset/mcp_service/dashboard/tool/manage_dashboard_certification.py
+  - superset/mcp_service/dashboard/tool/manage_dashboard_owners.py
+  - superset/mcp_service/dashboard/tool/manage_dashboard_roles.py
+  - superset/subjects/utils.py
+  test_files:
+  - tests/unit_tests/mcp_service/dashboard/tool/conftest.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_manage_dashboard_certification.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_manage_dashboard_owners.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_manage_dashboard_roles.py
+  - tests/unit_tests/subjects/test_utils.py
+  n_files: 13
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t109
+  commit: fc506c06daa15f7c4272e02edc68d3f424fa3fc5
+  parent: 69b144ec16af2ad9206402d6887561fdebda1c67
+  date: '2026-07-17'
+  subject: 'feat: added email delivery of XLSX reports'
+  prompt: 'feat: added email delivery of XLSX reports'
+  code_files:
+  - superset/charts/client_processing.py
+  - superset/commands/report/execute.py
+  - superset/reports/notifications/email.py
+  - superset/translations/messages.pot
+  - superset/translations/ru/LC_MESSAGES/messages.po
+  - superset/utils/core.py
+  test_files:
+  - tests/unit_tests/charts/test_client_processing.py
+  - tests/unit_tests/commands/report/execute_test.py
+  - tests/unit_tests/reports/notifications/email_tests.py
+  - tests/unit_tests/utils/test_core.py
+  n_files: 14
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t110
+  commit: 157ef61fd83352701b96a8356295797d17ef8b18
+  parent: f467d36a24c4ac087c6e9bc3c75f917a4b8bacd1
+  date: '2026-07-16'
+  subject: 'fix(charts): render time comparison without a time grain'
+  prompt: 'fix(charts): render time comparison without a time grain'
+  code_files:
+  - superset/models/helpers.py
+  - superset/utils/date_parser.py
+  test_files:
+  - tests/unit_tests/common/test_query_context_processor.py
+  - tests/unit_tests/common/test_time_shifts.py
+  - tests/unit_tests/utils/date_parser_tests.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t111
+  commit: c45b9002e6431bdb7dde76295754b7f15e512378
+  parent: edca579625a15d3d260d92460db3ad1c607b3d39
+  date: '2026-07-17'
+  subject: 'feat(mcp): register /health HTTP endpoint'
+  prompt: 'feat(mcp): register /health HTTP endpoint'
+  code_files:
+  - superset/mcp_service/server.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_mcp_server.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t112
+  commit: 2f7afe4b47dd6373cd7c4c4afdd9fe7da1d68dd9
+  parent: aea4585c6d31fe67630cc321a01860ba7774a442
+  date: '2026-07-16'
+  subject: 'feat(mcp): deleted_state trash listing for list_charts and list_dashboards'
+  prompt: 'feat(mcp): deleted_state trash listing for list_charts and list_dashboards'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/chart/schemas.py
+  - superset/mcp_service/chart/tool/list_charts.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/list_dashboards.py
+  - superset/mcp_service/mcp_core.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/tool/test_generate_chart.py
+  - tests/unit_tests/mcp_service/chart/tool/test_list_charts_deleted_state.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_dashboard_tools.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_list_dashboards_deleted_state.py
+  - tests/unit_tests/mcp_service/test_mcp_core.py
+  n_files: 11
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: list_charts'
+  - 'changed-file name in message: list_dashboards'
+  verified: unverified
+- id: t113
+  commit: 635b18103dc312e378aa96a3f029aafdfc1b964e
+  parent: d57569c54a018201c80a9a5a668aed23bca6083f
+  date: '2026-07-15'
+  subject: 'fix(reports): null-guard execution against missing target'
+  prompt: 'fix(reports): null-guard execution against missing target'
+  code_files:
+  - superset/commands/report/execute.py
+  test_files:
+  - tests/unit_tests/commands/report/execute_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t114
+  commit: d57569c54a018201c80a9a5a668aed23bca6083f
+  parent: 409605de708af289197206636609262e32f3ca5d
+  date: '2026-07-16'
+  subject: 'feat(reports): add XLSX (Excel) attachments for Alerts & Reports'
+  prompt: 'feat(reports): add XLSX (Excel) attachments for Alerts & Reports'
+  code_files:
+  - superset/commands/report/exceptions.py
+  - superset/commands/report/execute.py
+  - superset/reports/models.py
+  - superset/reports/notifications/base.py
+  - superset/reports/notifications/email.py
+  - superset/reports/notifications/slack.py
+  - superset/reports/notifications/slackv2.py
+  - superset/reports/notifications/webhook.py
+  test_files:
+  - tests/unit_tests/commands/report/execute_test.py
+  - tests/unit_tests/reports/model_test.py
+  - tests/unit_tests/reports/notifications/email_tests.py
+  - tests/unit_tests/reports/notifications/slack_tests.py
+  - tests/unit_tests/reports/notifications/webhook_tests.py
+  n_files: 20
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t115
+  commit: 8ce6d42942801f9dbc9e6382924424d7d64c6545
+  parent: 2bbb7d063865629d582a26a9558b3ccae96fac22
+  date: '2026-07-15'
+  subject: 'feat(mcp): add restore_chart and restore_dashboard tools'
+  prompt: 'feat(mcp): add restore_chart and restore_dashboard tools'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/chart/schemas.py
+  - superset/mcp_service/chart/tool/__init__.py
+  - superset/mcp_service/chart/tool/restore_chart.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/__init__.py
+  - superset/mcp_service/dashboard/tool/restore_dashboard.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/tool/test_restore_chart.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_restore_dashboard.py
+  n_files: 9
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: restore_chart'
+  - 'changed-file name in message: restore_dashboard'
+  verified: unverified
+- id: t116
+  commit: 2bbb7d063865629d582a26a9558b3ccae96fac22
+  parent: 1b0c6aaed36757ed3b0f251f4fc3c47016ded1b1
+  date: '2026-07-15'
+  subject: 'feat(mcp): histogram and box plot chart type plugins'
+  prompt: 'feat(mcp): histogram and box plot chart type plugins'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/chart/chart_utils.py
+  - superset/mcp_service/chart/plugins/__init__.py
+  - superset/mcp_service/chart/plugins/box_plot.py
+  - superset/mcp_service/chart/plugins/histogram.py
+  - superset/mcp_service/chart/schemas.py
+  - superset/mcp_service/chart/tool/generate_chart.py
+  - superset/mcp_service/chart/tool/get_chart_preview.py
+  - superset/mcp_service/chart/tool/get_chart_type_schema.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_histogram_boxplot_charts.py
+  - tests/unit_tests/mcp_service/chart/tool/test_get_chart_type_schema.py
+  n_files: 11
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: histogram'
+  verified: unverified
+- id: t117
+  commit: 6fe4655ba2bab165a4fc8d1be7d3735643a59a17
+  parent: 689fc34ac25efabecc4aaf42c9b11e18e99edc90
+  date: '2026-07-15'
+  subject: 'fix(semantic-layers): separate grain and offset time-axis resolvers'
+  prompt: 'fix(semantic-layers): separate grain and offset time-axis resolvers'
+  code_files:
+  - superset/semantic_layers/mapper.py
+  test_files:
+  - tests/unit_tests/semantic_layers/mapper_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t118
+  commit: c6da740ce26bf7be03c9ee9df7e84a8640c42c7b
+  parent: e28b259de00da85037b3bf5a27dd88ba13db0bcc
+  date: '2026-07-15'
+  subject: 'fix(app-root): restore legacy redirects for HEAD and the /superset app root'
+  prompt: 'fix(app-root): restore legacy redirects for HEAD and the /superset app root'
+  code_files:
+  - superset/middleware/legacy_prefix_redirect.py
+  test_files:
+  - tests/unit_tests/middleware/test_legacy_prefix_redirect.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t119
+  commit: e28b259de00da85037b3bf5a27dd88ba13db0bcc
+  parent: beb9d5368736d32decce90bf60d424b5d03ba2fb
+  date: '2026-07-15'
+  subject: 'fix(semantic-layers): expose time grains in Explore for SemanticView datasources'
+  prompt: 'fix(semantic-layers): expose time grains in Explore for SemanticView datasources'
+  code_files:
+  - superset/semantic_layers/mapper.py
+  - superset/semantic_layers/models.py
+  test_files:
+  - tests/unit_tests/semantic_layers/mapper_test.py
+  - tests/unit_tests/semantic_layers/models_test.py
+  n_files: 5
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: fails_at_commit
+  navigation: needed
+  navigation_hit: null
+- id: t120
+  commit: 90f9238f8a5a9cc8b604e74559e2125b0c49a08d
+  parent: f38fff2a19f5ea9488ab3a7543de952bd7760696
+  date: '2026-07-15'
+  subject: 'fix(charts): preserve time filter for expression axes'
+  prompt: 'fix(charts): preserve time filter for expression axes'
+  code_files:
+  - superset/common/query_context_factory.py
+  test_files:
+  - tests/unit_tests/common/test_query_context_factory.py
+  - tests/unit_tests/models/test_no_filter_time_range.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t121
+  commit: cec9afb165ba89189366f9e6aba25e3f97dda002
+  parent: 753113d169258876e24840379cc23618af176160
+  date: '2026-07-15'
+  subject: 'fix(mcp): await ctx.info calls in update_dashboard tool'
+  prompt: 'fix(mcp): await ctx.info calls in update_dashboard tool'
+  code_files:
+  - superset/mcp_service/dashboard/tool/update_dashboard.py
+  test_files:
+  - tests/unit_tests/mcp_service/dashboard/tool/test_update_dashboard.py
+  n_files: 2
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: update_dashboard'
+  verified: unverified
+- id: t122
+  commit: f010affbc27ea31f5690864331c768ef44b068ab
+  parent: 6c2b7aceb5a924a6c21c67681848204e55400563
+  date: '2026-07-15'
+  subject: 'fix(reports): paginate Slack recipient picker for large workspaces'
+  prompt: 'fix(reports): paginate Slack recipient picker for large workspaces'
+  code_files:
+  - superset/config.py
+  - superset/reports/api.py
+  - superset/reports/schemas.py
+  test_files:
+  - tests/unit_tests/reports/api_test.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t123
+  commit: 6c2b7aceb5a924a6c21c67681848204e55400563
+  parent: 2af66b2c9b541ffa1552029b94840c7072628a0c
+  date: '2026-07-15'
+  subject: 'fix(mcp): correct decorator order on query_dataset tool'
+  prompt: 'fix(mcp): correct decorator order on query_dataset tool'
+  code_files:
+  - superset/mcp_service/dataset/tool/query_dataset.py
+  test_files:
+  - tests/unit_tests/mcp_service/dataset/tool/test_query_dataset.py
+  n_files: 2
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: query_dataset'
+  verified: unverified
+- id: t124
+  commit: 2af66b2c9b541ffa1552029b94840c7072628a0c
+  parent: a540f56f5ca3185196f5d8ad0a6c47978d34333a
+  date: '2026-07-15'
+  subject: 'fix(async-queries): add Celery task expiry to GAQ async query tasks'
+  prompt: 'fix(async-queries): add Celery task expiry to GAQ async query tasks'
+  code_files:
+  - superset/async_events/async_query_manager.py
+  test_files:
+  - tests/unit_tests/async_events/async_query_manager_tests.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t125
+  commit: a540f56f5ca3185196f5d8ad0a6c47978d34333a
+  parent: aa85455a5cf74b5c0783a1cb33f43c72e68a5edf
+  date: '2026-07-14'
+  subject: 'fix(reports): raise typed executor-not-found error in alert-query path'
+  prompt: 'fix(reports): raise typed executor-not-found error in alert-query path'
+  code_files:
+  - superset/commands/report/alert.py
+  test_files:
+  - tests/unit_tests/commands/report/alert_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t126
+  commit: d68e84e7315049325a47270777d35adaeb32b6bb
+  parent: 0a3c263606e2817a5b3bf22e611f314122c872f6
+  date: '2026-07-14'
+  subject: 'fix(databricks): classify insufficient-permissions errors as 4xx'
+  prompt: 'fix(databricks): classify insufficient-permissions errors as 4xx'
+  code_files:
+  - superset/db_engine_specs/databricks.py
+  - superset/sqllab/sql_json_executer.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_databricks.py
+  - tests/unit_tests/sqllab/test_sql_json_executer.py
+  n_files: 4
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: databricks'
+  verified: unverified
+- id: t127
+  commit: bd9ba2426620c73a56222200d3690b61df2c4845
+  parent: 4446967d0fe625a8170f069746757386cb3de2f2
+  date: '2026-07-14'
+  subject: 'fix(mcp): add AliasChoices to chart/dashboard/dataset request schemas'
+  prompt: 'fix(mcp): add AliasChoices to chart/dashboard/dataset request schemas'
+  code_files:
+  - superset/mcp_service/chart/schemas.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dataset/schemas.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_chart_schemas.py
+  - tests/unit_tests/mcp_service/dashboard/test_dashboard_schemas.py
+  - tests/unit_tests/mcp_service/dataset/test_dataset_schemas.py
+  n_files: 6
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: schemas'
+  verified: unverified
+- id: t128
+  commit: c04a0295ef6dc6971d1bdb4c41770a9ec40b743c
+  parent: e3a0d0e41ec4f3d2add3d5a62c1bae9c46413f65
+  date: '2026-07-14'
+  subject: 'fix(chart): keep query-context updates bound to the chart''s datasource'
+  prompt: 'fix(chart): keep query-context updates bound to the chart''s datasource'
+  code_files:
+  - superset/commands/chart/exceptions.py
+  - superset/commands/chart/update.py
+  test_files:
+  - tests/unit_tests/commands/chart/update_test.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t129
+  commit: 993a43396ae522a42c70ea230cd1f48daf78f5eb
+  parent: a2a71760ede95529be802ff412e141f45230ffcd
+  date: '2026-07-13'
+  subject: 'fix: restore all-files pre-commit checks'
+  prompt: 'fix: restore all-files pre-commit checks'
+  code_files:
+  - superset/mcp_service/sql_lab/tool/execute_sql.py
+  test_files:
+  - tests/unit_tests/semantic_layers/mapper_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: passes_at_parent
+  navigation: needed
+  navigation_hit: null
+- id: t130
+  commit: 3c648ca2645f35b02b7c96412930c94410d45fbf
+  parent: 25ce83cc58c68f7e84ebf0b4bdd680a7db61ce4d
+  date: '2026-07-13'
+  subject: 'fix(swagger): support URL prefix via APPLICATION_ROOT in OpenAPI and Swagger UI'
+  prompt: 'fix(swagger): support URL prefix via APPLICATION_ROOT in OpenAPI and Swagger UI'
+  code_files:
+  - superset/config.py
+  - superset/initialization/__init__.py
+  - superset/openapi/__init__.py
+  - superset/openapi/manager.py
+  test_files:
+  - tests/unit_tests/openapi/__init__.py
+  - tests/unit_tests/openapi/test_manager.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: passes_at_parent
+  navigation: needed
+  navigation_hit: null
+- id: t131
+  commit: d4a31d1d78a2f05a4e1c384c8f56c6dbdb65170c
+  parent: 18f1dd394bbeaa11e2eb250a7fb09e367044c22b
+  date: '2026-07-14'
+  subject: 'fix: add subdirectory deployment support for brandSpinnerUrl'
+  prompt: 'fix: add subdirectory deployment support for brandSpinnerUrl'
+  code_files:
+  - superset/views/base.py
+  test_files:
+  - tests/unit_tests/views/test_base_theme_helpers.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t132
+  commit: 62ccdfacc2ffb44fa0952dd8f8b4cfb75be1e0eb
+  parent: c5131bff47eefdee0b92016ffe4afa944cee0e95
+  date: '2026-07-13'
+  subject: 'fix(mcp): make list-item truncation cap configurable in get_dashboard_info'
+  prompt: 'fix(mcp): make list-item truncation cap configurable in get_dashboard_info'
+  code_files:
+  - superset/mcp_service/chart/tool/list_charts.py
+  - superset/mcp_service/constants.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/get_dashboard_info.py
+  - superset/mcp_service/mcp_config.py
+  - superset/mcp_service/middleware.py
+  - superset/mcp_service/utils/token_utils.py
+  test_files:
+  - tests/unit_tests/mcp_service/dashboard/test_dashboard_schemas.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_dashboard_tools.py
+  - tests/unit_tests/mcp_service/test_middleware.py
+  - tests/unit_tests/mcp_service/utils/test_token_utils.py
+  n_files: 12
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: get_dashboard_info'
+  verified: unverified
+- id: t133
+  commit: 873566c8272cd76e19fe2b5001e5beed597f5cd2
+  parent: e063f5093c9efe8956e255ad237ec4e2351fb2cc
+  date: '2026-07-13'
+  subject: 'fix(mcp): stop masking dashboard lookup DB errors as not-found'
+  prompt: 'fix(mcp): stop masking dashboard lookup DB errors as not-found'
+  code_files:
+  - superset/mcp_service/dashboard/tool/update_dashboard.py
+  test_files:
+  - tests/unit_tests/mcp_service/dashboard/tool/test_update_dashboard.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t134
+  commit: 2fac66d1a308036c60203593afb913d5a0593420
+  parent: 029d49539bc6ebbe7f7e5372fffec79ad89b6c15
+  date: '2026-07-13'
+  subject: 'feat(mcp): add update_dataset_metric tool for editing saved dataset metrics'
+  prompt: 'feat(mcp): add update_dataset_metric tool for editing saved dataset metrics'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/dataset/dataset_utils.py
+  - superset/mcp_service/dataset/schemas.py
+  - superset/mcp_service/dataset/tool/__init__.py
+  - superset/mcp_service/dataset/tool/query_dataset.py
+  - superset/mcp_service/dataset/tool/update_dataset_metric.py
+  test_files:
+  - tests/unit_tests/mcp_service/dataset/tool/test_query_dataset.py
+  - tests/unit_tests/mcp_service/dataset/tool/test_update_dataset_metric.py
+  n_files: 8
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: update_dataset_metric'
+  verified: unverified
+- id: t135
+  commit: 189f258e0cec2f8344798574cfa06197f7a3f0fc
+  parent: f5deda7864102cc0cb27e385856c4750e96d66eb
+  date: '2026-07-11'
+  subject: 'fix(drill): coerce temporal drill filter values'
+  prompt: 'fix(drill): coerce temporal drill filter values'
+  code_files:
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/models/helpers_test.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t136
+  commit: f5deda7864102cc0cb27e385856c4750e96d66eb
+  parent: b237aefb1ea74d00d1d71e8e9cd49ae868bfc7e2
+  date: '2026-07-11'
+  subject: 'fix(dataset): copy catalog field when duplicating a BigQuery dataset'
+  prompt: 'fix(dataset): copy catalog field when duplicating a BigQuery dataset'
+  code_files:
+  - superset/commands/dataset/duplicate.py
+  test_files:
+  - tests/unit_tests/commands/dataset/test_duplicate.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t137
+  commit: a03cabffa774a9ed58ca0a3b915828bb383248ae
+  parent: e852147182037cb8bf21ccd8d54e7561ccab50b7
+  date: '2026-07-12'
+  subject: 'perf(csv): avoid regex in CSV value escaping'
+  prompt: 'perf(csv): avoid regex in CSV value escaping'
+  code_files:
+  - superset/utils/csv.py
+  test_files:
+  - tests/unit_tests/utils/csv_tests.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t138
+  commit: b641008da6addeec8943d4510b7bffda70f0132e
+  parent: 678fcba8b4867f445c52c55231ad588b281d7f49
+  date: '2026-07-11'
+  subject: 'fix(versioning): preserve complete multi-flush history'
+  prompt: 'fix(versioning): preserve complete multi-flush history'
+  code_files:
+  - superset/versioning/changes/listener.py
+  - superset/versioning/changes/state.py
+  test_files:
+  - tests/unit_tests/versioning/test_listener.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t139
+  commit: 5c12f216d5107cefccfa90915ec9b3d5c8d04d0a
+  parent: 7a752d1c228b94b7c12166a1b5b3414a2981e5b2
+  date: '2026-07-11'
+  subject: 'feat(mcp): add delete_chart and delete_dashboard tools'
+  prompt: 'feat(mcp): add delete_chart and delete_dashboard tools'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/chart/schemas.py
+  - superset/mcp_service/chart/tool/__init__.py
+  - superset/mcp_service/chart/tool/delete_chart.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/__init__.py
+  - superset/mcp_service/dashboard/tool/delete_dashboard.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/tool/test_delete_chart.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_delete_dashboard.py
+  n_files: 9
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: delete_chart'
+  - 'changed-file name in message: delete_dashboard'
+  verified: unverified
+- id: t140
+  commit: 3818152191286f3d6e35f7273a17fa3048611641
+  parent: 4dde4d2c706dae46b73defb3d82ac48c1dc25cc0
+  date: '2026-07-10'
+  subject: 'fix(mcp): user/role tools demanded a permission FAB never registers'
+  prompt: 'fix(mcp): user/role tools demanded a permission FAB never registers'
+  code_files:
+  - superset/mcp_service/auth.py
+  - superset/mcp_service/role/tool/get_role_info.py
+  - superset/mcp_service/role/tool/list_roles.py
+  - superset/mcp_service/user/tool/get_user_info.py
+  - superset/mcp_service/user/tool/list_users.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_auth_rbac.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t141
+  commit: bd61e09b4ea1b0391ec67d62311fe874e8231542
+  parent: 5b8e94de2671ff4e5048571958fae5fc1eaea412
+  date: '2026-07-10'
+  subject: 'fix(mcp): bind Big Number chart to a temporal column for dashboard time filters'
+  prompt: 'fix(mcp): bind Big Number chart to a temporal column for dashboard time filters'
+  code_files:
+  - superset/mcp_service/chart/chart_utils.py
+  - superset/mcp_service/chart/plugins/big_number.py
+  - superset/mcp_service/chart/schemas.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_big_number_chart.py
+  - tests/unit_tests/mcp_service/chart/test_chart_utils.py
+  n_files: 5
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t142
+  commit: 2112fbd379888127285151a1c568a7604f967560
+  parent: 1631d52b65045fb7898e6468a6fe40af92d3837b
+  date: '2026-07-10'
+  subject: 'feat(subjects): add read-only Subject REST API and DAO'
+  prompt: 'feat(subjects): add read-only Subject REST API and DAO'
+  code_files:
+  - superset/core/api/core_api_injection.py
+  - superset/daos/subject.py
+  - superset/initialization/__init__.py
+  - superset/security/manager.py
+  - superset/subjects/api.py
+  - superset/subjects/filters.py
+  - superset/subjects/schemas.py
+  - superset/subjects/sync.py
+  test_files:
+  - tests/unit_tests/dao/subject_test.py
+  n_files: 13
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t143
+  commit: e2ba378b699bb5dc5f46ffa6546c11b1f940987c
+  parent: 597c9c6fea6d88de19c48b4a3b9868fe5ccee96d
+  date: '2026-07-10'
+  subject: 'fix(sqllab): redirect legacy /superset/sql/<db_id>/ deep links'
+  prompt: 'fix(sqllab): redirect legacy /superset/sql/<db_id>/ deep links'
+  code_files:
+  - superset/middleware/legacy_prefix_redirect.py
+  test_files:
+  - tests/unit_tests/middleware/test_legacy_prefix_redirect.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t144
+  commit: 597c9c6fea6d88de19c48b4a3b9868fe5ccee96d
+  parent: be600f78fc66c4ece56916412f643b17f91dcad2
+  date: '2026-07-10'
+  subject: 'fix: do not require recaptcha public key for LDAP authentication'
+  prompt: 'fix: do not require recaptcha public key for LDAP authentication'
+  code_files:
+  - superset/views/base.py
+  test_files:
+  - tests/unit_tests/views/test_bootstrap_auth.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t145
+  commit: 2380d576d5414c941b8b6b69a774122f095eec11
+  parent: 43bfc85941c7bbac1657afbfb5c6dee988f948bd
+  date: '2026-07-09'
+  subject: 'fix(cli): avoid DetachedInstanceError in compute-thumbnails'
+  prompt: 'fix(cli): avoid DetachedInstanceError in compute-thumbnails'
+  code_files:
+  - superset/cli/thumbnails.py
+  test_files:
+  - tests/unit_tests/cli/thumbnails_test.py
+  n_files: 2
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: thumbnails'
+  verified: unverified
+- id: t146
+  commit: 43bfc85941c7bbac1657afbfb5c6dee988f948bd
+  parent: bea5f8d4a446344685cacf2144e790448ac07eb8
+  date: '2026-07-10'
+  subject: 'fix(db): validate schema and table cache timeout to reject negative values'
+  prompt: 'fix(db): validate schema and table cache timeout to reject negative values'
+  code_files:
+  - superset/databases/schemas.py
+  test_files:
+  - tests/unit_tests/databases/schema_tests.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t147
+  commit: baff395d9832c2ab8601881f48caa27a7f2d7c86
+  parent: 1fd43ffe52c8ba01ae4246c0f94f95913e481787
+  date: '2026-07-09'
+  subject: 'feat(mcp): add list_themes, get_theme_info, and create_theme tools'
+  prompt: 'feat(mcp): add list_themes, get_theme_info, and create_theme tools'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/theme/__init__.py
+  - superset/mcp_service/theme/schemas.py
+  - superset/mcp_service/theme/tool/__init__.py
+  - superset/mcp_service/theme/tool/create_theme.py
+  - superset/mcp_service/theme/tool/get_theme_info.py
+  - superset/mcp_service/theme/tool/list_themes.py
+  test_files:
+  - tests/unit_tests/mcp_service/theme/__init__.py
+  - tests/unit_tests/mcp_service/theme/tool/__init__.py
+  - tests/unit_tests/mcp_service/theme/tool/test_create_theme.py
+  - tests/unit_tests/mcp_service/theme/tool/test_get_theme_info.py
+  - tests/unit_tests/mcp_service/theme/tool/test_list_themes.py
+  n_files: 12
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: create_theme'
+  - 'changed-file name in message: get_theme_info'
+  - 'changed-file name in message: list_themes'
+  verified: unverified
+- id: t148
+  commit: e65b2c49d73b4df74d6ea98d1551530f4a66f49d
+  parent: 2c8cdbbd9b2f7072d480f3759f10a29b4addf2c4
+  date: '2026-07-08'
+  subject: 'fix(marshmallow): add compatibility layer for Flask-AppBuilder with marshmallow 4.x'
+  prompt: 'fix(marshmallow): add compatibility layer for Flask-AppBuilder with marshmallow 4.x'
+  code_files:
+  - superset/marshmallow_compatibility.py
+  - superset/models/helpers.py
+  - superset/themes/schemas.py
+  test_files:
+  - tests/unit_tests/test_marshmallow_compatibility.py
+  - tests/unit_tests/themes/api_test.py
+  n_files: 5
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t149
+  commit: 001d6c9692c67757f0c14ed4775be86d23fff395
+  parent: e333135a0d4163b3970e8184fc33f93a51b9d329
+  date: '2026-07-08'
+  subject: 'fix(semantic-layers): apply time-comparison offset to `TEMPORAL_RANGE` filters'
+  prompt: 'fix(semantic-layers): apply time-comparison offset to `TEMPORAL_RANGE` filters'
+  code_files:
+  - superset/semantic_layers/mapper.py
+  test_files:
+  - tests/unit_tests/semantic_layers/mapper_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t150
+  commit: 2dab31c13012ce7c2c8c6cc77bd780aeeaddd0f8
+  parent: f74de0eb6c335e8844af456d19dd1706a703ee8d
+  date: '2026-07-08'
+  subject: 'fix(mcp): serialize FAB role permissions'
+  prompt: 'fix(mcp): serialize FAB role permissions'
+  code_files:
+  - superset/mcp_service/role/schemas.py
+  test_files:
+  - tests/unit_tests/mcp_service/role/tool/test_role_tools.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t151
+  commit: f6d03e4a687a63c78eda6d9cd3184c341a1c4137
+  parent: 0efcd54250ab116b5cef336c901b3521eb6ceea8
+  date: '2026-07-08'
+  subject: 'fix(clickhouse): time filters use server timezone for toDateTime literals'
+  prompt: 'fix(clickhouse): time filters use server timezone for toDateTime literals'
+  code_files:
+  - superset/db_engine_specs/clickhouse.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_clickhouse.py
+  n_files: 2
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: clickhouse'
+  verified: unverified
+- id: t152
+  commit: 0efcd54250ab116b5cef336c901b3521eb6ceea8
+  parent: 3fa000ba0bc1772305c43f4e6801d486caab8dce
+  date: '2026-07-07'
+  subject: 'fix(charts): fix time comparison crash when offsets share a numeric prefix'
+  prompt: 'fix(charts): fix time comparison crash when offsets share a numeric prefix'
+  code_files:
+  - superset/models/helpers.py
+  - superset/utils/core.py
+  - superset/utils/pandas_postprocessing/contribution.py
+  test_files:
+  - tests/unit_tests/common/test_time_shifts.py
+  - tests/unit_tests/pandas_postprocessing/test_contribution.py
+  - tests/unit_tests/utils/test_core.py
+  n_files: 10
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t153
+  commit: 96171552890979a9a12317c357b130190320d2c6
+  parent: e49945fc2fb63a500d22239b5c76083c7d182dbf
+  date: '2026-07-08'
+  subject: 'fix(utils): urls preserve query params'
+  prompt: 'fix(utils): urls preserve query params'
+  code_files:
+  - superset/utils/urls.py
+  test_files:
+  - tests/unit_tests/utils/urls_tests.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t154
+  commit: 98fc8576131cbbcabe9e4222898d2d13e13c14a6
+  parent: ddca50c8209e079a1f5b4b1bb32de5a3633b2d93
+  date: '2026-07-08'
+  subject: 'feat(cache): warm up native filter option queries'
+  prompt: 'feat(cache): warm up native filter option queries'
+  code_files:
+  - superset/config.py
+  - superset/tasks/cache.py
+  - superset/tasks/native_filter_cache.py
+  test_files:
+  - tests/unit_tests/tasks/test_cache.py
+  - tests/unit_tests/tasks/test_native_filter_cache.py
+  n_files: 5
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t155
+  commit: c253b68d7bcf0f0a417c131a0b4147724de61aff
+  parent: 050acc6c3089862063f3821e8c993f9caf083d2b
+  date: '2026-07-07'
+  subject: 'fix(chart): fix Chart Time Grain option not working if Dataset is not saved'
+  prompt: 'fix(chart): fix Chart Time Grain option not working if Dataset is not saved'
+  code_files:
+  - superset/models/sql_lab.py
+  test_files:
+  - tests/unit_tests/models/sql_lab_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t156
+  commit: 050acc6c3089862063f3821e8c993f9caf083d2b
+  parent: 7b95d8b17c9b08cb234171be646ea5b254f85b78
+  date: '2026-07-08'
+  subject: 'fix(databend): support configuring Databend via individual parameters'
+  prompt: 'fix(databend): support configuring Databend via individual parameters'
+  code_files:
+  - superset/db_engine_specs/databend.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_databend.py
+  n_files: 2
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: databend'
+  verified: unverified
+- id: t157
+  commit: 0d9533fdf8f0cf73d6e5670e8b808066113a163c
+  parent: 6b1311a6c7c36fb5e1ec7f24c021b14503c0ccde
+  date: '2026-07-08'
+  subject: 'fix(reports): export server-paginated table row limits'
+  prompt: 'fix(reports): export server-paginated table row limits'
+  code_files:
+  - superset/commands/report/execute.py
+  test_files:
+  - tests/unit_tests/commands/report/execute_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t158
+  commit: 8f4c41176563c094bc91342d4b77089639babe57
+  parent: 093616063355587e8f014bc1610cc1e90131f02e
+  date: '2026-07-07'
+  subject: 'fix(mcp): coerce Role ORM objects to role names in UserInfo schema'
+  prompt: 'fix(mcp): coerce Role ORM objects to role names in UserInfo schema'
+  code_files:
+  - superset/mcp_service/user/schemas.py
+  test_files:
+  - tests/unit_tests/mcp_service/user/test_schemas.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t159
+  commit: fbc24959ab346a097836fd7c4aded5d6d1d6d5d4
+  parent: fe7d9b47247a1dbaf31c17f44f80c91d648b2e7f
+  date: '2026-07-07'
+  subject: 'feat(mcp): add semantic layer MCP tools (list_metrics, get_table, get_compatible_dimensions, get_compatible_metrics)'
+  prompt: 'feat(mcp): add semantic layer MCP tools (list_metrics, get_table, get_compatible_dimensions, get_compatible_metrics)'
+  code_files:
+  - superset/daos/semantic_layer.py
+  - superset/mcp_service/app.py
+  - superset/mcp_service/chart/schemas.py
+  - superset/mcp_service/dataset/tool/query_dataset.py
+  - superset/mcp_service/semantic_layer/__init__.py
+  - superset/mcp_service/semantic_layer/schemas.py
+  - superset/mcp_service/semantic_layer/tool/__init__.py
+  - superset/mcp_service/semantic_layer/tool/get_compatible_dimensions.py
+  - superset/mcp_service/semantic_layer/tool/get_compatible_metrics.py
+  - superset/mcp_service/semantic_layer/tool/get_table.py
+  - superset/mcp_service/semantic_layer/tool/list_metrics.py
+  - superset/mcp_service/utils/query_utils.py
+  - superset/mcp_service/utils/response_utils.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_chart_config_coercion.py
+  - tests/unit_tests/mcp_service/semantic_layer/__init__.py
+  - tests/unit_tests/mcp_service/semantic_layer/tool/__init__.py
+  - tests/unit_tests/mcp_service/semantic_layer/tool/test_get_compatible_dimensions.py
+  - tests/unit_tests/mcp_service/semantic_layer/tool/test_get_compatible_metrics.py
+  - tests/unit_tests/mcp_service/semantic_layer/tool/test_get_table.py
+  - tests/unit_tests/mcp_service/semantic_layer/tool/test_list_metrics.py
+  - tests/unit_tests/mcp_service/utils/test_query_utils.py
+  - tests/unit_tests/mcp_service/utils/test_response_utils.py
+  - tests/unit_tests/semantic_layers/dao_test.py
+  n_files: 23
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: get_compatible_dimensions'
+  - 'changed-file name in message: get_compatible_metrics'
+  - 'changed-file name in message: get_table'
+  - 'changed-file name in message: list_metrics'
+  verified: unverified
+- id: t160
+  commit: dd0277e1e376509914fb628a63788b44de6192ca
+  parent: 9b508ebe0d02011936337437452fb0db01888798
+  date: '2026-07-07'
+  subject: 'feat(mcp): support embedded guest-token authentication'
+  prompt: 'feat(mcp): support embedded guest-token authentication'
+  code_files:
+  - superset/mcp_service/CLAUDE.md
+  - superset/mcp_service/SECURITY.md
+  - superset/mcp_service/auth.py
+  - superset/mcp_service/composite_token_verifier.py
+  - superset/mcp_service/guest_token_verifier.py
+  - superset/mcp_service/mcp_config.py
+  - superset/mcp_service/server.py
+  test_files:
+  - tests/unit_tests/mcp_service/test_guest_token_auth.py
+  - tests/unit_tests/mcp_service/test_mcp_server.py
+  n_files: 9
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t161
+  commit: 9b508ebe0d02011936337437452fb0db01888798
+  parent: 53c3b1ceb1b3b293e0178c438b6c9acb6872f4d0
+  date: '2026-07-07'
+  subject: 'fix(ag-grid): honor dataset hour offset in time range filters'
+  prompt: 'fix(ag-grid): honor dataset hour offset in time range filters'
+  code_files:
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/models/test_time_filter_hour_offset.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t162
+  commit: 4dc45aa9586bca592011041d5267f8887b321e9b
+  parent: 4167a21f7d4049f1adc8cfb7e279d0f9b925523a
+  date: '2026-07-07'
+  subject: 'fix(semantic layers): apply post-processing'
+  prompt: 'fix(semantic layers): apply post-processing'
+  code_files:
+  - superset/semantic_layers/models.py
+  test_files:
+  - tests/unit_tests/semantic_layers/models_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t163
+  commit: 4167a21f7d4049f1adc8cfb7e279d0f9b925523a
+  parent: 5e384f54d3a78b0936169b14dc88f3dc325fab7d
+  date: '2026-07-07'
+  subject: 'fix(semantic layers): guards for zero rows'
+  prompt: 'fix(semantic layers): guards for zero rows'
+  code_files:
+  - superset/semantic_layers/mapper.py
+  test_files:
+  - tests/unit_tests/semantic_layers/mapper_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t164
+  commit: 1c3b070d342df2bf4f005f0713fee8b0d249db04
+  parent: a8a1b220fdc35e506932dfd9352f896f9162c668
+  date: '2026-07-06'
+  subject: 'feat(i18n): do-not-translate registry + ''#. do-not-translate'' marker standard'
+  prompt: 'feat(i18n): do-not-translate registry + ''#. do-not-translate'' marker standard'
+  code_files:
+  - superset/translations/do-not-translate.txt
+  - superset/translations/messages.pot
+  test_files:
+  - tests/unit_tests/scripts/translations/backfill_po_test.py
+  n_files: 8
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: do-not-translate'
+  verified: unverified
+- id: t165
+  commit: 2aa43f6f0f57906c02b05041c18fd27aa5a1b3a9
+  parent: ee524b3471351dacd287c919fdc805b1a3db34c4
+  date: '2026-07-06'
+  subject: 'fix(sql): stop sanitize_clause from rewriting user SQL semantics (#36113)'
+  prompt: 'fix(sql): stop sanitize_clause from rewriting user SQL semantics (#36113)'
+  code_files:
+  - superset/sql/parse.py
+  test_files:
+  - tests/unit_tests/sql/parse_tests.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: fails_at_commit
+  navigation: needed
+  navigation_hit: null
+- id: t166
+  commit: 51e708da6bb52ae4838613e5c3a1d851d725f0dc
+  parent: 21b4185819eeab4ac7cbdb833d5e9eff029af4aa
+  date: '2026-07-06'
+  subject: 'fix(mcp): accept Superset vocabulary in chart configs and clarify query_dataset metric errors'
+  prompt: 'fix(mcp): accept Superset vocabulary in chart configs and clarify query_dataset metric errors'
+  code_files:
+  - superset/mcp_service/chart/schemas.py
+  - superset/mcp_service/dataset/tool/query_dataset.py
+  test_files:
+  - tests/unit_tests/mcp_service/chart/test_chart_config_coercion.py
+  n_files: 3
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: query_dataset'
+  verified: unverified
+- id: t167
+  commit: fd8d7009a5bcaa86483a56acf8031aed8ff5930c
+  parent: beff76cb4d4d4bca1e30d3fe3a6663eafbad57cc
+  date: '2026-07-06'
+  subject: 'chore(mcp): drop legacy /superset prefix from dashboard URLs'
+  prompt: 'chore(mcp): drop legacy /superset prefix from dashboard URLs'
+  code_files:
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/duplicate_dashboard.py
+  - superset/mcp_service/dashboard/tool/manage_native_filters.py
+  - superset/mcp_service/dashboard/tool/remove_chart_from_dashboard.py
+  test_files:
+  - tests/unit_tests/mcp_service/dashboard/tool/test_duplicate_dashboard.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_remove_chart_from_dashboard.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: passes_at_parent
+  navigation: needed
+  navigation_hit: null
+- id: t168
+  commit: 83826839a0a33da2c9cd7b9ff64db2260108d54a
+  parent: a8ab5f973dc1e825d007ef3ba967b622623993c5
+  date: '2026-07-06'
+  subject: 'fix(i18n): inject language pack into bootstrap to translate code-split chunks'
+  prompt: 'fix(i18n): inject language pack into bootstrap to translate code-split chunks'
+  code_files:
+  - superset/templates/superset/spa.html
+  - superset/views/base.py
+  test_files:
+  - tests/unit_tests/views/test_base.py
+  - tests/unit_tests/views/test_bootstrap_auth.py
+  n_files: 7
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t169
+  commit: 9a24d42d6551571a90facb6d2dc8ff36fa77207b
+  parent: 3303d4e09ef15af1dc6f65a505bbb9509fbfb3f5
+  date: '2026-07-05'
+  subject: 'fix(chart): Fix heatmap charts when filtering down to one row/colum'
+  prompt: 'fix(chart): Fix heatmap charts when filtering down to one row/colum'
+  code_files:
+  - superset/utils/pandas_postprocessing/rank.py
+  test_files:
+  - tests/unit_tests/pandas_postprocessing/test_rank.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t170
+  commit: 8fcc0f8b482d06f6dd58f5d51280d62b8c192f4f
+  parent: e08c2c12dad7cf8108a3be6b8d9cd638bc0e8fd6
+  date: '2026-07-04'
+  subject: 'fix(semantic layers): start/end ranges'
+  prompt: 'fix(semantic layers): start/end ranges'
+  code_files:
+  - superset/semantic_layers/mapper.py
+  test_files:
+  - tests/unit_tests/semantic_layers/mapper_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t171
+  commit: 1e50316bccd8a7c5f00057e7d2e571f986ed5c61
+  parent: 3e152d9bb7a17c35395109f227596ddd4d09589c
+  date: '2026-07-04'
+  subject: 'chore(reports): deprecate Slack v1 and harden Slack v2 tests'
+  prompt: 'chore(reports): deprecate Slack v1 and harden Slack v2 tests'
+  code_files:
+  - superset/commands/report/execute.py
+  - superset/config.py
+  - superset/reports/notifications/slack.py
+  - superset/reports/notifications/slackv2.py
+  - superset/utils/slack.py
+  test_files:
+  - tests/unit_tests/commands/report/execute_test.py
+  - tests/unit_tests/reports/notifications/slack_tests.py
+  - tests/unit_tests/utils/slack_test.py
+  n_files: 11
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t172
+  commit: 681275077b3056026582523a8ecb07e96d6feab4
+  parent: d7ad7fbb49c7de2bc7baa2b4b71480dc1382f736
+  date: '2026-07-03'
+  subject: 'fix(semantic layers): time comparison with 1 row'
+  prompt: 'fix(semantic layers): time comparison with 1 row'
+  code_files:
+  - superset/semantic_layers/mapper.py
+  test_files:
+  - tests/unit_tests/semantic_layers/mapper_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t173
+  commit: 55088e10da0a8702e7f4f5aa6b88cfe24cf1ae79
+  parent: bdc610c57208050b569dfe72f2e4622d6142dabd
+  date: '2026-07-03'
+  subject: 'feat(database-modal): add validation loading state and duplicate name check'
+  prompt: 'feat(database-modal): add validation loading state and duplicate name check'
+  code_files:
+  - superset/commands/database/validate.py
+  - superset/databases/schemas.py
+  test_files:
+  - tests/unit_tests/commands/databases/validate_test.py
+  - tests/unit_tests/databases/schema_tests.py
+  n_files: 14
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t174
+  commit: bdc610c57208050b569dfe72f2e4622d6142dabd
+  parent: a151edeff3173554b3a416e9a3b0263c7bd49d37
+  date: '2026-07-02'
+  subject: 'fix(db): use a private engine for prequery connections to avoid listener race'
+  prompt: 'fix(db): use a private engine for prequery connections to avoid listener race'
+  code_files:
+  - superset/models/core.py
+  test_files:
+  - tests/unit_tests/models/core_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t175
+  commit: d8832c382d41f5a734d2c86a2772e4320fa4bcdb
+  parent: 5bbab86a07a858c3fe5fdace244211331431b216
+  date: '2026-07-02'
+  subject: 'fix(views): emit deprecated-endpoint log warning once per endpoint per process'
+  prompt: 'fix(views): emit deprecated-endpoint log warning once per endpoint per process'
+  code_files:
+  - superset/views/base.py
+  test_files:
+  - tests/unit_tests/views/test_base.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t176
+  commit: ab0e77c1cb7f1b6130d517665704a480c423a423
+  parent: a30846881b883fab34d484026befcf7f58fb0815
+  date: '2026-07-03'
+  subject: 'fix(embedded): allow guest users to sort by visible columns'
+  prompt: 'fix(embedded): allow guest users to sort by visible columns'
+  code_files:
+  - superset/connectors/sqla/models.py
+  - superset/models/helpers.py
+  - superset/security/manager.py
+  test_files:
+  - tests/unit_tests/models/helpers_test.py
+  - tests/unit_tests/security/manager_test.py
+  n_files: 5
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t177
+  commit: be46d65e3b4bfe50ba77be2ba223b62f8ee830ba
+  parent: 2992d7b4c87807d181169709a92df154c3d5c060
+  date: '2026-07-02'
+  subject: 'fix(dao): SQL-faithful NULL and non-string handling in LIKE-family operators'
+  prompt: 'fix(dao): SQL-faithful NULL and non-string handling in LIKE-family operators'
+  code_files:
+  - superset/daos/base.py
+  test_files:
+  - tests/unit_tests/dao/base_dao_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t178
+  commit: 2992d7b4c87807d181169709a92df154c3d5c060
+  parent: 80344852b7224f0ce64d67767f48436bec2438e2
+  date: '2026-07-02'
+  subject: 'feat(database): add databricks oauth support'
+  prompt: 'feat(database): add databricks oauth support'
+  code_files:
+  - superset/db_engine_specs/databricks.py
+  test_files:
+  - tests/unit_tests/db_engine_specs/test_databricks.py
+  - tests/unit_tests/db_engine_specs/test_databricks_multi_cloud.py
+  n_files: 4
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: databricks'
+  verified: unverified
+- id: t179
+  commit: a48ca9ce7238064677a492c6edbac4c62b9da760
+  parent: 8343a4fff806ef967ace8b26c4232c9b39042b52
+  date: '2026-07-02'
+  subject: 'fix(sqllab): reject blank saved query and dataset names'
+  prompt: 'fix(sqllab): reject blank saved query and dataset names'
+  code_files:
+  - superset/queries/saved_queries/api.py
+  - superset/queries/saved_queries/schemas.py
+  test_files:
+  - tests/unit_tests/queries/saved_queries_schema_test.py
+  n_files: 8
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t180
+  commit: 792d6776349428b4f07132c8cdc7f737e297fc1b
+  parent: 2d2a72b721fc88fa3965414563d6262961790f1e
+  date: '2026-07-01'
+  subject: 'fix(reports): respect CSV_EXPORT sep and decimal config in email reports'
+  prompt: 'fix(reports): respect CSV_EXPORT sep and decimal config in email reports'
+  code_files:
+  - superset/charts/client_processing.py
+  test_files:
+  - tests/unit_tests/charts/test_client_processing.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t181
+  commit: 2d2a72b721fc88fa3965414563d6262961790f1e
+  parent: 55b2da75f657c27ad85b675616e7cef8d316e788
+  date: '2026-07-01'
+  subject: 'fix(sqllab): show non-ASCII text in array/JSON columns instead of \uXXXX escapes'
+  prompt: 'fix(sqllab): show non-ASCII text in array/JSON columns instead of \uXXXX escapes'
+  code_files:
+  - superset/result_set.py
+  - superset/utils/json.py
+  test_files:
+  - tests/unit_tests/result_set_test.py
+  - tests/unit_tests/utils/json_tests.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t182
+  commit: 7f4cac63c90c67a1792dd64a1114550f7d9c4dfb
+  parent: da4cae165745aa989dc2b8c67b910085d202af10
+  date: '2026-07-01'
+  subject: 'fix(mcp): escape LIKE wildcards in find_users to prevent user enumeration'
+  prompt: 'fix(mcp): escape LIKE wildcards in find_users to prevent user enumeration'
+  code_files:
+  - superset/mcp_service/system/tool/find_users.py
+  - superset/mcp_service/utils/__init__.py
+  - superset/mcp_service/utils/sanitization.py
+  test_files:
+  - tests/unit_tests/mcp_service/system/tool/test_find_users.py
+  - tests/unit_tests/mcp_service/utils/test_sanitization.py
+  n_files: 5
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: find_users'
+  verified: unverified
+- id: t183
+  commit: 2da2db6c7c0464fffd00663e56adaea7ffc6e4b6
+  parent: 365102001472d3d8b0dc9158538ac4e7ffabb791
+  date: '2026-07-01'
+  subject: 'feat(sql): schema-qualified table denylist + information_schema/lo_* defaults'
+  prompt: 'feat(sql): schema-qualified table denylist + information_schema/lo_* defaults'
+  code_files:
+  - superset/commands/sql_lab/estimate.py
+  - superset/config.py
+  - superset/models/core.py
+  - superset/models/helpers.py
+  - superset/sql/execution/executor.py
+  - superset/sql/parse.py
+  - superset/sql_lab.py
+  test_files:
+  - tests/unit_tests/commands/sql_lab/test_estimate.py
+  - tests/unit_tests/models/core_test.py
+  - tests/unit_tests/models/helpers_test.py
+  - tests/unit_tests/sql/execution/test_executor.py
+  - tests/unit_tests/sql/parse_tests.py
+  n_files: 13
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: fails_at_commit
+  navigation: needed
+  navigation_hit: null
+- id: t184
+  commit: 365102001472d3d8b0dc9158538ac4e7ffabb791
+  parent: b9e3f0aa1e2c7173eeae1c9a18c1473c0d3e1f1a
+  date: '2026-07-01'
+  subject: 'fix(sql): cap parser input length via SQL_MAX_PARSE_LENGTH config'
+  prompt: 'fix(sql): cap parser input length via SQL_MAX_PARSE_LENGTH config'
+  code_files:
+  - superset/config.py
+  - superset/sql/parse.py
+  test_files:
+  - tests/unit_tests/sql/parse_tests.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: fails_at_commit
+  navigation: needed
+  navigation_hit: null
+- id: t185
+  commit: b9e3f0aa1e2c7173eeae1c9a18c1473c0d3e1f1a
+  parent: 16e1f41ceff8ab2ee0851e8730cd776707a18cfc
+  date: '2026-07-01'
+  subject: 'feat(soft-delete): gate soft delete behind a temporary SOFT_DELETE release toggle'
+  prompt: 'feat(soft-delete): gate soft delete behind a temporary SOFT_DELETE release toggle'
+  code_files:
+  - superset/config.py
+  - superset/daos/base.py
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/daos/test_base_dao_soft_delete.py
+  - tests/unit_tests/models/test_soft_delete_mixin.py
+  n_files: 6
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t186
+  commit: 7cc7e9f6e34897b01067fdd9f93a91200a4eb6e3
+  parent: 3e88b487b32d2721f7e419225d91572488365a2a
+  date: '2026-07-01'
+  subject: 'fix(async-query): prevent JWT InvalidSubjectError for guest users'
+  prompt: 'fix(async-query): prevent JWT InvalidSubjectError for guest users'
+  code_files:
+  - superset/async_events/async_query_manager.py
+  test_files:
+  - tests/unit_tests/async_events/async_query_manager_tests.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t187
+  commit: fd9c84be43015ebd3b2f76028b306484434584f8
+  parent: 2bd9ab4c597b4898e60b58dec2e2997765362f77
+  date: '2026-06-30'
+  subject: 'feat(mcp): add get_dashboard_datasets tool'
+  prompt: 'feat(mcp): add get_dashboard_datasets tool'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/__init__.py
+  - superset/mcp_service/dashboard/tool/get_dashboard_datasets.py
+  test_files:
+  - tests/unit_tests/mcp_service/dashboard/tool/test_get_dashboard_datasets.py
+  n_files: 5
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: get_dashboard_datasets'
+  verified: unverified
+- id: t188
+  commit: 2bd9ab4c597b4898e60b58dec2e2997765362f77
+  parent: bf88c6281495eb0b6db62b001a0b2313b33f04a6
+  date: '2026-06-30'
+  subject: 'feat(mcp): add remove_chart_from_dashboard tool'
+  prompt: 'feat(mcp): add remove_chart_from_dashboard tool'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/__init__.py
+  - superset/mcp_service/dashboard/tool/remove_chart_from_dashboard.py
+  - superset/mcp_service/docs/tool-search-optimization.md
+  - superset/mcp_service/middleware.py
+  test_files:
+  - tests/unit_tests/mcp_service/dashboard/tool/test_remove_chart_from_dashboard.py
+  n_files: 7
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: remove_chart_from_dashboard'
+  verified: unverified
+- id: t189
+  commit: bf88c6281495eb0b6db62b001a0b2313b33f04a6
+  parent: 1e130feb8076a93c455e08003dc96acc97677098
+  date: '2026-06-30'
+  subject: 'feat(mcp): add manage_native_filters tool'
+  prompt: 'feat(mcp): add manage_native_filters tool'
+  code_files:
+  - superset/daos/dashboard.py
+  - superset/mcp_service/app.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/__init__.py
+  - superset/mcp_service/dashboard/tool/manage_native_filters.py
+  test_files:
+  - tests/unit_tests/mcp_service/dashboard/tool/test_manage_native_filters.py
+  n_files: 6
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: manage_native_filters'
+  verified: unverified
+- id: t190
+  commit: 4bf203ee708ab40c379f1159a693c4f0accb9b9d
+  parent: 805c12ef7443cec34079e614bfb694a7fb63957f
+  date: '2026-06-30'
+  subject: 'chore(config): default SMTP_SSL_SERVER_AUTH to True'
+  prompt: 'chore(config): default SMTP_SSL_SERVER_AUTH to True'
+  code_files:
+  - superset/config.py
+  test_files:
+  - tests/unit_tests/config_test.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t191
+  commit: c60d8bb656f988927f177a57d5e1e470de46ec99
+  parent: c11fa206ce32ad5c62f5e202ce61d343bc94e8bf
+  date: '2026-06-30'
+  subject: 'feat(mcp): add tags + typed metadata fields to update_dashboard'
+  prompt: 'feat(mcp): add tags + typed metadata fields to update_dashboard'
+  code_files:
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/update_dashboard.py
+  test_files:
+  - tests/unit_tests/mcp_service/dashboard/tool/test_update_dashboard.py
+  n_files: 3
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: update_dashboard'
+  verified: unverified
+- id: t192
+  commit: c11fa206ce32ad5c62f5e202ce61d343bc94e8bf
+  parent: 2b6806c09044aa35e01b4562824efaf8f041437c
+  date: '2026-06-30'
+  subject: 'feat(mcp): add duplicate_dashboard tool'
+  prompt: 'feat(mcp): add duplicate_dashboard tool'
+  code_files:
+  - superset/mcp_service/app.py
+  - superset/mcp_service/dashboard/schemas.py
+  - superset/mcp_service/dashboard/tool/__init__.py
+  - superset/mcp_service/dashboard/tool/duplicate_dashboard.py
+  - superset/mcp_service/mcp_config.py
+  test_files:
+  - tests/unit_tests/mcp_service/dashboard/test_dashboard_schemas.py
+  - tests/unit_tests/mcp_service/dashboard/tool/test_duplicate_dashboard.py
+  n_files: 7
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: duplicate_dashboard'
+  verified: unverified
+- id: t193
+  commit: b8b23d6219c123523727f2d09920b8bff047eb11
+  parent: 105b8960385e86b05469fd6f5dd78299eb3bf911
+  date: '2026-06-29'
+  subject: 'fix(bigquery): quote dotted STRUCT columns per-segment in drill to detail'
+  prompt: 'fix(bigquery): quote dotted STRUCT columns per-segment in drill to detail'
+  code_files:
+  - superset/models/helpers.py
+  test_files:
+  - tests/unit_tests/models/helpers_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t194
+  commit: 134919ea36d9cca082928126cdb1b9ec20704535
+  parent: adc03ce525808892f04702321ce291a3d5d45461
+  date: '2026-06-29'
+  subject: 'fix(screenshots): catch empty-bytes tiled result and set ERROR on falsy image'
+  prompt: 'fix(screenshots): catch empty-bytes tiled result and set ERROR on falsy image'
+  code_files:
+  - superset/utils/screenshots.py
+  - superset/utils/webdriver.py
+  test_files:
+  - tests/unit_tests/utils/test_screenshot_cache_fix.py
+  - tests/unit_tests/utils/webdriver_test.py
+  n_files: 5
+  review: pending
+  reject_reason: null
+  leak_risk: true
+  leak_hits:
+  - 'changed-file name in message: screenshots'
+  verified: unverified
+- id: t195
+  commit: adc03ce525808892f04702321ce291a3d5d45461
+  parent: 11a4a17dffc7b082570cd0d5068b7ab262047320
+  date: '2026-06-29'
+  subject: 'refactor: make import/expression layer SQLAlchemy 2.0-compatible'
+  prompt: 'refactor: make import/expression layer SQLAlchemy 2.0-compatible'
+  code_files:
+  - superset/__init__.py
+  - superset/commands/dataset/importers/v1/utils.py
+  - superset/connectors/sqla/models.py
+  - superset/initialization/__init__.py
+  - superset/models/helpers.py
+  - superset/queries/filters.py
+  - superset/queries/saved_queries/filters.py
+  - superset/security/manager.py
+  - superset/utils/encrypt.py
+  - superset/utils/mock_data.py
+  test_files:
+  - tests/unit_tests/initialization_test.py
+  - tests/unit_tests/utils/encrypt_test.py
+  n_files: 14
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t196
+  commit: a4d5b15955da974351f6c5f4b4da032d91d6e6ec
+  parent: 9dba4d090f7a888986eacf15390bb99611b45179
+  date: '2026-06-29'
+  subject: 'fix(slack): support org-scoped tokens on Enterprise Grid via SLACK_TE…'
+  prompt: 'fix(slack): support org-scoped tokens on Enterprise Grid via SLACK_TE…'
+  code_files:
+  - superset/config.py
+  - superset/utils/slack.py
+  test_files:
+  - tests/unit_tests/utils/slack_test.py
+  n_files: 4
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t197
+  commit: 1b7b9ce9485d0af5cfd99b3b0629626fa1d735e8
+  parent: 7926c3a93aac472b14f28df8edfe6d56a83e10b4
+  date: '2026-06-29'
+  subject: 'fix(tags): remove unsatisfiable foreign keys from tagged_object.object_id'
+  prompt: 'fix(tags): remove unsatisfiable foreign keys from tagged_object.object_id'
+  code_files:
+  - superset/tags/models.py
+  test_files:
+  - tests/unit_tests/tags/models_test.py
+  n_files: 3
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t198
+  commit: a529945d3b724e2d71a3814975d5d2c94536aca0
+  parent: 0c12114ea9277e2a3ba787acdea38ca79baae1d9
+  date: '2026-06-29'
+  subject: 'fix(reports): commit permalink before Playwright navigation'
+  prompt: 'fix(reports): commit permalink before Playwright navigation'
+  code_files:
+  - superset/commands/report/execute.py
+  test_files:
+  - tests/unit_tests/commands/report/execute_test.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t199
+  commit: 7fc1113c31610c1256cd06be453cec8886d352e3
+  parent: ccbd284245412dfd3b6faca886e196368d7ac0e3
+  date: '2026-06-27'
+  subject: 'fix(telemetry): use Scarf static pixel instead of gateway redirect'
+  prompt: 'fix(telemetry): use Scarf static pixel instead of gateway redirect'
+  code_files:
+  - superset/config.py
+  - superset/views/base.py
+  test_files:
+  - tests/unit_tests/views/test_base.py
+  n_files: 10
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: ok
+  navigation: needed
+  navigation_hit: null
+- id: t200
+  commit: 5ec093184080f2aecd53f399fa45c2c1ba1a8bed
+  parent: 3eb91855212e7fd41beb12f0ad33177f1cba5c5e
+  date: '2026-06-27'
+  subject: 'fix(pandas_postprocessing): pass string operator names to GroupBy.agg to avoid FutureWarning'
+  prompt: 'fix(pandas_postprocessing): pass string operator names to GroupBy.agg to avoid FutureWarning'
+  code_files:
+  - superset/utils/pandas_postprocessing/utils.py
+  test_files:
+  - tests/unit_tests/pandas_postprocessing/test_aggregate.py
+  n_files: 2
+  review: ok
+  reject_reason: null
+  leak_risk: false
+  leak_hits: []
+  verified: passes_at_parent
+  navigation: needed
+  navigation_hit: null

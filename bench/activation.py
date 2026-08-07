@@ -1,9 +1,10 @@
 """Did the skill actually run?
 
-JetBrains found that ponytail self-activated zero times across ten sessions: it
-only works when a SessionStart hook injects it. A skill that silently never runs
-produces exactly the numbers of a skill that works perfectly and costs nothing,
-so a benchmark that does not check activation cannot tell the two apart.
+A skill that silently never runs produces exactly the numbers of a skill that
+works perfectly and costs nothing, so a benchmark that does not check activation
+cannot tell the two apart. This is not a hypothetical: the first skill measured
+here was reached for zero times in 36 runs, with the tools demonstrably within
+reach, and only produced a number at all once the session was ordered to use it.
 
 Every run in an arm that declares ``activation_patterns`` is scanned for traces
 of the skill: tool calls, MCP tool names, index files it reads, markers it

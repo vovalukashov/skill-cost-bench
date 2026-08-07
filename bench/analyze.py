@@ -65,9 +65,23 @@ def collect(rows: list[dict[str, Any]]) -> dict[str, Any]:
             elif status == "available_unused":
                 bucket["available_unused"] += 1
 
+    # Compliance split by how much searching the task left. Added after watching
+    # the main sweep: the only runs that ignored a *mandatory* graph step were
+    # tasks whose own words named the symbol, where the model grepped the name,
+    # said "found it directly", and skipped the procedure. Descriptive.
+    by_nav: dict[str, dict[str, int]] = {}
+    for r in rows:
+        status = r.get("activation_status")
+        if not status:
+            continue
+        bucket = by_nav.setdefault(str(r.get("navigation") or "unlabelled"),
+                                   {"used": 0, "available_unused": 0})
+        bucket["used" if status == "used" else "available_unused"] += 1
+
     return {
         "n_rows": len(rows),
         "n_valid": len(valid),
+        "activation_by_navigation": by_nav,
         "n_invalid": len(invalid),
         "invalid_share": (len(invalid) / len(rows)) if rows else 0.0,
         "invalid_reasons": dict(sorted(reasons.items(), key=lambda kv: -kv[1])),
@@ -325,6 +339,20 @@ def render(summary: dict[str, Any]) -> str:
             f"{bucket['used_skill']}, left untouched in "
             f"{bucket['available_unused']} ({share:.0f}%)")
     if offered_any:
+        add("")
+
+    nav_use = v.get("activation_by_navigation") or {}
+    if len(nav_use) > 1:
+        add("| navigation | used the skill | left it untouched |")
+        add("|---|---|---|")
+        for label in sorted(nav_use):
+            b = nav_use[label]
+            add(f"| {label} | {b['used']} | {b['available_unused']} |")
+        add("")
+        add("Read this next to the split in 3a. A task that names the symbol to "
+            "change leaves nothing to search for, and the model behaves as if it "
+            "knows: those are the runs where it grepped the name, said it had "
+            "found the place directly, and skipped the graph.")
         add("")
 
     add("A valid run in which the model was handed the skill and did not touch it "

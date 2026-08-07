@@ -134,3 +134,20 @@ def test_the_control_guard_still_fires_on_a_mere_mention():
     """Contamination is about exposure, so prose counts there."""
     events = [_assistant([{"type": "text", "text": "the graphify index would help here"}])]
     assert check_arm(events, forbidden_patterns=["graphify"])["valid"] is False
+
+
+def test_compliance_is_reported_against_how_much_search_the_task_left():
+    from bench.analyze import collect
+
+    rows = [
+        {"arm": "b", "valid": True, "navigation": "given",
+         "activation_status": "available_unused"},
+        {"arm": "b", "valid": True, "navigation": "needed", "activation_status": "used"},
+        {"arm": "b", "valid": True, "navigation": "needed", "activation_status": "used"},
+        {"arm": "a", "valid": True},
+    ]
+    by_nav = collect(rows)["activation_by_navigation"]
+
+    assert by_nav["given"] == {"used": 0, "available_unused": 1}
+    assert by_nav["needed"] == {"used": 2, "available_unused": 0}
+    assert "unlabelled" not in by_nav, "a run with no skill offered is not a skipped skill"

@@ -137,7 +137,7 @@ report says so above every number about money.
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install pyyaml pytest
-.venv/bin/python -m pytest tests/ -q          # 40 tests, no API calls, free
+.venv/bin/python -m pytest tests/ -q          # 107 tests, no API calls, free
 .venv/bin/python scripts/selftest_stats.py --trials 200
 
 cp config.example.yaml config.yaml            # then edit target.repo and the arms

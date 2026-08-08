@@ -71,7 +71,11 @@ Two checks run before anything is paid for. The tests must pass at the commit
 (otherwise the task is already done and both arms get a free win).
 
 Merges, reverts, dependency bumps, renames, commits over 25 files, and anything
-touching secrets, migrations or lockfiles are filtered out. Every mined task
+touching secrets or migrations are filtered out. A commit that also moves a
+dependency lock is kept and flagged `setup_risk`: whether the task needs an
+install is settled by running its tests, not guessed from a filename. Mining a
+JavaScript monorepo showed what the guess cost — 9 of the 37 commits that
+touched code and tests together carried a lockfile. Every mined task
 lands as `review: pending` and the runner ignores anything but `review: ok`,
 because the one thing no filter can see is a commit message that hands over the
 answer.

@@ -39,7 +39,11 @@ A commit qualifies when all of the following hold:
    larger commit is several tasks in one coat;
 4. its subject is not a dependency bump, lockfile update, release or rename;
 5. it touches no path matching the sensitive list (keys, `.env`, credentials,
-   tfstate) or the infrastructure list (migrations, `*.sql`, lockfiles);
+   tfstate) or the infrastructure list (migrations, `*.sql`) — state a throwaway
+   worktree cannot reconstruct. A dependency lock is *not* disqualifying: it is
+   recorded as `setup_risk` for the reviewer, and whether the task actually needs
+   an install is answered by the two verification runs below rather than by the
+   filename. Rejecting on the lock cost 9 of 37 usable commits on a JS monorepo;
 6. at least one of its test files is added or modified rather than deleted. A
    commit that only deletes tests leaves the task with no grader: restoring
    "the commit's tests" restores nothing and both arms fail for a reason that

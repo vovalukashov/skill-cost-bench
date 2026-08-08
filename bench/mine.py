@@ -47,12 +47,25 @@ SENSITIVE_GLOBS = (
     "*.tfstate",
 )
 
-# Paths that make a task unreproducible in a throwaway worktree.
+# Paths that make a task unreproducible in a throwaway worktree: they need state
+# the worktree does not have, and no amount of agent work can conjure a database.
 INFRA_GLOBS = (
     "*/migrations/*",
     "migrations/*",
     "*/alembic/*",
     "*.sql",
+)
+
+# Dependency locks. These used to sit in INFRA_GLOBS and reject the commit
+# outright, which was wrong: a lockfile does not stop a task from running, it
+# only means the task *may* need an install step first. On a JavaScript monorepo
+# that guess threw away 9 of the 37 commits that touched code and tests together
+# — a quarter of the usable history, discarded on a hunch. Whether the install is
+# really needed is decided by evidence: the verifier runs the tests at the commit
+# and at its parent, and a task that cannot pass in this environment is dropped
+# with a reason. So the lockfile is recorded for the human reviewer and left
+# alone.
+LOCKFILE_GLOBS = (
     "*lock.json",
     "*.lock",
     "*lock.yaml",
@@ -83,6 +96,8 @@ class Task:
     reject_reason: str | None = None
     leak_risk: bool = False
     leak_hits: list[str] = field(default_factory=list)
+    setup_risk: bool = False
+    setup_hits: list[str] = field(default_factory=list)
     verified: str = "unverified"  # unverified | ok | fails_at_commit | passes_at_parent
 
     def to_dict(self) -> dict[str, Any]:
@@ -118,6 +133,10 @@ def is_sensitive(path: str) -> bool:
 
 def is_infra(path: str) -> bool:
     return _matches(path, INFRA_GLOBS)
+
+
+def is_lockfile(path: str) -> bool:
+    return _matches(path, LOCKFILE_GLOBS)
 
 
 def clean_message(subject: str, body: str, max_chars: int) -> str:
@@ -240,11 +259,14 @@ def classify(rec: dict[str, Any], cfg: MineConfig) -> tuple[Task | None, str | N
         return None, f"touches migration/lockfile: {infra[0]}"
 
     status = rec.get("status") or {}
+    locks = [f for f in files if is_lockfile(f)]
     test_files = [f for f in files if is_test_path(f, cfg.test_globs)]
     code_files = [
         f
         for f in files
-        if not is_test_path(f, cfg.test_globs) and _matches(f, cfg.code_globs)
+        if not is_test_path(f, cfg.test_globs)
+        and not is_lockfile(f)
+        and _matches(f, cfg.code_globs)
     ]
     if not test_files:
         return None, "no test files"
@@ -274,6 +296,8 @@ def classify(rec: dict[str, Any], cfg: MineConfig) -> tuple[Task | None, str | N
         n_files=len(files),
         leak_risk=bool(hits),
         leak_hits=hits,
+        setup_risk=bool(locks),
+        setup_hits=[f"dependency lock changed: {f}" for f in sorted(locks)[:8]],
     )
     return task, None
 

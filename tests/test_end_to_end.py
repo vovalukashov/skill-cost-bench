@@ -368,3 +368,57 @@ def test_the_report_splits_tasks_by_whether_the_search_was_given(
     needed = summary["by_navigation"]["needed"]
     assert needed.get("n") == 2, "two of the three tasks left a search to do"
     assert summary["by_navigation"]["given"].get("insufficient") is True
+
+
+def test_the_skills_own_installer_runs_in_the_arms_worktree_after_the_strip(
+    demo_repo: Path, tmp_path: Path, approved_manifest: Path
+):
+    """Measuring the stock install means running the vendor's installer per run.
+
+    Two things have to hold, and only one of them is wiring. The installer has
+    to run in the arm's own worktree, so what it writes is what that session
+    sees; and it has to run after the repository's own agent instructions are
+    stripped, or the tool's file lands on top of guidance the control arm never
+    got and the arms stop differing by one thing.
+    """
+    subprocess.run(["git", "-C", str(demo_repo), "add", "-A"], check=True)
+    (demo_repo / "CLAUDE.md").write_text("repo guidance the control arm never sees\n",
+                                         encoding="utf-8")
+    subprocess.run(["git", "-C", str(demo_repo), "add", "CLAUDE.md"], check=True)
+    subprocess.run(["git", "-C", str(demo_repo), "commit", "-qm", "add guidance"], check=True)
+
+    cwd_log = tmp_path / "installer-cwd.log"
+    tree_log = tmp_path / "installer-claude-md.log"
+    cfg = _config(demo_repo, tmp_path, approved_manifest, repeats=1)
+    cfg.target.strip_paths = ["CLAUDE.md"]
+    cfg.arm("graphify").setup_cmd = (
+        f"printf 'stock install\\n' >> CLAUDE.md"
+        f" && pwd >> {cwd_log}"
+        f" && cat CLAUDE.md >> {tree_log}"
+    )
+
+    tasks = [dict(t, review="ok", verified="ok") for t in _mined(demo_repo)]
+    out = Path(cfg.run.out_dir) / "stock"
+    execute(cfg, tasks, out)
+    rows = list(read_jsonl(out / "runs.jsonl"))
+
+    experiment = [r for r in rows if r["arm"] == "graphify"]
+    control = [r for r in rows if r["arm"] == "control"]
+    assert experiment and control
+
+    # Ran once per experimental run, and nowhere else.
+    assert all(r["arm_setup"]["exit_code"] == 0 for r in experiment), \
+        [r.get("arm_setup") for r in experiment]
+    assert all("arm_setup" not in r for r in control)
+    cwds = cwd_log.read_text(encoding="utf-8").split()
+    assert len(cwds) == len(experiment)
+
+    # Ran inside that run's own worktree, never in the source repository.
+    assert all(c.startswith(str(tmp_path / "wt")) for c in cwds)
+    assert str(demo_repo) not in cwd_log.read_text(encoding="utf-8")
+
+    # Ran after the strip: the only agent guidance left in the tree is the
+    # installer's own, and the repository's line is nowhere in it.
+    written = tree_log.read_text(encoding="utf-8")
+    assert written.strip().splitlines() == ["stock install"] * len(experiment)
+    assert "repo guidance" not in written

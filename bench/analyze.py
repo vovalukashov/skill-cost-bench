@@ -14,7 +14,14 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from .config import Config
-from .stats import VERDICTS, estimate, noise_floor, sign_test, verdict
+from .stats import (
+    VERDICTS,
+    effect_below_noise,
+    estimate,
+    noise_floor,
+    sign_test,
+    verdict,
+)
 from .util import read_jsonl, utc_iso, write_json
 
 # (name, solved-by-both-arms only, experimental repeats that used the skill only)
@@ -52,7 +59,12 @@ def collect(rows: list[dict[str, Any]]) -> dict[str, Any]:
     for r in rows:
         arm = str(r.get("arm"))
         bucket = per_arm_totals.setdefault(
-            arm, {"runs": 0, "valid": 0, "solved": 0, "used_skill": 0, "available_unused": 0}
+            arm,
+            {"runs": 0, "valid": 0, "solved": 0, "used_skill": 0, "available_unused": 0,
+             # A skill whose own tooling prompts the model on every file read is
+             # a different product from one the model picks up unprompted, and
+             # the two cannot be told apart by the activation rate alone.
+             "nudged": 0, "used_unprompted": 0, "nudged_unused": 0},
         )
         bucket["runs"] += 1
         if r.get("valid"):
@@ -60,10 +72,17 @@ def collect(rows: list[dict[str, Any]]) -> dict[str, Any]:
             if r.get("solved"):
                 bucket["solved"] += 1
             status = r.get("activation_status")
+            nudged = bool(r.get("nudged"))
+            if nudged:
+                bucket["nudged"] += 1
             if status == "used":
                 bucket["used_skill"] += 1
+                if not nudged:
+                    bucket["used_unprompted"] += 1
             elif status == "available_unused":
                 bucket["available_unused"] += 1
+                if nudged:
+                    bucket["nudged_unused"] += 1
 
     # Compliance split by how much searching the task left. Added after watching
     # the main sweep: the only runs that ignored a *mandatory* graph step were
@@ -178,14 +197,48 @@ def solve_rates(rows: list[dict[str, Any]], control: str, experiment: str) -> di
     }
 
 
-def analyze(cfg: Config, out_dir: str | Path) -> dict[str, Any]:
+def pick_arms(arms: list[Any], experiment: str | None = None) -> tuple[str, str]:
+    """Which two arms this report compares.
+
+    A sweep may carry more than one variant of the same skill — the stock
+    install and the strict one — against a single control. They are analysed one
+    pair at a time, and naming the wrong arm has to stop the run rather than
+    quietly report the default pair under the wrong title.
+    """
+    control = next((a.name for a in arms if not a.activation_patterns), arms[0].name)
+    candidates = [a.name for a in arms if a.activation_patterns]
+    if experiment is None:
+        return control, (candidates[0] if candidates else arms[-1].name)
+    if experiment not in candidates:
+        raise SystemExit(
+            f"unknown experimental arm '{experiment}'. This sweep has: "
+            + ", ".join(candidates)
+        )
+    return control, experiment
+
+
+def report_paths(out: Path, control: str, experiment: str,
+                 explicit: bool) -> tuple[Path, Path]:
+    """Where this pair's summary and report go.
+
+    The default pair keeps the plain names every existing run and script
+    expects. A pair asked for by name gets its own files, so analysing the
+    second variant of a skill cannot quietly overwrite the first.
+    """
+    if not explicit:
+        return out / "summary.json", out / "report.md"
+    return out / f"summary.{experiment}.json", out / f"report.{experiment}.md"
+
+
+def analyze(cfg: Config, out_dir: str | Path, experiment: str | None = None) -> dict[str, Any]:
     out = Path(out_dir)
     rows = list(read_jsonl(out / "runs.jsonl"))
     if not rows:
         raise SystemExit(f"no runs found in {out / 'runs.jsonl'}")
 
-    control = next((a.name for a in cfg.arms if not a.activation_patterns), cfg.arms[0].name)
-    experiment = next((a.name for a in cfg.arms if a.activation_patterns), cfg.arms[-1].name)
+    explicit = experiment is not None
+    control, experiment = pick_arms(cfg.arms, experiment)
+    rows = [r for r in rows if r.get("arm") in (control, experiment)]
 
     summary: dict[str, Any] = {
         "generated_at": utc_iso(),
@@ -267,22 +320,15 @@ def analyze(cfg: Config, out_dir: str | Path) -> dict[str, Any]:
         "ci": [primary.get("ci_low"), primary.get("ci_high")],
         "verdict": primary.get("verdict"),
         "verdict_meaning": VERDICTS.get(primary.get("verdict", ""), ""),
-        "effect_below_noise": _effect_below_noise(primary, summary["noise"]),
+        "effect_below_noise": effect_below_noise(
+            primary.get("geometric_mean"), summary["noise"].get("median_geometric_sd")
+        ),
     }
 
-    write_json(out / "summary.json", summary)
-    (out / "report.md").write_text(render(summary), encoding="utf-8")
+    summary_path, report_path = report_paths(out, control, experiment, explicit)
+    write_json(summary_path, summary)
+    report_path.write_text(render(summary), encoding="utf-8")
     return summary
-
-
-def _effect_below_noise(primary: dict[str, Any], noise: dict[str, Any]) -> bool | None:
-    gm = primary.get("geometric_mean")
-    gsd = noise.get("median_geometric_sd")
-    if not isinstance(gm, (int, float)) or not isinstance(gsd, (int, float)):
-        return None
-    if gsd != gsd:  # NaN
-        return None
-    return abs(gm - 1.0) < abs(gsd - 1.0)
 
 
 def _fmt(value: Any, digits: int = 3) -> str:
@@ -338,6 +384,11 @@ def render(summary: dict[str, Any]) -> str:
         add(f"- `{arm}`: skill offered in {offered} valid runs, used in "
             f"{bucket['used_skill']}, left untouched in "
             f"{bucket['available_unused']} ({share:.0f}%)")
+        if bucket.get("nudged"):
+            add(f"  - the skill's own tooling prompted the model in "
+                f"{bucket['nudged']} of them; used without any prompt in "
+                f"{bucket['used_unprompted']}, prompted and still unused in "
+                f"{bucket['nudged_unused']}")
     if offered_any:
         add("")
 

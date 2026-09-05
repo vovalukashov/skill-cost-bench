@@ -5,6 +5,7 @@ import random
 
 from bench.stats import (
     bootstrap_ci,
+    effect_below_noise,
     estimate,
     geometric_mean,
     noise_floor,
@@ -84,3 +85,30 @@ def test_noise_floor_measures_repeats_within_a_cell():
     noise = noise_floor(cells)
     assert noise["n_cells"] == 2
     assert noise["median_spread_ratio"] > 1.0
+
+
+def test_effect_below_noise_compares_on_the_log_scale():
+    """A ratio and its reciprocal are the same distance from parity.
+
+    Comparing `abs(gm - 1)` against `abs(gsd - 1)` mixes an additive distance
+    with a multiplicative spread, and it reads 0.843 as smaller than a spread
+    that it is in fact larger than. Both sides belong in logs.
+    """
+    # The measured run: geometric mean 0.843, within-cell geometric SD 1.164.
+    # |ln 0.843| = 0.171 against ln 1.164 = 0.152 — the effect is larger.
+    assert effect_below_noise(0.843, 1.164) is False
+    # Same numbers on the linear scale would have said the opposite:
+    assert abs(0.843 - 1.0) < abs(1.164 - 1.0)
+
+    # A genuinely tiny effect still trips the guard.
+    assert effect_below_noise(1.01, 1.30) is True
+
+    # Direction cannot change the answer: a ratio and its reciprocal are equally
+    # far from parity, which the linear form got wrong.
+    assert effect_below_noise(1.2, 1.164) == effect_below_noise(1 / 1.2, 1.164)
+
+
+def test_effect_below_noise_is_unknown_without_a_measured_spread():
+    assert effect_below_noise(0.843, None) is None
+    assert effect_below_noise(None, 1.164) is None
+    assert effect_below_noise(0.843, float("nan")) is None

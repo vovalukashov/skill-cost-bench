@@ -117,6 +117,7 @@ def check_arm(
     activation_patterns: Sequence[str] = (),
     forbidden_patterns: Sequence[str] = (),
     strip: str | None = None,
+    nudge_patterns: Sequence[str] = (),
 ) -> dict[str, Any]:
     """Validate one run against its arm's contract.
 
@@ -133,6 +134,14 @@ def check_arm(
         res = scan(events, activation_patterns, strip)
         out["activation"] = res
         out["activation_status"] = "used" if res["activated"] else "available_unused"
+
+    if nudge_patterns:
+        # Counted on every kind of hit, prose included: unlike activation, the
+        # question here is whether the tool spoke to the model at all, and it
+        # speaks in text.
+        res = scan(events, nudge_patterns, strip)
+        out["nudges"] = res
+        out["nudged"] = res["total_hits"] > 0
 
     if forbidden_patterns:
         res = scan(events, forbidden_patterns, strip)

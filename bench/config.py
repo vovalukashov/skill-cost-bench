@@ -29,10 +29,20 @@ class ArmConfig:
     # and nothing else, which a shared config directory cannot promise.
     append_system_prompt_file: str | None = None
     activation_patterns: list[str] = field(default_factory=list)
+    # Text the skill's own tooling pushes into the session — a hook that tells
+    # the model to query the graph before it reads a file. Counted separately
+    # from activation, because a prompted use is not a spontaneous one.
+    nudge_patterns: list[str] = field(default_factory=list)
     forbidden_patterns: list[str] = field(default_factory=list)
     expect_present: list[str] = field(default_factory=list)
     expect_absent: list[str] = field(default_factory=list)
     use_index: bool = False
+    # The skill's own installer, run inside this arm's worktree after the
+    # repository's agent instructions are stripped and the index is in place.
+    # This is how the arm gets the product as its users get it: whatever files
+    # the installer writes, and nothing the harness invented.
+    setup_cmd: str | None = None
+    setup_timeout_s: float = 900.0
 
 
 @dataclass
@@ -138,11 +148,20 @@ def load(path: str | Path) -> Config:
         raise ConfigError("config root must be a mapping")
 
     arms_raw = data.get("arms")
-    if not isinstance(arms_raw, list) or len(arms_raw) != 2:
-        raise ConfigError("exactly two arms are required (control and experiment)")
+    if not isinstance(arms_raw, list) or len(arms_raw) < 2:
+        raise ConfigError("at least two arms are required (a control and one experiment)")
     arms = [ArmConfig(**a) for a in arms_raw]
-    if arms[0].name == arms[1].name:
+    names = [a.name for a in arms]
+    if len(set(names)) != len(names):
         raise ConfigError("arms must have distinct names")
+    # One control can be shared by several variants of the same skill — a stock
+    # install and a strict one — so that each is compared against the same runs
+    # rather than against a control that ran on another day.
+    if not any(not a.activation_patterns for a in arms):
+        raise ConfigError(
+            "no control arm: every arm declares activation_patterns, so there is "
+            "nothing to compare them against"
+        )
 
     for arm in arms:
         if arm.append_system_prompt_file and not Path(arm.append_system_prompt_file).is_absolute():

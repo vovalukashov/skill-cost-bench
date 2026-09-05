@@ -151,3 +151,40 @@ def test_compliance_is_reported_against_how_much_search_the_task_left():
     assert by_nav["given"] == {"used": 0, "available_unused": 1}
     assert by_nav["needed"] == {"used": 2, "available_unused": 0}
     assert "unlabelled" not in by_nav, "a run with no skill offered is not a skipped skill"
+
+
+def test_a_nudge_from_the_tools_own_hook_is_counted_but_is_not_activation():
+    """The hook speaks, the model answers: two different facts, both recorded.
+
+    The stock install fires a PreToolUse hook that pushes the same sentence into
+    the session before every read. Counting that as the model reaching for the
+    graph would score the tool's own reminder as a decision the model made.
+    """
+    events = [
+        {"type": "user", "message": {"role": "user", "content": [
+            {"type": "tool_result", "content": "MANDATORY: graphify-out/graph.json exists. "
+                                               "You MUST run graphify before reading source files."},
+        ]}},
+        _assistant([{"type": "tool_use", "name": "Read", "input": {"file_path": "a.py"}}]),
+    ]
+    checks = check_arm(events, activation_patterns=PATTERNS,
+                       nudge_patterns=["MANDATORY: graphify-out"])
+
+    assert checks["activation_status"] == "available_unused"
+    assert checks["nudges"]["total_hits"] == 1
+    assert checks["nudged"] is True
+
+
+def test_a_nudged_session_that_then_used_the_graph_is_both():
+    events = [
+        {"type": "user", "message": {"role": "user", "content": [
+            {"type": "tool_result", "content": "MANDATORY: graphify-out/graph.json exists."},
+        ]}},
+        _assistant([{"type": "tool_use", "name": "Bash",
+                     "input": {"command": "graphify query \"where is the loader\""}}]),
+    ]
+    checks = check_arm(events, activation_patterns=[r"graphify query"],
+                       nudge_patterns=["MANDATORY: graphify-out"])
+
+    assert checks["activation_status"] == "used"
+    assert checks["nudged"] is True

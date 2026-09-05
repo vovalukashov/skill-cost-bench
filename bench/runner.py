@@ -85,6 +85,24 @@ def _prepare_worktree(cfg: Config, wt: Path, task: dict[str, Any]) -> dict[str, 
     return {"hidden": hidden, "stripped": stripped, "setup": setup}
 
 
+def _run_arm_setup(arm: Any, wt: Path) -> dict[str, Any]:
+    """Run the skill's own installer inside the arm's worktree.
+
+    It goes last, after the repository's own agent instructions are stripped and
+    the index is installed, so the files it writes are the only agent
+    instructions in the tree and the hooks it registers see a graph.
+    """
+    proc = run(["/bin/sh", "-lc", arm.setup_cmd], cwd=wt,
+               env=arm.env or None, timeout=arm.setup_timeout_s)
+    return {
+        "cmd": arm.setup_cmd,
+        "exit_code": proc.returncode,
+        "wall_s": round(proc.duration_s, 2),
+        "timed_out": proc.timed_out,
+        "stderr_tail": (proc.stderr or "")[-400:],
+    }
+
+
 def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
                 out_dir: Path, index_source: Path | None,
                 price_table: dict[str, pricing_mod.ModelPrice] | None = None) -> dict[str, Any]:
@@ -121,6 +139,9 @@ def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
                 )
                 row["index_refresh"] = index_mod.refresh(cfg.index, wt, arm.env)
 
+            if arm.setup_cmd:
+                row["arm_setup"] = _run_arm_setup(arm, wt)
+
             prompt = render_prompt(cfg.agent.prompt_template, task["prompt"])
             agent_run = invoke(cfg.agent, arm, prompt, wt, transcript)
             row["agent"] = agent_run.to_dict()
@@ -145,7 +166,7 @@ def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
 
             events = load_transcript(transcript)
             checks = check_arm(events, arm.activation_patterns, arm.forbidden_patterns,
-                               strip=str(wt))
+                               strip=str(wt), nudge_patterns=arm.nudge_patterns)
             row.update({k: v for k, v in checks.items() if k not in ("valid", "invalid_reason")})
             if not checks["valid"]:
                 row["valid"] = False

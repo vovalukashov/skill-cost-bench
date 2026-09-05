@@ -1,0 +1,1 @@
+{"mcpServers": {"graphify": {"command": "<repo>/.venv/bin/graphify-mcp", "args": ["--graph", "graphify-out/graph.json"]}}}

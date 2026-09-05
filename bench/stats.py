@@ -60,6 +60,24 @@ def geometric_sd(values: Sequence[float]) -> float:
     return math.exp(statistics.stdev(logs))
 
 
+def effect_below_noise(gm: float | None, gsd: float | None) -> bool | None:
+    """Is the measured effect smaller than the spread between repeats?
+
+    Both sides are ratios, so both belong on the log scale: an effect of 0.843
+    and one of 1/0.843 sit the same distance from parity, and a geometric SD of
+    1.164 describes a multiplicative spread, not an additive one. Comparing
+    ``abs(gm - 1)`` against ``abs(gsd - 1)`` mixes the two scales and, on this
+    run, called an effect of 0.171 in logs smaller than a spread of 0.152.
+
+    Returns None when either side is missing, which is not the same as False.
+    """
+    if not isinstance(gm, (int, float)) or not isinstance(gsd, (int, float)):
+        return None
+    if gm != gm or gsd != gsd or gm <= 0 or gsd <= 0:
+        return None
+    return abs(math.log(gm)) < abs(math.log(gsd))
+
+
 def bootstrap_ci(
     values: Sequence[float],
     n_resamples: int = 10_000,

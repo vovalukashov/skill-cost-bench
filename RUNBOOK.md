@@ -165,6 +165,51 @@ for.
 Set `run.repeats: 2`, remove `run.max_tasks`, raise `run.budget_usd`, and run the
 same command against a new output directory. Analyse the same way.
 
+## 9a. Measuring the skill as it ships
+
+Steps 1-9 hand the skill to the experimental arm the way the harness finds
+convenient. Most tools also have an installer, and what it writes is usually not
+what a harness would have written. Graphify's `install --project` adds a
+CLAUDE.md section and two PreToolUse hooks that tell the model to query the graph
+before every read, glob, grep and search; `--strict` refuses the first raw read
+of a session outright. A run that skips all of that is measuring the harness's
+idea of the tool.
+
+`config-superset-stock.yaml` runs the installed article instead:
+
+- `arms[].setup_cmd` runs the vendor's installer inside that arm's worktree,
+  after `target.strip_paths` has removed the repository's own agent
+  instructions, so the installer's files are the only guidance in the tree;
+- `arms[].args` carries `--setting-sources project` on the experimental arms so
+  the hooks it just registered actually load, and `""` on the control so nothing
+  does;
+- `arms[].env.PATH` puts the skill's CLI on the path of the arms that are
+  supposed to have it, and nowhere else;
+- `arms[].nudge_patterns` counts the text the tool pushes into the session on
+  its own initiative, so a prompted use is reported apart from a spontaneous
+  one;
+- `agent.extra_args` carries `--include-hook-events`, which puts hook firings in
+  the transcript.
+
+One control is shared by several variants of the same skill. Analyse a pair at a
+time; the named pair writes its own report rather than overwriting the default
+one:
+
+```bash
+python3 scripts/preflight.py --config config-superset-stock.yaml
+python3 scripts/run_bench.py --config config-superset-stock.yaml
+python3 scripts/analyze.py --config config-superset-stock.yaml --out out/<run>
+python3 scripts/analyze.py --config config-superset-stock.yaml --out out/<run> \
+    --experiment graphify-strict
+```
+
+Two things to confirm on the first session rather than after the sweep. The
+installer has to exit 0 (`arm_setup.exit_code` in `runs.jsonl`), and the hook has
+to fire in its mandatory form: it softens its own wording to a STALE variant when
+it decides the graph is out of date for the file being read, and a sweep that
+silently measured the softened version would be measuring nothing in particular.
+`nudges.evidence` in the same row shows which one arrived.
+
 ## 10. Publishing
 
 The run directory contains the resolved config, the raw `runs.jsonl` including

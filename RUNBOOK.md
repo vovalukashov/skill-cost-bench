@@ -210,6 +210,23 @@ it decides the graph is out of date for the file being read, and a sweep that
 silently measured the softened version would be measuring nothing in particular.
 `nudges.evidence` in the same row shows which one arrived.
 
+Both were checked against graphify 0.9.34 on a real superset worktree before the
+first sweep, by feeding the hook a synthetic PreToolUse payload rather than
+spending a session on it:
+
+```bash
+echo '{"session_id":"s1","tool_name":"Read","tool_input":{"file_path":"'$PWD'/superset/__init__.py"}}' \
+  | CLAUDE_PROJECT_DIR=$PWD graphify hook-guard read --strict
+```
+
+Findings worth keeping. The graph copied from an earlier run is recognised as
+fresh, so both hooks answer in the MANDATORY form, not the STALE one. The strict
+deny is real and distinct from the plain nudge, so the two experimental arms are
+not measuring the same thing. And the deny only fires when the payload carries a
+`session_id`: it claims a one-time marker under `graphify-out/cache/`, so a
+payload without one is silently downgraded to the soft nudge. A hand-rolled check
+that omits the field will conclude, wrongly, that strict mode does nothing.
+
 ## 10. Publishing
 
 The run directory contains the resolved config, the raw `runs.jsonl` including

@@ -406,19 +406,58 @@ def test_the_skills_own_installer_runs_in_the_arms_worktree_after_the_strip(
     control = [r for r in rows if r["arm"] == "control"]
     assert experiment and control
 
-    # Ran once per experimental run, and nowhere else.
+    # Ran once per experimental run, plus once for that arm's positive control,
+    # and nowhere else. The probe has to build the same tree the sweep does or
+    # it certifies an arm nobody measured.
     assert all(r["arm_setup"]["exit_code"] == 0 for r in experiment), \
         [r.get("arm_setup") for r in experiment]
     assert all("arm_setup" not in r for r in control)
     cwds = cwd_log.read_text(encoding="utf-8").split()
-    assert len(cwds) == len(experiment)
+    probe_cwds = [c for c in cwds if "/probe-" in c]
+    sweep_cwds = [c for c in cwds if "/probe-" not in c]
+    assert len(sweep_cwds) == len(experiment)
+    assert len(probe_cwds) == 1
 
-    # Ran inside that run's own worktree, never in the source repository.
-    assert all(c.startswith(str(tmp_path / "wt")) for c in cwds)
+    # Ran inside a throwaway worktree every time, never in the source repository.
+    assert all(c.startswith(str(tmp_path / "wt")) for c in sweep_cwds)
     assert str(demo_repo) not in cwd_log.read_text(encoding="utf-8")
 
     # Ran after the strip: the only agent guidance left in the tree is the
     # installer's own, and the repository's line is nowhere in it.
     written = tree_log.read_text(encoding="utf-8")
-    assert written.strip().splitlines() == ["stock install"] * len(experiment)
+    assert written.strip().splitlines() == ["stock install"] * (len(experiment) + 1)
+    assert "repo guidance" not in written
+
+
+def test_the_probe_gives_the_arm_the_same_worktree_the_sweep_will(
+    demo_repo: Path, tmp_path: Path, approved_manifest: Path
+):
+    """The positive control has to test the arm the sweep actually runs.
+
+    The probe answers one question: could this arm reach its skill at all? That
+    answer is worthless if the probe builds a different arm. When the skill
+    arrives through its own installer rather than through a command-line flag,
+    a probe that skips the installer proves only that a session without the
+    skill cannot use the skill.
+    """
+    subprocess.run(["git", "-C", str(demo_repo), "add", "-A"], check=True)
+    (demo_repo / "CLAUDE.md").write_text("repo guidance the arms never see\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(demo_repo), "add", "CLAUDE.md"], check=True)
+    subprocess.run(["git", "-C", str(demo_repo), "commit", "-qm", "add guidance"], check=True)
+
+    seen = tmp_path / "probe-claude-md.log"
+    cfg = _config(demo_repo, tmp_path, approved_manifest, repeats=1)
+    cfg.target.strip_paths = ["CLAUDE.md"]
+    cfg.arm("graphify").setup_cmd = (
+        f"printf 'stock install\\n' >> CLAUDE.md && cat CLAUDE.md >> {seen}"
+    )
+
+    from bench.probe import probe_all
+    tasks = [dict(t, review="ok", verified="ok") for t in _mined(demo_repo)]
+    probe_all(cfg, tasks[0]["parent"], None, tmp_path / "probe-transcripts")
+
+    written = seen.read_text(encoding="utf-8")
+    # The installer ran, once, inside the probe's own worktree.
+    assert written.strip().splitlines() == ["stock install"]
+    # And it ran after the strip, so the repository's guidance was already gone.
     assert "repo guidance" not in written

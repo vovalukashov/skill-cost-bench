@@ -188,3 +188,63 @@ def test_a_nudged_session_that_then_used_the_graph_is_both():
 
     assert checks["activation_status"] == "used"
     assert checks["nudged"] is True
+
+
+def _hook(name: str, output: str) -> dict:
+    """A PreToolUse hook firing, as Claude Code records it under --include-hook-events."""
+    return {"type": "system", "subtype": "hook_response", "hook_name": name,
+            "hook_event": "PreToolUse", "output": output, "stdout": output,
+            "exit_code": 0, "outcome": "success"}
+
+
+NUDGE = ('{"hookSpecificOutput":{"hookEventName":"PreToolUse","additionalContext":'
+         '"MANDATORY: graphify-out/graph.json exists. You MUST run graphify before '
+         'reading source files."}}')
+
+
+def test_a_hook_firing_is_read_from_the_transcript():
+    """Hook output is a system event, not a message, and was invisible.
+
+    The scanner walked assistant and user messages only, so the tool could shout
+    at the model on every file read and the report would say it never spoke.
+    """
+    events = [
+        _hook("PreToolUse:Read", NUDGE),
+        _hook("PreToolUse:Bash", NUDGE),
+        _assistant([{"type": "tool_use", "name": "Read", "input": {"file_path": "a.py"}}]),
+    ]
+    res = scan(events, ["MANDATORY: graphify-out"])
+    assert res["total_hits"] == 2
+    assert res["hit_kinds"].get("hook") == 2
+
+
+def test_a_hook_shouting_about_the_skill_is_not_the_model_using_it():
+    """The whole point of counting nudges separately.
+
+    A hook that names the tool in every reminder would otherwise mark every run
+    as an activation, and the sweep would report a model that reached for the
+    graph on its own when it did nothing of the kind.
+    """
+    events = [
+        _hook("PreToolUse:Read", NUDGE),
+        _assistant([{"type": "tool_use", "name": "Read", "input": {"file_path": "a.py"}}]),
+    ]
+    checks = check_arm(events,
+                       activation_patterns=[r"graphify (query|explain)"],
+                       nudge_patterns=["MANDATORY: graphify-out"])
+    assert checks["activation_status"] == "available_unused"
+    assert checks["nudged"] is True
+    assert checks["nudges"]["total_hits"] == 1
+
+
+def test_the_model_answering_the_hook_still_counts_as_use():
+    events = [
+        _hook("PreToolUse:Read", NUDGE),
+        _assistant([{"type": "tool_use", "name": "Bash",
+                     "input": {"command": 'graphify query "where is the loader"'}}]),
+    ]
+    checks = check_arm(events,
+                       activation_patterns=[r"graphify (query|explain)"],
+                       nudge_patterns=["MANDATORY: graphify-out"])
+    assert checks["activation_status"] == "used"
+    assert checks["nudged"] is True

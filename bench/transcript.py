@@ -163,3 +163,22 @@ def summarize(events: list[Event]) -> SessionSummary:
         api_key_source=init.get("apiKeySource"),
         usage=dict(usage),
     )
+
+
+def iter_hook_output(events: Iterable[Event]) -> Iterable[str]:
+    """Yield what each hook printed, when the session was run with
+    ``--include-hook-events``.
+
+    A hook firing arrives as ``{"type": "system", "subtype": "hook_response"}``
+    with the hook's stdout in ``output``. It carries no ``message``, so the
+    message walkers above cannot see it, and a skill whose installer nudges the
+    model on every file read would leave no trace in the report.
+    """
+    for ev in events:
+        if ev.get("type") != "system" or ev.get("subtype") != "hook_response":
+            continue
+        for key in ("output", "stdout"):
+            value = ev.get(key)
+            if isinstance(value, str) and value:
+                yield value
+                break

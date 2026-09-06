@@ -23,10 +23,10 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Any
 
-from . import index as index_mod
 from .activation import scan
 from .agent import invoke
 from .config import ArmConfig, Config
+from .prepare import prepare_worktree
 from .transcript import load
 from .util import utc_iso
 from .worktree import worktree
@@ -62,8 +62,10 @@ def probe_arm(cfg: Config, arm: ArmConfig, commit: str, index_source: Path | Non
     transcript.parent.mkdir(parents=True, exist_ok=True)
 
     with worktree(cfg.target.repo, commit, tmp / "wt") as wt:
-        if arm.use_index and index_source is not None:
-            index_mod.install(index_source, wt, cfg.index.paths)
+        # The same tree the sweep builds, minus the hidden tests: strip the
+        # repository's own agent instructions, install the index, then let the
+        # skill's installer write whatever it writes.
+        prepare_worktree(cfg, arm, wt, index_source=index_source)
         run_result = invoke(cfg.agent, arm, PROMPT, wt, transcript)
 
     events = load(transcript)

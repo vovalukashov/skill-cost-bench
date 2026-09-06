@@ -30,7 +30,7 @@ import json
 import re
 from typing import Any, Iterable, Sequence
 
-from .transcript import Event, iter_text, iter_tool_uses
+from .transcript import Event, iter_hook_output, iter_text, iter_tool_uses
 
 
 # Tools whose arguments are tool names. Their input names a skill without using
@@ -71,6 +71,15 @@ def _haystacks(events: list[Event], strip: str | None = None) -> Iterable[tuple[
     for text in iter_text(events):
         yield "text", clean(text)
 
+    # What the skill's own tooling said, unprompted, in this session. Hook
+    # output is a system event with no `message`, so the message walkers above
+    # never see it: a tool could shout "you MUST query the graph" before every
+    # file read and the report would record silence. Kept as its own kind, and
+    # excluded from activation below, because the tool talking is not the model
+    # reaching.
+    for text in iter_hook_output(events):
+        yield "hook", clean(text)
+
 
 def scan(events: list[Event], patterns: Sequence[str], strip: str | None = None) -> dict[str, Any]:
     """Look for traces of the skill in a transcript.
@@ -101,7 +110,8 @@ def scan(events: list[Event], patterns: Sequence[str], strip: str | None = None)
     # copy, its path turns up in any directory listing the model echoes back, and
     # a run that only ever ran `ls` was scoring as a run that queried the graph.
     # Use is a tool call: the name of a tool, or the arguments it was called with.
-    by_call = sum(count for kind, count in kinds.items() if kind != "text")
+    by_call = sum(count for kind, count in kinds.items()
+                  if kind not in ("text", "hook"))
     return {
         "activated": by_call > 0,
         "total_hits": total,

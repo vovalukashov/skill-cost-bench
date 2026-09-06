@@ -25,7 +25,8 @@ from .agent import invoke, render_prompt
 from .config import Config
 from .grade import grade
 from .util import append_jsonl, read_jsonl, run, utc_iso, write_json
-from .worktree import hide_paths, prune, worktree
+from .prepare import prepare_worktree
+from .worktree import prune, worktree
 
 
 def plan(tasks: Iterable[dict[str, Any]], arms: Iterable[str], repeats: int,
@@ -68,41 +69,6 @@ def spent_usd(runs_path: str | Path) -> float:
     return sum(float(row.get("cost_usd") or 0.0) for row in read_jsonl(runs_path))
 
 
-def _prepare_worktree(cfg: Config, wt: Path, task: dict[str, Any]) -> dict[str, Any]:
-    """Hide the tests, strip configs, run the project's setup command."""
-    hidden = hide_paths(wt, list(task.get("test_files", [])))
-    stripped = hide_paths(wt, list(cfg.target.strip_paths))
-    setup: dict[str, Any] = {"ran": False}
-    if cfg.target.setup_cmd:
-        proc = run(["/bin/sh", "-lc", cfg.target.setup_cmd], cwd=wt,
-                   timeout=cfg.target.setup_timeout_s)
-        setup = {
-            "ran": True,
-            "exit_code": proc.returncode,
-            "wall_s": round(proc.duration_s, 2),
-            "timed_out": proc.timed_out,
-        }
-    return {"hidden": hidden, "stripped": stripped, "setup": setup}
-
-
-def _run_arm_setup(arm: Any, wt: Path) -> dict[str, Any]:
-    """Run the skill's own installer inside the arm's worktree.
-
-    It goes last, after the repository's own agent instructions are stripped and
-    the index is installed, so the files it writes are the only agent
-    instructions in the tree and the hooks it registers see a graph.
-    """
-    proc = run(["/bin/sh", "-lc", arm.setup_cmd], cwd=wt,
-               env=arm.env or None, timeout=arm.setup_timeout_s)
-    return {
-        "cmd": arm.setup_cmd,
-        "exit_code": proc.returncode,
-        "wall_s": round(proc.duration_s, 2),
-        "timed_out": proc.timed_out,
-        "stderr_tail": (proc.stderr or "")[-400:],
-    }
-
-
 def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
                 out_dir: Path, index_source: Path | None,
                 price_table: dict[str, pricing_mod.ModelPrice] | None = None) -> dict[str, Any]:
@@ -131,16 +97,11 @@ def execute_one(cfg: Config, spec: dict[str, Any], task: dict[str, Any],
 
     try:
         with worktree(cfg.target.repo, task["parent"], wt_path) as wt:
-            row["prepare"] = _prepare_worktree(cfg, wt, task)
-
-            if arm.use_index and index_source is not None:
-                row["index_installed"] = index_mod.install(
-                    index_source, wt, cfg.index.paths
-                )
-                row["index_refresh"] = index_mod.refresh(cfg.index, wt, arm.env)
-
-            if arm.setup_cmd:
-                row["arm_setup"] = _run_arm_setup(arm, wt)
+            row.update(prepare_worktree(
+                cfg, arm, wt,
+                test_files=task.get("test_files", []),
+                index_source=index_source,
+            ))
 
             prompt = render_prompt(cfg.agent.prompt_template, task["prompt"])
             agent_run = invoke(cfg.agent, arm, prompt, wt, transcript)

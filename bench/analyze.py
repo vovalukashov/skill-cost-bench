@@ -75,6 +75,16 @@ def collect(rows: list[dict[str, Any]]) -> dict[str, Any]:
             nudged = bool(r.get("nudged"))
             if nudged:
                 bucket["nudged"] += 1
+            # Per voice: how many hits each nudge pattern scored, and in how
+            # many runs it was heard at all. "You MUST query the graph" and
+            # "reading the file directly is fine" are different treatments.
+            for pattern, count in ((r.get("nudges") or {}).get("hits") or {}).items():
+                hits = bucket.setdefault("nudge_hits", {})
+                runs_ = bucket.setdefault("nudge_runs", {})
+                hits[pattern] = hits.get(pattern, 0) + int(count or 0)
+                runs_.setdefault(pattern, 0)
+                if count:
+                    runs_[pattern] += 1
             if status == "used":
                 bucket["used_skill"] += 1
                 if not nudged:
@@ -389,6 +399,9 @@ def render(summary: dict[str, Any]) -> str:
                 f"{bucket['nudged']} of them; used without any prompt in "
                 f"{bucket['used_unprompted']}, prompted and still unused in "
                 f"{bucket['nudged_unused']}")
+            for pattern, count in (bucket.get("nudge_hits") or {}).items():
+                runs_ = (bucket.get("nudge_runs") or {}).get(pattern, 0)
+                add(f"  - `{pattern}`: {count} hits, heard in {runs_} runs")
     if offered_any:
         add("")
 

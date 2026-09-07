@@ -113,9 +113,14 @@ arms:
     activation_patterns:
       - "graphify (query|explain|path|stats|extract)"
       - "graphify-out/graph\\.json"
-    # What the product says to the model on its own initiative.
+    # What the product says to the model on its own initiative. Two voices:
+    # the mandatory one, and the softened one it falls back to when it decides
+    # the graph is older than the file being read. Counted apart, because the
+    # first stock sweep heard 1 106 of the former and 574 of the latter and the
+    # report summed them into one number.
     nudge_patterns:
       - "MANDATORY: graphify-out"
+      - "may be STALE"
 
   - name: graphify-strict
     label: C
@@ -133,12 +138,13 @@ arms:
       - "graphify-out/graph\\.json"
     nudge_patterns:
       - "MANDATORY: graphify-out"
-      # Strict mode's other voice: it refuses the first raw read of a session
+      - "may be STALE"
+      # Strict mode's third voice: it refuses the first raw read of a session
       # outright. Counted here so a run where it fired is distinguishable from
-      # one where the soft reminder got there first — which, on the smoke task,
-      # is what happened: the model opened with a grep, the search hook nudged
-      # it, it queried the graph, and by its first Read the block no longer
-      # applied.
+      # one where a softer reminder got there first. In the first stock sweep it
+      # fired 0 times in 160 — not because the model queried first, as the smoke
+      # task suggested, but because every Read hook took the STALE branch: the
+      # copied index kept its August mtime and the September checkout was newer.
       - "graphify strict mode"
 
 claim:

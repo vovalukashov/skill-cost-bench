@@ -93,3 +93,39 @@ def test_a_ledger_entry_whose_files_are_gone_is_rebuilt(demo_repo: Path, tmp_pat
     fresh = IndexCache(_cfg(demo_repo, tmp_path), tmp_path / "run1")
     rebuilt = fresh.for_commit(head)
     assert (rebuilt / "graphify-out" / "graph.json").exists()
+
+
+def test_an_installed_index_never_reads_as_older_than_the_tree_it_lands_in(tmp_path: Path):
+    """The skill's own hook decides freshness by mtime, and a copy that keeps
+    the build's timestamp makes every file in a fresh checkout look newer than
+    the graph.
+
+    That is how the first stock sweep silently measured a softened tool: the
+    index came from an August build, the worktrees were checked out in
+    September, and the read hook took its STALE branch 610 times out of 613 —
+    which also made the strict block unreachable. A copied index has to read as
+    freshly built, because for the session it is.
+    """
+    import os
+    import time
+    from bench.index import install
+
+    src = tmp_path / "built" / "graphify-out"
+    src.mkdir(parents=True)
+    (src / "graph.json").write_text("{}", encoding="utf-8")
+    (src / "references").mkdir()
+    (src / "references" / "a.md").write_text("x", encoding="utf-8")
+    long_ago = time.time() - 30 * 86400
+    for p in (src / "graph.json", src / "references" / "a.md"):
+        os.utime(p, (long_ago, long_ago))
+
+    wt = tmp_path / "wt"
+    wt.mkdir()
+    source_file = wt / "module.py"
+    source_file.write_text("print(1)\n", encoding="utf-8")
+
+    install(src.parent, wt, ["graphify-out/graph.json", "graphify-out/references"])
+
+    newest_source = source_file.stat().st_mtime
+    for rel in ("graphify-out/graph.json", "graphify-out/references/a.md"):
+        assert (wt / rel).stat().st_mtime >= newest_source, rel

@@ -80,3 +80,25 @@ def test_a_second_pair_writes_its_own_report_instead_of_overwriting_the_first(tm
         tmp_path / "summary.json", tmp_path / "report.md")
     assert report_paths(tmp_path, "control", "graphify-strict", explicit=True) == (
         tmp_path / "summary.graphify-strict.json", tmp_path / "report.graphify-strict.md")
+
+
+def test_the_report_tells_the_hooks_voices_apart():
+    """One total hides which reminder the model actually got.
+
+    The stock sweep summed 1 106 mandatory reminders from the search hook
+    with 574 softened ones from the read hook and printed "nudged". Whether a
+    session was told "you MUST query the graph" or "reading the file directly
+    is fine" is the whole treatment, so the report has to say which.
+    """
+    from bench.analyze import collect
+
+    rows = [
+        _row("graphify", activation_status="used", nudged=True,
+             nudges={"total_hits": 7, "hits": {"MANDATORY: graphify-out": 5, "may be STALE": 2}}),
+        _row("graphify", activation_status="used", nudged=True,
+             nudges={"total_hits": 3, "hits": {"MANDATORY: graphify-out": 0, "may be STALE": 3}}),
+    ]
+    per_arm = collect(rows)["per_arm"]["graphify"]
+    assert per_arm["nudge_hits"] == {"MANDATORY: graphify-out": 5, "may be STALE": 5}
+    # Runs in which each voice was heard at least once.
+    assert per_arm["nudge_runs"] == {"MANDATORY: graphify-out": 1, "may be STALE": 2}

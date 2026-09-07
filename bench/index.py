@@ -10,7 +10,9 @@ Skills without an index leave ``index.build_cmd`` empty and none of this runs.
 
 from __future__ import annotations
 
+import os
 import shutil
+import time
 from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Any
@@ -79,7 +81,25 @@ def install(source: str | Path, worktree: str | Path, paths: list[str]) -> list[
         else:
             shutil.copy2(s, d)
         copied.append(rel)
+        # The copy keeps the build's timestamp, and the skill's own hook decides
+        # freshness by comparing the graph's mtime against the file being read.
+        # A worktree checked out today next to an index built last month makes
+        # every source file look newer than the graph, and the hook downgrades
+        # itself to its softened wording on every read — which is how the first
+        # stock sweep measured a weaker tool than the one it named. For the
+        # session that receives it, this index was built just now.
+        _touch_tree(d)
     return copied
+
+
+def _touch_tree(path: Path) -> None:
+    now = time.time()
+    targets = [path] if path.is_file() else [q for q in path.rglob("*") if q.is_file()]
+    for q in targets:
+        try:
+            os.utime(q, (now, now))
+        except OSError:
+            pass
 
 
 def refresh(cfg: IndexConfig, worktree: str | Path, env: dict[str, str] | None = None) -> dict[str, Any]:

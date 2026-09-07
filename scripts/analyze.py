@@ -17,7 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from bench import config as config_mod  # noqa: E402
-from bench.analyze import analyze  # noqa: E402
+from bench.analyze import analyze, report_paths  # noqa: E402
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -42,7 +42,9 @@ def main(argv: list[str] | None = None) -> int:
           f"(95% CI {head['ci'][0]:.3f}–{head['ci'][1]:.3f})")
     print(f"invalid runs: {summary['validity']['n_invalid']}/{summary['validity']['n_rows']}")
     print(f"arms: {summary['control_arm']} vs {summary['experiment_arm']}")
-    print(f"report: {Path(args.out) / 'report.md'}")
+    _, report = report_paths(Path(args.out), summary["control_arm"],
+                             summary["experiment_arm"], explicit=args.experiment is not None)
+    print(f"report: {report}")
     return 0
 
 

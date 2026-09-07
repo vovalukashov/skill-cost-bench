@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "arms": {
+    "graphify-stock": {
+      "arm": "graphify-stock",
+      "reachable": true,
+      "detail": "tool_input: …{\"command\": \"graphify query \\\"What are the god nodes in this codeba…",
+      "wall_s": 10.33,
+      "cost_reported_usd": 0.0967629,
+      "transcript_path": "/Users/luka/Projects/skill-cost-bench/out/20260906T103019Z-graphify-superset-stock/transcripts/probe__graphify-stock.jsonl",
+      "checked_at": "2026-09-06T10:30:32Z"
+    },
+    "graphify-strict": {
+      "arm": "graphify-strict",
+      "reachable": true,
+      "detail": "tool_input: …{\"command\": \"graphify query \\\"What does this codebase do?\\\" 2>&1\"}…",
+      "wall_s": 11.74,
+      "cost_reported_usd": 0.0763251,
+      "transcript_path": "/Users/luka/Projects/skill-cost-bench/out/20260906T103019Z-graphify-superset-stock/transcripts/probe__graphify-strict.jsonl",
+      "checked_at": "2026-09-06T10:30:46Z"
+    }
+  },
+  "prompt": "Use the skill described in your instructions, right now, on this checkout.\n\nCall one of its tools and report, in one line, what it returned. If a tool's\nschema is not loaded, load it first. If you cannot call any of them, say exactly\nwhat stopped you.\n\nDo not read source files and do not answer from memory. The only thing being\nchecked here is whether the tool works."
+}

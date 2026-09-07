@@ -7,20 +7,37 @@ argued with without re-running the experiment.
 
 Target: [apache/superset](https://github.com/apache/superset), ~400k lines.
 Skill under test: [graphify](https://github.com/Graphify-Labs/graphify) 0.9.34,
-advertising 71.5x fewer tokens per query. Agent: Claude Code 2.1.220 headless,
-`claude-sonnet-5`, low reasoning effort, on a subscription.
+which advertised 71.5x fewer tokens per query. Agent: Claude Code headless
+(2.1.220 for the August sweeps, 2.1.236 for `stock/`), `claude-sonnet-5`, low
+reasoning effort, on a subscription.
 
-## The three sweeps
+## The four sweeps
 
 | directory | tasks | reps | runs | the experimental arm | headline |
 |---|---|---|---|---|---|
 | `pilot/` | 12 | 3 | 72 | skill available, model free to use it | used it **0 times in 36 runs** |
 | `forced/` | 12 | 3 | 72 | ordered to locate the work with the graph first | 0.683 — costs more |
 | `main/` | 80 | 2 | 320 | same, at scale | **0.843** (95% CI 0.726–0.989) — costs more |
+| `stock/` | 80 | 2 | 480 | the vendor's own `graphify install --project`, with and without `--strict`, three arms | **0.807** (0.701–0.914) stock, 0.802 strict — costs more; strict block fired **0 times in 160** |
 
 Ratios are control ÷ experiment, so below 1.0 means the experimental arm cost
 more. `main/` supersedes `forced/`: the twelve-task estimate was overstating the
 effect, which is the reason the larger sweep exists.
+
+`stock/` answers the objection to all three of the above: that the harness
+handed the skill over its own way — an MCP server plus a description in the
+system prompt, then a graph-first procedure of the harness's own — rather than
+the way the product installs itself. In `stock/` the installer runs in every
+experimental worktree after the repository's own agent instructions are
+stripped, so its CLAUDE.md section and its PreToolUse hooks are the only
+guidance in the tree. The hooks changed activation from 0 of 36 to 116 of 160
+and left the cost ratio where the forced procedure had put it. Every one of the
+160 stock sessions was nudged (median five reminders per session), so "used it
+unprompted" is not measurable there, and `summary.json` reports prompted use
+apart from spontaneous use. Two files per pair: `summary.json`/`report.md` for
+control vs `graphify-stock`, `summary.graphify-strict.json`/`report.graphify-strict.md`
+for control vs `graphify-strict`. The exact arm prompts the August sweeps used are
+in `arms/`.
 
 `delivery_check.json` answers the obvious objection to the pilot — that the
 skill went unused because of how the harness handed it over. It re-runs six of
@@ -48,10 +65,12 @@ the working copy's own `.claude/skills` with `--setting-sources project`. Still
 
 ## Transcripts
 
-`transcripts/*.tar.gz`, one archive per sweep, 473 sessions in all. Each is the
+`transcripts/*.tar.gz`, one archive per sweep, 955 sessions in all. Each is the
 full `stream-json` event log: the init event listing what the session was
-offered, every tool call and result, and the final usage block. This is where
-the activation claims can be checked directly rather than taken on trust.
+offered, every tool call and result, and the final usage block. `stock/` was run
+with `--include-hook-events`, so its transcripts also carry every firing of the
+skill's own hooks and what each one said. This is where the activation claims
+can be checked directly rather than taken on trust.
 
 ## Tasks
 

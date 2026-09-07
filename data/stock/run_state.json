@@ -1,0 +1,13 @@
+{
+  "planned": 480,
+  "resumed_from": 0,
+  "executed": 480,
+  "skipped_budget": 0,
+  "spent_usd": 147.4840437999999,
+  "budget_usd": 260.0,
+  "stopped_on_budget": false,
+  "probe": {
+    "graphify-stock": true,
+    "graphify-strict": true
+  }
+}

@@ -219,8 +219,15 @@ echo '{"session_id":"s1","tool_name":"Read","tool_input":{"file_path":"'$PWD'/su
   | CLAUDE_PROJECT_DIR=$PWD graphify hook-guard read --strict
 ```
 
-Findings worth keeping. The graph copied from an earlier run is recognised as
-fresh, so both hooks answer in the MANDATORY form, not the STALE one. The strict
+Findings worth keeping — and one of them was wrong. The synthetic check said
+the copied graph was recognised as fresh, and it was, for the check: a plain
+`cp` stamps the copy with the current time. The sweep copies with `copy2`,
+which preserves the build's timestamp, and against a worktree checked out
+weeks later every source file reads as newer than the graph. The read hook
+took its softened STALE branch in 610 of 613 firings across the strict arm,
+and the block was unreachable. An installed index is now re-stamped to the
+current time on every file. **Verify an invariant with the code path the
+sweep uses, never with a hand-rolled replica of it.** The strict
 deny is real and distinct from the plain nudge, so the two experimental arms are
 not measuring the same thing. And the deny only fires when the payload carries a
 `session_id`: it claims a one-time marker under `graphify-out/cache/`, so a

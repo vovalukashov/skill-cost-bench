@@ -18,23 +18,32 @@ reasoning effort, on a subscription.
 | `pilot/` | 12 | 3 | 72 | skill available, model free to use it | used it **0 times in 36 runs** |
 | `forced/` | 12 | 3 | 72 | ordered to locate the work with the graph first | 0.683 — costs more |
 | `main/` | 80 | 2 | 320 | same, at scale | **0.843** (95% CI 0.726–0.989) — costs more |
-| `stock/` | 80 | 2 | 480 | the vendor's own `graphify install --project`, with and without `--strict`, three arms | **0.807** (0.701–0.914) stock, 0.802 strict — costs more; strict block fired **0 times in 160** |
+| `stock/` | 80 | 2 | 480 | the vendor's own `graphify install --project`, with and without `--strict`, three arms | ⚠️ **artifact, see below** — 0.807 stock, 0.802 strict; the read hook took its softened branch in 610 of 613 firings, so this measured a weaker tool than named and the strict block was unreachable |
 
 Ratios are control ÷ experiment, so below 1.0 means the experimental arm cost
 more. `main/` supersedes `forced/`: the twelve-task estimate was overstating the
 effect, which is the reason the larger sweep exists.
 
-`stock/` answers the objection to all three of the above: that the harness
-handed the skill over its own way — an MCP server plus a description in the
-system prompt, then a graph-first procedure of the harness's own — rather than
-the way the product installs itself. In `stock/` the installer runs in every
-experimental worktree after the repository's own agent instructions are
-stripped, so its CLAUDE.md section and its PreToolUse hooks are the only
-guidance in the tree. The hooks changed activation from 0 of 36 to 116 of 160
-and left the cost ratio where the forced procedure had put it. Every one of the
-160 stock sessions was nudged (median five reminders per session), so "used it
-unprompted" is not measurable there, and `summary.json` reports prompted use
-apart from spontaneous use. Two files per pair: `summary.json`/`report.md` for
+`stock/` was meant to answer the objection to all three of the above: that the
+harness handed the skill over its own way rather than the way the product
+installs itself. In `stock/` the installer runs in every experimental worktree
+after the repository's own agent instructions are stripped, so its CLAUDE.md
+section and its PreToolUse hooks are the only guidance in the tree.
+
+**It is kept as an artifact, not a result.** The skill's read hook decides
+freshness by mtime and, when the file being read is newer than `graph.json`,
+downgrades itself from "you MUST query the graph" to "reading the file directly
+is fine" before the strict block is ever considered. The harness copied each
+index with its August build timestamp preserved into worktrees checked out in
+September, so every source file looked newer than the graph: across the strict
+arm the read hook took the softened branch in 610 of 613 firings, and the block
+fired 0 times in 160 for that reason, not because of anything the model did.
+Both experimental arms therefore received a weaker tool than the one named. The
+pre-sweep check missed it because it copied the graph with a plain `cp`, which
+stamps the copy with the current time. The transcripts carry every hook firing
+and its exact wording, which is how the artifact was found. The corrected sweep,
+with the index re-stamped on install and the hook's three voices counted apart,
+is the directory listed next. Two files per pair: `summary.json`/`report.md` for
 control vs `graphify-stock`, `summary.graphify-strict.json`/`report.graphify-strict.md`
 for control vs `graphify-strict`. The exact arm prompts the August sweeps used are
 in `arms/`.

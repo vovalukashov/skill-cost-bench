@@ -11,7 +11,7 @@ which advertised 71.5x fewer tokens per query. Agent: Claude Code headless
 (2.1.220 for the August sweeps, 2.1.236 for `stock/`), `claude-sonnet-5`, low
 reasoning effort, on a subscription.
 
-## The four sweeps
+## The five sweeps
 
 | directory | tasks | reps | runs | the experimental arm | headline |
 |---|---|---|---|---|---|
@@ -19,6 +19,7 @@ reasoning effort, on a subscription.
 | `forced/` | 12 | 3 | 72 | ordered to locate the work with the graph first | 0.683 — costs more |
 | `main/` | 80 | 2 | 320 | same, at scale | **0.843** (95% CI 0.726–0.989) — costs more |
 | `stock/` | 80 | 2 | 480 | the vendor's own `graphify install --project`, with and without `--strict`, three arms | ⚠️ **artifact, see below** — 0.807 stock, 0.802 strict; the read hook took its softened branch in 610 of 613 firings, so this measured a weaker tool than named and the strict block was unreachable |
+| `stock-fresh/` | 80 | 2 | 480 | the same three arms, index re-stamped on install so the hooks speak in their mandatory voice | **0.770** (0.581–0.954) stock, **0.792** (0.724–0.866) strict — costs more; strict block fired in **41 of 158** strict sessions |
 
 Ratios are control ÷ experiment, so below 1.0 means the experimental arm cost
 more. `main/` supersedes `forced/`: the twelve-task estimate was overstating the
@@ -43,7 +44,19 @@ pre-sweep check missed it because it copied the graph with a plain `cp`, which
 stamps the copy with the current time. The transcripts carry every hook firing
 and its exact wording, which is how the artifact was found. The corrected sweep,
 with the index re-stamped on install and the hook's three voices counted apart,
-is the directory listed next. Two files per pair: `summary.json`/`report.md` for
+is `stock-fresh/`.
+
+`stock-fresh/` is the corrected sweep. Same tasks, same three arms, same
+installer; the only change is that an installed index carries the current time
+on every file, so the read hook answers "you MUST query the graph" unless the
+model has itself edited the file since. Counted from hook events in the
+transcripts: the read hook spoke in its mandatory voice in 151 of 157 valid
+stock sessions and took the softened branch only after the model's own edits
+(32 firings in 20 sessions). In the strict arm the block fired in 41 of 158
+sessions, once each as designed; in the other 113 the model had already queried
+the graph before its first read, which the product treats as satisfied. Five
+runs are invalid, all for reasons outside the harness — the machine slept or
+lost its network mid-session — and are kept with their reason. Two files per pair: `summary.json`/`report.md` for
 control vs `graphify-stock`, `summary.graphify-strict.json`/`report.graphify-strict.md`
 for control vs `graphify-strict`. The exact arm prompts the August sweeps used are
 in `arms/`.
@@ -74,9 +87,9 @@ the working copy's own `.claude/skills` with `--setting-sources project`. Still
 
 ## Transcripts
 
-`transcripts/*.tar.gz`, one archive per sweep, 955 sessions in all. Each is the
+`transcripts/*.tar.gz`, one archive per sweep, 1 437 sessions in all. Each is the
 full `stream-json` event log: the init event listing what the session was
-offered, every tool call and result, and the final usage block. `stock/` was run
+offered, every tool call and result, and the final usage block. `stock/` and `stock-fresh/` were run
 with `--include-hook-events`, so its transcripts also carry every firing of the
 skill's own hooks and what each one said. This is where the activation claims
 can be checked directly rather than taken on trust.

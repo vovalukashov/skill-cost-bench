@@ -24,7 +24,7 @@ and search; `--strict` refuses the first raw read of a session outright. The
 published runs had none of that: the arms were built by this harness, and the
 forced procedure is my own stand-in for a mechanism the product already has.
 `config-superset-stock.yaml` runs the installed article instead; its results are
-in `data/stock/`. There is no prompt file for that sweep because the harness
+in `data/stock-fresh/` (and `data/stock/` holds the first, artifact-laden attempt). There is no prompt file for that sweep because the harness
 wrote none: the installer's own `CLAUDE.md` section and `.claude/settings.json`
 hooks are the treatment, and both are reproduced by running
 `graphify install --project` (or `--project --strict`) against graphify 0.9.34.
